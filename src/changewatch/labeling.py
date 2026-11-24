@@ -1,7 +1,8 @@
 """Kör etiketleme: zaman serisi çipleri, su doğrulama seti ve tkinter etiketleme arayüzü.
 
 Arayüz sistemin tahminini, tabakayı, AOI'yi ve nokta kimliğini göstermez; çip dosya adları rastgele
-belirteçtir. Her girişten sonra etiket CSV'si atomik olarak yeniden yazılır.
+belirteçtir. Tek soru: E evet (tür varsayılan yapılaşma) / H hayır / U emin değilim; yıl isteğe bağlı.
+Her girişten sonra etiket CSV'si atomik olarak yeniden yazılır; setin dışındaki satırlar (ör. kalibrasyon) korunur.
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from typing import Any, Sequence
 
 import numpy as np
 
-from changewatch.validate import LABEL_FIELDS
+from changewatch.validate import LABEL_FIELDS, UNSURE
 
 TYPES = [  # (tuş, kod, ekran adı)
     ("y", "yapilasma_olasi", "yapılaşma"),
@@ -26,6 +27,9 @@ TYPES = [  # (tuş, kod, ekran adı)
     ("d", "diger", "diğer"),
 ]
 UNKNOWN_YEAR = "bilinmiyor"
+DEFAULT_TYPE = "yapilasma_olasi"
+QUESTION = "Bu noktada 2017'den bugüne yeni bina, şantiye veya yol yapıldı mı?"
+ANSWERS = ("evet", "hayir", UNSURE)
 
 
 def chip_token(salt: str, point_id: str) -> str:
@@ -52,38 +56,49 @@ def shuffled_order(ids: Sequence[str], seed: int) -> list[str]:
 
 
 def read_label_rows(path: Path, ids: Sequence[str], aoi_of: dict[str, str]) -> dict[str, dict[str, str]]:
-    """Etiket CSV'sini okur; olmayan noktalar boş satırla tamamlanır."""
-    rows = {i: {"nokta_id": i, "aoi": aoi_of.get(i, ""), "gercek_degisim": "", "gercek_tur": "", "gercek_yil": "",
-                "not": ""} for i in ids}
+    """Etiket CSV'sini okur: dosyadaki tüm satırlar (sırası korunur) + dosyada olmayan set noktaları (boş)."""
+    rows: dict[str, dict[str, str]] = {}
     if path.exists():
         with path.open(encoding="utf-8-sig", newline="") as f:
             for r in csv.DictReader(f):
-                if r.get("nokta_id") in rows:
-                    rows[r["nokta_id"]].update({k: (r.get(k) or "").strip() for k in LABEL_FIELDS})
+                if r.get("nokta_id"):
+                    rows[r["nokta_id"]] = {k: (r.get(k) or "").strip() for k in LABEL_FIELDS}
+    for i in ids:
+        rows.setdefault(i, {"nokta_id": i, "aoi": aoi_of.get(i, ""), "gercek_degisim": "", "gercek_tur": "",
+                            "gercek_yil": "", "not": ""})
     return rows
 
 
-def write_label_rows(path: Path, rows: dict[str, dict[str, str]], ids: Sequence[str]) -> None:
-    """Etiketleri atomik yazar (önce geçici dosya, sonra yer değiştirme)."""
+def write_label_rows(path: Path, rows: dict[str, dict[str, str]]) -> None:
+    """Tüm satırları atomik yazar (önce geçici dosya, sonra yer değiştirme)."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp")
     with tmp.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=LABEL_FIELDS)
         w.writeheader()
-        for i in ids:
-            w.writerow({k: rows[i].get(k, "") for k in LABEL_FIELDS})
+        for r in rows.values():
+            w.writerow({k: r.get(k, "") for k in LABEL_FIELDS})
     os.replace(tmp, path)
 
 
+def normalize_entry(entry: dict[str, str]) -> dict[str, str]:
+    """Kayıt öncesi: evet → tür boşsa yapılaşma, yıl boşsa 'bilinmiyor'; hayır / emin değilim → tür ve yıl boş."""
+    e = dict(entry)
+    if e.get("gercek_degisim") == "evet":
+        e["gercek_tur"] = e.get("gercek_tur") or DEFAULT_TYPE
+        e["gercek_yil"] = e.get("gercek_yil") or UNKNOWN_YEAR
+    elif e.get("gercek_degisim") in ("hayir", UNSURE):
+        e["gercek_tur"] = e["gercek_yil"] = ""
+    return e
+
+
 def validate_entry(entry: dict[str, str]) -> str | None:
-    """Kayıttan önce tutarlılık: hata mesajı ya da None."""
+    """Tutarlılık: hata mesajı ya da None (yıl isteğe bağlı)."""
     d = entry.get("gercek_degisim")
-    if d not in ("evet", "hayir"):
-        return "Önce değişim var mı seçin: E (evet) / H (hayır)."
+    if d not in ANSWERS:
+        return "Önce cevaplayın: E (evet) / H (hayır) / U (emin değilim)."
     if d == "evet" and not entry.get("gercek_tur"):
         return "Değişim türünü seçin: Y / B / K / L / D."
-    if d == "evet" and not entry.get("gercek_yil"):
-        return "İlk görüldüğü yılı seçin: 8 9 0 1 2 3 4 5 6 (yılın son hanesi) ya da X (bilinmiyor)."
     return None
 
 
@@ -108,12 +123,12 @@ def water_validation_points(features_by_layer: dict[str, list[tuple[Any, dict]]]
 
 
 def maps_url(lat: float, lon: float, zoom: int = 18) -> str:
-    """Google Haritalar uydu görünümü."""
-    return f"https://www.google.com/maps/@{lat:.6f},{lon:.6f},{zoom}z/data=!3m1!1e3"
+    """Google Haritalar: noktada iğne, uydu görünümü."""
+    return f"https://maps.google.com/?q={lat:.6f},{lon:.6f}&t=k&z={zoom}"
 
 
 def load_label_set(index_path: Path) -> dict[str, Any]:
-    """label-prep'in yazdığı set dizini: noktalar (id, aoi, lat, lon, çip), etiket CSV yolu, yıllar, seed."""
+    """label-prep'in yazdığı set dizini: noktalar (id, aoi, lat, lon, çip), etiket CSV yolu, yıllar, seed, birim."""
     return json.loads(Path(index_path).read_text(encoding="utf-8"))
 
 
@@ -127,36 +142,43 @@ def run_app(index_path: Path) -> None:  # pragma: no cover - arayüz
     ids = [p["nokta_id"] for p in s["points"]]
     order = shuffled_order(ids, int(s["seed"]))
     years = list(s["years"])
+    unit = s.get("unit", "nokta")
     labels_path = Path(s["labels"])
     rows = read_label_rows(labels_path, ids, {i: pts[i]["aoi"] for i in ids})
     start = next((k for k, i in enumerate(order) if not is_labeled(rows[i])), 0)
+    tname = {c: n for _, c, n in TYPES}
+    answer_txt = {"evet": "EVET", "hayir": "HAYIR", UNSURE: "EMİN DEĞİLİM"}
+    answer_fg = {"evet": "#b00020", "hayir": "#1a7f37", UNSURE: "#9a6700"}
 
     root = tk.Tk()
-    root.title(f"TR-ChangeWatch etiketleme — {s['name']}")
-    state = {"pos": start, "entry": {}, "img": None}
+    root.title("TR-ChangeWatch etiketleme")
+    state: dict[str, Any] = {"pos": start, "entry": {}, "img": None, "dirty": False}
 
-    top = tk.Label(root, font=("Segoe UI", 12, "bold"), anchor="w")
-    top.pack(fill="x", padx=10, pady=(8, 2))
+    top = tk.Label(root, font=("Segoe UI", 11), anchor="w")
+    top.pack(fill="x", padx=10, pady=(6, 0))
+    tk.Label(root, text=QUESTION, font=("Segoe UI", 15, "bold"), anchor="w").pack(fill="x", padx=10, pady=(2, 4))
     canvas = tk.Label(root)
     canvas.pack(padx=10)
-    cur = tk.Label(root, font=("Segoe UI", 12), anchor="w", justify="left")
-    cur.pack(fill="x", padx=10, pady=4)
+    cur = tk.Label(root, font=("Segoe UI", 13, "bold"), anchor="w", justify="left")
+    cur.pack(fill="x", padx=10, pady=(4, 0))
     msg = tk.Label(root, font=("Segoe UI", 10), fg="#b35900", anchor="w")
     msg.pack(fill="x", padx=10)
-    help_txt = ("E evet · H hayır  |  tür: Y yapılaşma · B bitki kaybı · K su kazanımı · L su kaybı · D diğer  |  "
-                "yıl: son hane (8=2018 … 0=2020 … 6=2026) · X bilinmiyor  |  N not  |  "
-                "Enter kaydet+sonraki · ←/→ gezin · G Google Haritalar")
-    tk.Label(root, text=help_txt, font=("Segoe UI", 9), fg="#555", wraplength=900, justify="left").pack(
+    help_txt = ("E evet · H hayır · U emin değilim   |   başka tür (isteğe bağlı): Y yapılaşma · B bitki kaybı · "
+                "K su kazanımı · L su kaybı · D diğer   |   yıl (isteğe bağlı): son hane 8=2018 … 6=2026 · "
+                "X bilinmiyor   |   N not · Enter kaydet+sonraki · ←/→ gezin · G Google Haritalar")
+    tk.Label(root, text=help_txt, font=("Segoe UI", 9), fg="#555", wraplength=880, justify="left").pack(
         fill="x", padx=10, pady=(0, 4))
     bar = tk.Frame(root)
     bar.pack(pady=(0, 8))
 
-    def labeled_count() -> int:
-        return sum(is_labeled(rows[i]) for i in ids)
+    def counts() -> tuple[int, int]:
+        done = [rows[i] for i in ids if is_labeled(rows[i])]
+        return len(done), sum(r["gercek_degisim"] == UNSURE for r in done)
 
     def show() -> None:
         pid = order[state["pos"]]
         state["entry"] = {k: rows[pid].get(k, "") for k in ("gercek_degisim", "gercek_tur", "gercek_yil", "not")}
+        state["dirty"] = False
         state["img"] = tk.PhotoImage(file=pts[pid]["chip"])
         canvas.configure(image=state["img"])
         msg.configure(text="")
@@ -165,42 +187,58 @@ def run_app(index_path: Path) -> None:  # pragma: no cover - arayüz
     def refresh() -> None:
         pos = state["pos"]
         e = state["entry"]
-        top.configure(text=f"Etiketlenen: {labeled_count()} / {len(ids)}    ·    nokta {pos + 1} / {len(ids)}"
-                           + ("    ·    ✓ kayıtlı" if is_labeled(rows[order[pos]]) else ""))
-        tname = {c: n for _, c, n in TYPES}.get(e.get("gercek_tur", ""), "—")
-        cur.configure(text=f"Değişim: {e.get('gercek_degisim') or '—'}    Tür: {tname}    "
-                           f"İlk görüldüğü yıl: {e.get('gercek_yil') or '—'}    Not: {e.get('not') or '—'}")
+        n, n_u = counts()
+        top.configure(text=f"Etiketlenen: {n} / {len(ids)} {unit}" + (f"  (emin değilim: {n_u})" if n_u else "")
+                      + f"    ·    sıra {pos + 1} / {len(ids)}"
+                      + ("    ·    ✓ kayıtlı" if is_labeled(rows[order[pos]]) else ""))
+        d = e.get("gercek_degisim", "")
+        txt = f"Cevap: {answer_txt.get(d, '—')}"
+        if d == "evet":
+            txt += (f"    Tür: {tname.get(e.get('gercek_tur') or DEFAULT_TYPE, '—')}    "
+                    f"Yıl: {e.get('gercek_yil') or UNKNOWN_YEAR}")
+        if e.get("not"):
+            txt += f"    Not: {e['not']}"
+        cur.configure(text=txt, fg=answer_fg.get(d, "#1f2328"))
 
-    def save_and_next(_=None) -> None:
-        e = dict(state["entry"])
-        if e.get("gercek_degisim") == "hayir":
-            e["gercek_tur"] = e["gercek_yil"] = ""
+    def commit() -> bool:
+        e = normalize_entry(state["entry"])
         err = validate_entry(e)
         if err:
             msg.configure(text=err)
-            return
+            return False
         rows[order[state["pos"]]].update(e)
-        write_label_rows(labels_path, rows, ids)
-        if labeled_count() == len(ids):
-            messagebox.showinfo("Tamamlandı", f"Tüm noktalar etiketlendi. Kaydedildi: {labels_path}")
-        move(1)
+        write_label_rows(labels_path, rows)
+        return True
 
-    def move(step: int) -> None:
-        # gezinirken de: tam ve geçerli, kaydedilmemiş giriş kaybolmasın
-        e = dict(state["entry"])
-        row = rows[order[state["pos"]]]
-        if validate_entry(e) is None and any(row.get(k, "") != e.get(k, "") for k in e):
-            row.update(e)
-            write_label_rows(labels_path, rows, ids)
+    def save_and_next(_=None) -> None:
+        if not state["dirty"] and is_labeled(rows[order[state["pos"]]]):
+            move(1, save=False)                     # dokunulmamış eski etiket aynen kalır
+            return
+        if not commit():
+            return
+        if counts()[0] == len(ids):
+            messagebox.showinfo("Tamamlandı", f"Tüm {unit} etiketlendi. Kaydedildi: {labels_path}")
+        move(1, save=False)
+
+    def move(step: int, save: bool = True) -> None:
+        # gezinirken de: değiştirilmiş ve geçerli giriş kaybolmasın
+        if save and state["dirty"] and validate_entry(normalize_entry(state["entry"])) is None:
+            commit()
         state["pos"] = min(max(state["pos"] + step, 0), len(order) - 1)
         show()
 
     def set_field(k: str, v: str) -> None:
-        state["entry"][k] = v
-        if k == "gercek_degisim" and v == "hayir":
-            state["entry"]["gercek_tur"] = state["entry"]["gercek_yil"] = ""
-        if k in ("gercek_tur", "gercek_yil") and not state["entry"].get("gercek_degisim"):
-            state["entry"]["gercek_degisim"] = "evet"
+        e = state["entry"]
+        e[k] = v
+        state["dirty"] = True
+        if k == "gercek_degisim":
+            if v == "evet":
+                e["gercek_tur"] = e.get("gercek_tur") or DEFAULT_TYPE
+            else:
+                e["gercek_tur"] = e["gercek_yil"] = ""
+        if k in ("gercek_tur", "gercek_yil") and e.get("gercek_degisim") != "evet":
+            e["gercek_degisim"] = "evet"
+            e["gercek_tur"] = e.get("gercek_tur") or DEFAULT_TYPE
         refresh()
 
     def note(_=None) -> None:
@@ -219,6 +257,8 @@ def run_app(index_path: Path) -> None:  # pragma: no cover - arayüz
             set_field("gercek_degisim", "evet")
         elif k == "h":
             set_field("gercek_degisim", "hayir")
+        elif k == "u":
+            set_field("gercek_degisim", UNSURE)
         elif k in {t[0] for t in TYPES}:
             set_field("gercek_tur", next(c for key, c, _ in TYPES if key == k))
         elif k == "n":

@@ -133,7 +133,11 @@ validation:
   calibration_share: 0.3       # tabaka içinde rastgele %30 kalibrasyon, %70 test
   chip_px: 41                  # çip kenarı (piksel; 41 × 20 m = 820 m)
   chip_upscale: 5
-  series_chip_upscale: 3       # kör zaman serisi çipi (2 × 5 yıl)
+  label_roles: [test]          # etiketleme arayüzüne gelen roller (kalibrasyon gizli; yöntem donduruldu)
+  label_big_px: 400            # etiket çipi: ilk ve son yıl karesi kenarı (yaklaşık; tam sayı büyütme, en yakın komşu)
+  label_strip_upscale: 4       # etiket çipi: alttaki tüm yıllar şeridi (2 × 5) büyütmesi
+  label_ring_m: 100            # nokta çevresindeki halka yarıçapı
+  label_scalebar_m: 200        # ölçek çubuğu uzunluğu
   label_seed: 7                # etiketleme arayüzünde karışık sıra
   chip_salt: tr-changewatch-kor  # çip dosya adı belirteci (tahmin/tabaka/kimlik içermez)
   water_aois: [golbasi]        # su doğrulama seti (tüm su poligonları)

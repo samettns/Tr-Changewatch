@@ -17,6 +17,7 @@ import numpy as np
 
 NO_CHANGE = "degisim_yok"
 LABEL_FIELDS = ["nokta_id", "aoi", "gercek_degisim", "gercek_tur", "gercek_yil", "not"]
+UNSURE = "emin_degilim"  # gercek_degisim: etiketleyici karar veremedi → metriklerden çıkarılır, ayrı sayılır
 
 
 # ---------------------------------------------------------------- örnekleme
@@ -104,7 +105,7 @@ def sample_pixels(stratum_maps: dict[str, np.ndarray], alloc: dict[str, int], se
 
 def write_label_template(points: Sequence[dict], path: Path, force: bool = False) -> Path:
     """Boş labels.csv şablonu (nokta_id ve aoi dolu). Dolu etiket varsa force olmadan üzerine yazmaz."""
-    if path.exists() and not force and any(filled_labels(read_labels(path))):
+    if path.exists() and not force and any(r.get("gercek_degisim") for r in read_labels(path)):
         raise FileExistsError(f"{path} içinde girilmiş etiketler var; üzerine yazmak için --force.")
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
@@ -126,8 +127,13 @@ def read_labels(path: Path) -> list[dict[str, str]]:
 
 
 def filled_labels(rows: Sequence[dict[str, str]]) -> list[dict[str, str]]:
-    """gercek_degisim alanı girilmiş satırlar."""
-    return [r for r in rows if r.get("gercek_degisim")]
+    """Kesin etiketli satırlar (gercek_degisim girilmiş ve 'emin_degilim' değil)."""
+    return [r for r in rows if r.get("gercek_degisim") and r["gercek_degisim"].lower() != UNSURE]
+
+
+def unsure_labels(rows: Sequence[dict[str, str]]) -> list[dict[str, str]]:
+    """'emin_degilim' işaretli satırlar (metriklere katılmaz)."""
+    return [r for r in rows if (r.get("gercek_degisim") or "").lower() == UNSURE]
 
 
 def reference_class(row: dict[str, str]) -> str:

@@ -1,40 +1,39 @@
 # Etiketleme talimatı
 
-Amaç: her noktada **2017–2026 arasında arazi örtüsünün kalıcı olarak değişip değişmediğini**, değiştiyse türünü ve **değişimin ilk görüldüğü yılı** belirlemek. Sistemin tahmini gösterilmez (kör etiketleme); karar yalnızca görüntülere dayanır.
+Ana soru: **"Bu noktada 2017'den bugüne yeni bina, şantiye veya yol yapıldı mı?"** Sistemin tahmini, tabaka ve AOI gösterilmez (kör etiketleme); karar yalnızca görüntülere dayanır.
 
 ## Başlatma
 
 ```bash
-changewatch label            # ana örnekleme (280 nokta) → validation/labels.csv
+changewatch label            # yalnızca TEST noktaları (197) → validation/labels.csv
 changewatch label --set su   # Gölbaşı su doğrulama seti (16 nokta) → validation/water_labels.csv
 ```
 
-Çipler yoksa ya da örnekleme değiştiyse önce `changewatch label-prep` çalıştırın.
+Kalibrasyon noktaları gizlidir (yöntem donduruldu; `validation.label_roles` ile açılır); CSV'deki satırları ve mevcut etiketleri korunur. Çipler yoksa ya da örnekleme değiştiyse önce `changewatch label-prep` çalıştırın.
 
 ## Ekranda ne var
 
-- Noktanın çevresi (820 m × 820 m), 2017–2026 yaz kompozitleri, 2 satır × 5 yıl. Sarı kare = değerlendirilen 20 m piksel; kesikli daire = yakın çevre (±60 m).
-- Karar **sarı karenin içi** içindir. Çevredeki değişim tek başına "evet" demek için yeterli değildir.
-- Emin olamazsanız **G** ile Google Haritalar uydu görünümünü açın (güncel ve geçmiş görüntü için Google Earth Pro'nun "geçmiş görüntüler" aracı da kullanılabilir; bu görüntüler repoya konmaz).
+- Üstte **2017** ve **2026** büyük, yan yana (820 m × 820 m, piksel büyütülmüş). Kırmızı artı = değerlendirilen 20 m piksel (ortası boş, piksel görünsün diye); kırmızı halka = 100 m yarıçap; sol altta 200 m ölçek çubuğu.
+- Altta 2017–2026 tüm yıllar (2 × 5), aynı artı işaretiyle: değişimin hangi yıl başladığını buradan okuyun.
+- Karar **artının merkezindeki piksel** içindir; halka yakın çevreyi gösterir.
+- **G**: Google Haritalar uydu görünümü, noktada iğne ile açılır (güncel görüntü; geçmiş için Google Earth Pro "geçmiş görüntüler"; bu görüntüler repoya konmaz).
 
 ## Klavye
 
 | Tuş | Anlamı |
 |---|---|
-| **E** / **H** | Değişim **evet** / **hayır** |
-| **Y** | yapılaşma |
-| **B** | bitki kaybı |
-| **K** | su kazanımı |
-| **L** | su kaybı |
-| **D** | diğer |
-| **8 9 0 1 2 3 4 5 6** | ilk görüldüğü yılın son hanesi (8 = 2018 … 0 = 2020 … 6 = 2026) |
+| **E** | **evet** (tür varsayılan: yapılaşma) |
+| **H** | **hayır** |
+| **U** | **emin değilim** (metriklerden çıkarılır, ayrı sayılır) |
+| **Y B K L D** | isteğe bağlı başka tür: yapılaşma · bitki kaybı · su kazanımı · su kaybı · diğer (basınca cevap "evet" olur) |
+| **7 8 9 0 1 2 3 4 5 6** | isteğe bağlı: ilk görüldüğü yılın son hanesi (8 = 2018 … 0 = 2020 … 6 = 2026); girilmezse **bilinmiyor** |
 | **X** | yıl bilinmiyor |
 | **N** | not (isteğe bağlı) |
 | **Enter** | kaydet + sonraki |
-| **← / →** | önceki / sonraki (tam bir giriş varsa gezinirken de kaydedilir) |
+| **← / →** | önceki / sonraki (değiştirilmiş geçerli giriş gezinirken de kaydedilir) |
 | **G** | Google Haritalar'da aç |
 
-Tür ya da yıl tuşuna basmak değişimi otomatik "evet" yapar. "Hayır" seçilince tür ve yıl temizlenir. Her kayıttan sonra CSV yeniden yazılır; uygulamayı kapatıp açınca ilk etiketlenmemiş noktadan devam eder. Geri dönüp düzeltme yapabilirsiniz.
+En hızlı akış: bak → **E/H/U** → **Enter**. İlerleme "Etiketlenen X / 197 test noktası" olarak görünür; "emin değilim" cevapları da sayılır ve ayrıca gösterilir. Her kayıttan sonra CSV yeniden yazılır; uygulama kapatılıp açılınca ilk etiketlenmemiş noktadan devam eder.
 
 ## Ne zaman hangi tür
 
@@ -64,7 +63,8 @@ Tür ya da yıl tuşuna basmak değişimi otomatik "evet" yapar. "Hayır" seçil
 
 - Değişimin **ilk göründüğü yaz** (ör. tesviye 2021 yazında görünüyorsa 2021). Bina 2023'te bitse de tesviye 2021'deyse **2021**.
 - Değişim 2017'de zaten başlamışsa (2017 karesinde şantiye görünüyorsa): **H** (dönem içinde yeni başlamadı) ve notta "2017 öncesi" yazın.
-- Emin değilseniz **X** (bilinmiyor) seçin; yıl isabeti hesabına katılmaz.
+- Yıl girmek isteğe bağlıdır; girilmezse ya da **X** seçilirse "bilinmiyor" yazılır ve yıl isabeti hesabına katılmaz.
+- Değişim olup olmadığından emin değilseniz **U** (emin değilim): nokta metriklere katılmaz, `changewatch validate` ayrı sayar.
 
 ## Notlar
 

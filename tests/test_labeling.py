@@ -3,9 +3,9 @@
 import numpy as np
 from shapely.geometry import Polygon, box
 
-from changewatch.labeling import (chip_token, maps_url, read_label_rows, shuffled_order, validate_entry,
-                                  water_validation_points, write_label_rows, year_for_key)
-from changewatch.validate import metrics
+from changewatch.labeling import (chip_token, maps_url, normalize_entry, read_label_rows, shuffled_order,
+                                  validate_entry, water_validation_points, write_label_rows, year_for_key)
+from changewatch.validate import filled_labels, metrics, read_labels, unsure_labels
 
 YEARS = list(range(2017, 2027))
 
@@ -37,17 +37,46 @@ def test_label_rows_roundtrip_and_resume(tmp_path):
     rows = read_label_rows(p, ids, {"P001": "incek", "P002": "golbasi"})
     assert rows["P002"]["aoi"] == "golbasi" and rows["P001"]["gercek_degisim"] == ""
     rows["P001"].update(gercek_degisim="evet", gercek_tur="yapilasma_olasi", gercek_yil="2021", **{"not": "şantiye"})
-    write_label_rows(p, rows, ids)
+    write_label_rows(p, rows)
     again = read_label_rows(p, ids, {})
     assert again["P001"]["gercek_tur"] == "yapilasma_olasi" and again["P001"]["not"] == "şantiye"
     assert not (tmp_path / "labels.tmp").exists()
 
 
-def test_validate_entry():
+def test_write_keeps_rows_outside_set(tmp_path):
+    """Yalnızca test noktaları etiketlenirken kalibrasyon satırları ve eski etiketler korunur."""
+    p = tmp_path / "labels.csv"
+    p.write_text("nokta_id,aoi,gercek_degisim,gercek_tur,gercek_yil,not\n"
+                 "P001,incek,,,,\nP002,incek,hayir,diger,2017,\nP003,golbasi,evet,bitki_kaybi,2019,x\n",
+                 encoding="utf-8")
+    rows = read_label_rows(p, ["P001", "P003"], {})          # P002 sette değil (kalibrasyon)
+    rows["P001"].update(normalize_entry({"gercek_degisim": "evet"}))
+    write_label_rows(p, rows)
+    lines = p.read_text(encoding="utf-8").splitlines()
+    assert lines[1:] == ["P001,incek,evet,yapilasma_olasi,bilinmiyor,", "P002,incek,hayir,diger,2017,",
+                         "P003,golbasi,evet,bitki_kaybi,2019,x"]
+
+
+def test_validate_and_normalize_entry():
     assert validate_entry({}) is not None
     assert validate_entry({"gercek_degisim": "hayir"}) is None
-    assert validate_entry({"gercek_degisim": "evet", "gercek_tur": "diger"}) is not None   # yıl eksik
-    assert validate_entry({"gercek_degisim": "evet", "gercek_tur": "diger", "gercek_yil": "bilinmiyor"}) is None
+    assert validate_entry({"gercek_degisim": "emin_degilim"}) is None
+    assert validate_entry({"gercek_degisim": "evet", "gercek_tur": "diger"}) is None      # yıl isteğe bağlı
+    assert normalize_entry({"gercek_degisim": "evet"}) == {"gercek_degisim": "evet", "gercek_tur": "yapilasma_olasi",
+                                                           "gercek_yil": "bilinmiyor"}
+    assert normalize_entry({"gercek_degisim": "evet", "gercek_tur": "bitki_kaybi", "gercek_yil": "2021"})[
+        "gercek_tur"] == "bitki_kaybi"
+    u = normalize_entry({"gercek_degisim": "emin_degilim", "gercek_tur": "diger", "gercek_yil": "2020"})
+    assert u["gercek_tur"] == "" and u["gercek_yil"] == ""
+
+
+def test_unsure_excluded_from_metrics_and_counted(tmp_path):
+    p = tmp_path / "labels.csv"
+    p.write_text("nokta_id,aoi,gercek_degisim,gercek_tur,gercek_yil,not\n"
+                 "P001,a,evet,yapilasma_olasi,bilinmiyor,\nP002,a,emin_degilim,,,\nP003,a,,,,\n", encoding="utf-8")
+    rows = read_labels(p)
+    assert [r["nokta_id"] for r in filled_labels(rows)] == ["P001"]
+    assert [r["nokta_id"] for r in unsure_labels(rows)] == ["P002"]
 
 
 def test_water_points_inside_polygons():
@@ -64,7 +93,7 @@ def test_water_points_inside_polygons():
 
 def test_maps_url_satellite():
     u = maps_url(39.8, 32.8)
-    assert "39.800000,32.800000" in u and "!1e3" in u
+    assert u == "https://maps.google.com/?q=39.800000,32.800000&t=k&z=18"
 
 
 def test_metrics_ignore_unknown_year():
@@ -73,3 +102,23 @@ def test_metrics_ignore_unknown_year():
     m = metrics(recs)
     assert m["yil"]["degisim_yakalanan_n"] == 1 and m["yil"]["tam_isabet"] == 1.0
     assert np.isclose(m["genel_dogruluk"], 1.0)
+
+
+def test_label_chip_png(tmp_path):
+    """Etiket çipi: üstte iki büyük kare, altta şerit; dosya üretilir ve boyutu beklenen ölçekte."""
+    import xarray as xr
+    from PIL import Image
+
+    from changewatch.quicklook import save_label_chip_png
+
+    settings = {"grid": {"resolution_m": 20},
+                "stac": {"reflectance_scale": 10000},
+                "quicklook": {"rgb_bands": ["B04", "B03", "B02"], "rgb_min": 0.0, "rgb_max": 0.3, "gamma": 1.0},
+                "validation": {"chip_px": 41, "label_big_px": 400, "label_strip_upscale": 4, "label_ring_m": 100,
+                               "label_scalebar_m": 200}}
+    rng = np.random.default_rng(0)
+    seq = [(y, xr.Dataset({b: (("y", "x"), rng.uniform(0, 3000, (60, 60))) for b in ("B04", "B03", "B02")}))
+           for y in YEARS]
+    out = save_label_chip_png(seq, 30, 30, tmp_path / "c.png", settings)
+    w, h = Image.open(out).size
+    assert w >= 2 * 410 and h >= 410 + 2 * 164

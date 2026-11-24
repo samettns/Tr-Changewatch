@@ -8,6 +8,7 @@ from typing import Any
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.patheffects  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import xarray as xr  # noqa: E402
@@ -289,37 +290,81 @@ def save_chip_png(before: xr.Dataset, after: xr.Dataset, row: int, col: int, pat
     return path
 
 
-def save_timeseries_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col: int, path: Path,
-                             settings: dict[str, Any], ncols: int = 5) -> Path:
-    """Kör etiketleme çipi: noktanın çevresinde her yılın doğal renk karesi (2 × 5), nokta ortada işaretli,
-    her karenin altında yalnızca yıl. Tahmin, tabaka, AOI ya da kimlik yazılmaz."""
+def _chip_crop(ds: xr.Dataset, row: int, col: int, half: int, settings: dict[str, Any]) -> np.ndarray:
+    """(row, col) merkezli (2·half+1)² doğal renk kesit; AOI dışı siyah."""
+    rgba = rgb_array(ds, settings)
+    rgb = rgba[..., :3] * rgba[..., 3:4]
+    h, w = rgb.shape[:2]
+    pad = np.zeros((h + 2 * half, w + 2 * half, 3))
+    pad[half:half + h, half:half + w] = rgb
+    return pad[row:row + 2 * half + 1, col:col + 2 * half + 1]
+
+
+def _draw_cross(ax: Any, c: float, k: int, lw: float) -> None:
+    """Merkez piksel görünsün diye ortası boş kırmızı artı (siyah kenarlı)."""
+    import matplotlib.patheffects as pe
+
+    eff = [pe.Stroke(linewidth=lw + 2, foreground="black"), pe.Normal()]
+    for a0, a1 in ((c - 3.5 * k, c - 0.9 * k), (c + 0.9 * k, c + 3.5 * k)):
+        ax.plot([a0, a1], [c, c], color="red", lw=lw, solid_capstyle="butt", path_effects=eff)
+        ax.plot([c, c], [a0, a1], color="red", lw=lw, solid_capstyle="butt", path_effects=eff)
+
+
+def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col: int, path: Path,
+                        settings: dict[str, Any], ncols: int = 5) -> Path:
+    """Kör etiketleme çipi. Üstte ilk ve son yıl büyük (en yakın komşu), kırmızı artı + yarıçap halkası +
+    ölçek çubuğu; altta tüm yıllar şeridi (aynı artı). Yalnızca yıl yazılır: tahmin, tabaka, AOI, kimlik yok."""
     path.parent.mkdir(parents=True, exist_ok=True)
     v = settings["validation"]
+    res = float(settings["grid"]["resolution_m"])
     half = int(v["chip_px"]) // 2
-    k = int(v["series_chip_upscale"])
-    n = len(composites)
-    nrows = int(np.ceil(n / ncols))
-    size = (2 * half + 1) * k
-    fig, axes = plt.subplots(nrows, ncols, figsize=(ncols * size / 100 + 0.2, nrows * (size / 100 + 0.25)), dpi=100)
-    axes = np.atleast_2d(axes)
-    for a in axes.ravel():
-        a.set_axis_off()
-    for idx, (year, ds) in enumerate(composites):
-        rgba = rgb_array(ds, settings)
-        rgb = rgba[..., :3] * rgba[..., 3:4]
-        h, w = rgb.shape[:2]
-        pad = np.zeros((h + 2 * half, w + 2 * half, 3))
-        pad[half:half + h, half:half + w] = rgb
-        crop = pad[row:row + 2 * half + 1, col:col + 2 * half + 1]
-        img = np.repeat(np.repeat(crop, k, axis=0), k, axis=1)
-        a = axes.ravel()[idx]
-        a.imshow(np.clip(img, 0, 1), interpolation="nearest")
-        a.add_patch(matplotlib.patches.Rectangle((half * k - 0.5, half * k - 0.5), k, k, fill=False,
-                                                 ec="yellow", lw=1.0))
-        c = half * k + k / 2 - 0.5
-        a.add_patch(matplotlib.patches.Circle((c, c), 3 * k, fill=False, ec="yellow", lw=0.7, ls="--"))
-        a.text(0.5, -0.02, str(year), transform=a.transAxes, ha="center", va="top", fontsize=9)
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.04, wspace=0.04, hspace=0.12)
-    fig.savefig(path)
+    side = 2 * half + 1
+    kb = max(1, round(int(v["label_big_px"]) / side))
+    ks = int(v["label_strip_upscale"])
+    big, small = side * kb, side * ks
+    m, gap, sgap, lab = 10, 20, 6, 22
+    nrows = int(np.ceil(len(composites) / ncols))
+    W = max(2 * big + gap, ncols * small + (ncols - 1) * sgap) + 2 * m
+    H = m + lab + big + 16 + nrows * (lab + small) + m
+    fig = plt.figure(figsize=(W / 100, H / 100), dpi=100)
+
+    def axes(x: float, y: float, s: int) -> Any:
+        ax = fig.add_axes([x / W, 1 - (y + s) / H, s / W, s / H])
+        ax.set_axis_off()
+        return ax
+
+    crops = {yy: _chip_crop(ds, row, col, half, settings) for yy, ds in composites}
+    up = lambda a, k: np.clip(np.repeat(np.repeat(a, k, axis=0), k, axis=1), 0, 1)  # noqa: E731
+    x0 = (W - (2 * big + gap)) / 2
+    for i, yy in enumerate((composites[0][0], composites[-1][0])):
+        x = x0 + i * (big + gap)
+        fig.text((x + big / 2) / W, 1 - (m + lab - 4) / H, str(yy), ha="center", va="bottom", fontsize=13,
+                 fontweight="bold")
+        ax = axes(x, m + lab, big)
+        ax.imshow(up(crops[yy], kb), interpolation="nearest")
+        c = half * kb + kb / 2 - 0.5
+        ax.add_patch(matplotlib.patches.Circle((c, c), float(v["label_ring_m"]) / res * kb, fill=False,
+                                               ec="red", lw=1.6))
+        _draw_cross(ax, c, kb, 2.5)
+        bar = float(v["label_scalebar_m"]) / res * kb
+        bx, by = 12, big - 16
+        ax.add_patch(matplotlib.patches.Rectangle((bx, by), bar, 6, fc="white", ec="black", lw=1))
+        ax.text(bx + bar / 2, by - 4, f"{float(v['label_scalebar_m']):g} m", color="white", ha="center",
+                va="bottom", fontsize=9, fontweight="bold",
+                path_effects=[matplotlib.patheffects.withStroke(linewidth=2.5, foreground="black")])
+        ax.set_xlim(-0.5, big - 0.5)
+        ax.set_ylim(big - 0.5, -0.5)
+    xs = (W - (ncols * small + (ncols - 1) * sgap)) / 2
+    y0 = m + lab + big + 16
+    for idx, (yy, _) in enumerate(composites):
+        r, cc = divmod(idx, ncols)
+        x, y = xs + cc * (small + sgap), y0 + r * (lab + small)
+        fig.text((x + small / 2) / W, 1 - (y + lab - 3) / H, str(yy), ha="center", va="bottom", fontsize=10)
+        ax = axes(x, y + lab, small)
+        ax.imshow(up(crops[yy], ks), interpolation="nearest")
+        _draw_cross(ax, half * ks + ks / 2 - 0.5, ks, 1.6)
+        ax.set_xlim(-0.5, small - 0.5)
+        ax.set_ylim(small - 0.5, -0.5)
+    fig.savefig(path, dpi=100)
     plt.close(fig)
     return path

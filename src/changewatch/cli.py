@@ -1040,14 +1040,20 @@ print("yüklendi:", len(LAYERS), "katman")
 
 def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cache_root: Path | None,
                      season: str) -> tuple[list[dict], int, int]:
-    """Etiketli noktaları (ref, pred, yıllar) kayıtlarına çevirir. (kayıtlar, toplam nokta, dolu etiket)."""
+    """Etiketli noktaları (ref, pred, yıllar) kayıtlarına çevirir.
+
+    (kayıtlar, toplam nokta, kesin etiket, kümedeki 'emin_degilim' sayısı); emin_degilim kayıtlara girmez.
+    """
     from changewatch.evaluate import load_features
-    from changewatch.validate import filled_labels, load_points, lookup_predictions, read_labels, reference_class
+    from changewatch.validate import (filled_labels, load_points, lookup_predictions, read_labels, reference_class,
+                                      unsure_labels)
 
     pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
-    rows = {r["nokta_id"]: r for r in filled_labels(read_labels(resolve_path(settings,
-                                                                             settings["paths"]["validation_labels"])))}
-    sel = [p for p in pts if p["nokta_id"] in rows and (role == "hepsi" or p["rol"] == role)]
+    all_rows = read_labels(resolve_path(settings, settings["paths"]["validation_labels"]))
+    rows = {r["nokta_id"]: r for r in filled_labels(all_rows)}
+    in_role = {p["nokta_id"] for p in pts if role == "hepsi" or p["rol"] == role}
+    n_unsure = sum(r["nokta_id"] in in_role for r in unsure_labels(all_rows))
+    sel = [p for p in pts if p["nokta_id"] in rows and p["nokta_id"] in in_role]
     if use_current and sel:
         from changewatch import cache
 
@@ -1062,7 +1068,7 @@ def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cac
              "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None, "aoi": p["aoi"],
              "stratum": p["tabaka"], "stratum_area_ha": p["tabaka_alan_ha"]}
             for p, (pr, py) in zip(sel, preds)]
-    return recs, len(pts), len(rows)
+    return recs, len(pts), len(rows), n_unsure
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
@@ -1075,7 +1081,9 @@ def cmd_validate(args: argparse.Namespace) -> int:
     setup_logging(settings)
     season = args.season or settings["composite"]["season"]
     cache_root = require_cache_dir(settings) if args.map == "current" else None
-    recs, n_pts, n_lab = _labeled_records(settings, args.set, args.map == "current", cache_root, season)
+    recs, n_pts, n_lab, n_unsure = _labeled_records(settings, args.set, args.map == "current", cache_root, season)
+    if n_unsure:
+        print(f"Not: '{args.set}' kümesinde {n_unsure} nokta 'emin değilim' (metriklere katılmadı).\n")
     if not n_lab:
         print(f"UYARI: etiket girilmemiş (0/{n_pts} nokta). "
               f"{settings['paths']['validation_labels']} dosyasında gercek_degisim (evet/hayir), gercek_tur, "
@@ -1086,7 +1094,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
         return 0
     rep = metrics(recs)
     rep["olofsson"] = olofsson(recs, {r["stratum"]: float(r["stratum_area_ha"]) for r in recs})
-    rep.update(kume=args.set, harita=args.map, etiketli=n_lab, toplam_nokta=n_pts)
+    rep.update(kume=args.set, harita=args.map, etiketli=n_lab, emin_degilim=n_unsure, toplam_nokta=n_pts)
     print(f"## Doğrulama ({args.set} noktaları, harita: {args.map})\n")
     print("### Nokta bazlı\n")
     print(format_report(rep))
@@ -1196,7 +1204,7 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
     from changewatch import cache
     from changewatch.evaluate import load_features
     from changewatch.labeling import chip_token, water_validation_points
-    from changewatch.quicklook import save_timeseries_chip_png
+    from changewatch.quicklook import save_label_chip_png
     from changewatch.validate import load_points, write_label_template
 
     v = settings["validation"]
@@ -1230,7 +1238,10 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
         log.info("su etiketleri dolu; şablon yeniden yazılmadı: %s", wlab)
 
     main_pts = []
+    roles = set(v["label_roles"])
     for p in load_points(resolve_path(settings, settings["paths"]["validation_points"])):
+        if p["rol"] not in roles:
+            continue                                # kalibrasyon noktaları gizli (yöntem donduruldu)
         main_pts.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "x": p["x"], "y": p["y"]})
     for r in wpts:
         x, y = to_crs(r["lon"], r["lat"])
@@ -1239,8 +1250,9 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
     to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
     comps: dict[tuple[str, int], Any] = {}
     out = []
-    for name, pts, labels in (("ana", main_pts, settings["paths"]["validation_labels"]),
-                              ("su", wpts, settings["paths"]["water_validation_labels"])):
+    for name, pts, labels, unit in (("ana", main_pts, settings["paths"]["validation_labels"],
+                                     " / ".join(sorted(roles)) + " noktası"),
+                                    ("su", wpts, settings["paths"]["water_validation_labels"], "su noktası")):
         cdir = vdir / "kor_cipler" / name
         if cdir.exists():
             shutil.rmtree(cdir)
@@ -1256,12 +1268,12 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
             col = int(np.argmin(np.abs(g["x"].values - p["x"])))
             row = int(np.argmin(np.abs(g["y"].values - p["y"])))
             chip = cdir / f"{chip_token(str(v['chip_salt']) + name, p['nokta_id'])}.png"
-            save_timeseries_chip_png(seq, row, col, chip, settings)
+            save_label_chip_png(seq, row, col, chip, settings)
             lon, lat = to_wgs(float(g["x"].values[col]), float(g["y"].values[row]))
             entries.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "lat": lat, "lon": lon, "chip": str(chip)})
         idx = vdir / f"label_{name}.json"
         idx.write_text(json.dumps({"name": name, "labels": str(resolve_path(settings, labels)),
-                                   "seed": int(v["label_seed"]), "years": years, "points": entries},
+                                   "seed": int(v["label_seed"]), "years": years, "unit": unit, "points": entries},
                                   ensure_ascii=False, indent=1), encoding="utf-8")
         log.info("etiketleme seti '%s': %d nokta, çipler %s", name, len(entries), cdir)
         out.append(idx)
