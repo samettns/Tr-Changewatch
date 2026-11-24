@@ -41,9 +41,11 @@ config/aois.geojson + settings.yaml
   → [4] SCL maskesi (bulut, gölge, sirrus, kar, no-data)
   → [5] Mevsimsel medyan kompozit (her yıl aynı tarih penceresi)
   → [6] İndeksler: NDVI, NDBI, MNDWI, BSI + 10 m B08'den doku (sahne bazında yerel std → medyan)
-  → [7] Değişim adayları: CVA büyüklüğü + doku farkı, her biri için Otsu eşiği
+  → [7] Değişim adayları — iki yöntem (E1'de karşılaştırılır):
+        (a) ardışık yıl çiftleri: CVA büyüklüğü + doku farkı, her biri için Otsu eşiği
+        (b) kırılma noktası (varsayılan): piksel bazında 2017–2026 serisinde tek basamak (bkz. §4 "Kırılma noktası yöntemi")
   → [8] Morfoloji: açma/kapama, minimum haritalama birimi (MMU)
-  → [9] Kalıcılık kuralı (değişim sonraki yıl(lar)da da sürüyor mu?)
+  → [9] Kalıcılık kuralı (a: değişim sonraki yılda sürüyor mu? b: kırılma sonrası parça ≥ 2 yıl ve kendi içinde tutarlı)
   → [10] Tür + güven: yapılaşma (olası) / bitki örtüsü kaybı / su değişimi / belirsiz
   → [11] Vektörleştirme → GeoJSON (alan_ha, tür, güven, kanıt alanları)
   → [12] Önizleme PNG + stats.json → docs/ (GitHub Pages)
@@ -91,7 +93,34 @@ config/aois.geojson + settings.yaml
 
    Son yılın değişimleri doğrulanamaz; `durum: "izlemede"` olarak işaretlenir.
 
-### Tür ve güven kuralları (ilk sürüm, eşikler `settings.yaml` içinde)
+### Kırılma noktası yöntemi (LandTrendr/BFAST'ın basitleştirilmiş hâli)
+
+Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026): yıllık farklarda Otsu, gerçek değişim azınlıkta olduğu için gürültüyü bölüyor (her yıl alanın %7–19'u aday); "geri dönmüyor" kalıcılık testi her yıl farklı ürün ekilen tarlaları elemiyor. Kırılma yöntemi tüm seriyi birlikte kullanır:
+
+- Piksel serisi: 2017–2026 yaz kompozitleri; değişkenler: bantlar (B02, B03, B04, B08, B11, B12; yansıtım) + doku. NDVI, NDBI, BSI, MNDWI yalnızca tür ve kanıt için.
+- **z-ölçekleme:** her değişken kendi gürültü düzeyine (σ) bölünür; basamak ve yayılım bu ortak uzayda Öklid uzaklığıdır. Doku eklenmeden önce (yalnızca bantlar) yöntem İncek'te 2017→2024 doku artışlı adayın yalnızca %5'ini yakalıyordu: bozkır → konut dönüşümü spektrumdan çok dokuyu değiştiriyor.
+- **Gürültü düzeyi σ:** referans piksel seçilmeden, tüm (AOI) piksellerin seçilen kırılmaya göre parça içi mutlak sapmalarının medyanı. İki sabit geçiş: (1) kırılmasız σ ile b seçilir, (2) bu b'ye göre σ yeniden hesaplanır ve b yeniden seçilir. (İlk denemede eşik AOI'nin basamak dağılımından medyan + k·MAD idi; rotasyon tarlaları dağılımı şişirip eşiği 0,249'a çıkardı ve yapılaşma basamaklarının %79'u eşiğin altında kaldı.)
+- Her aday kırılma yılı b için (öncesi ≥ 1, sonrası ≥ 1 yıl): öncesi = y < b, sonrası = y ≥ b.
+  - Basamak_z = |medyan(sonrası) − medyan(öncesi)|.
+  - Yayılım_z = yılların kendi parça medyanına uzaklıklarının ortalaması (medyan yayılım, yarı yarıya salınan rotasyon serilerinde ≈ 0 çıkıp skoru patlatıyordu).
+  - Gürültü_z = piksellerin yayılım_z medyanı (çok sabit pikseller skoru patlatmasın diye taban).
+  - Skor = basamak_z / max(yayılım_z, gürültü_z).
+- Kırılma yılı: yayılımı (toplam sapmayı) en aza indiren b (LandTrendr'daki segment uydurma gibi). İlk tasarımdaki "skoru en yüksek b" kuralı, medyan basamak gerçek yılın çevresinde düz kaldığı için yılı gürültüyle seçiyordu. Tam eşitlikte (eksik yıl) geç b: yeni durumun ilk gözlendiği yıl.
+- Aday: skor > `score_k` (başlangıç 3) **ve** basamak_z > `step_k` × gürültü_z. (Not: `step_k` ≤ `score_k` iken ikinci koşul birinciden çıkar; ayrı tutulur ki ayrı kalibre edilebilsin.)
+- Kırılma yılı = `degisim_yili`; 3×3 mod filtresiyle yumuşatılır. Morfoloji tüm aday maskesine, MMU her kırılma yılına ayrı uygulanır.
+- Her yıl farklı ürün ekilen tarla: parça içi yayılım büyük → skor düşük → aday olmaz. Bu, kalıcılık kuralının yapısal karşılığıdır.
+- Tür (parça medyanlarıyla; "anlamlı" = k × o değişkenin σ'sı, σ aynı yöntemle):
+  - `su_degisimi`: sonrası medyan MNDWI > su eşiği ve öncesi ≤ su eşiği.
+  - `yapilasma_olasi`: doku basamağı anlamlı pozitif (ve su değil).
+  - `bitki_kaybi`: NDVI basamağı anlamlı negatif ve doku artışı yok.
+  - `belirsiz`: diğerleri.
+- Güven / durum: kırılma sonrası ≥ 3 yıl → yüksek, `kalici`; 2 yıl → orta, `kalici`. `belirsiz` her zaman düşük.
+- **Kalıcı katman** `min_after = 2`: en geç kırılma yılı son yıldan bir önceki (2017–2026 için 2025). Uç yıl yanlılığı (1 yıllık parçanın sapması tanım gereği 0) nedeniyle son yıl kırılmaları kalıcı katmana alınmaz: İncek'te ham adayların %23'ü 2026'da kırılıyordu (eşit dağılımda %11).
+- **İzleme katmanı** (`izleme.geojson`): `min_after = 1` ile ayrı geçiş; son yılda kırılan ve kalıcı katmanda olmayan parçalar. `durum: "izlemede"`, güven düşük. Ertesi yılın kompoziti gelince kalıcı katmanda yeniden değerlendirilir.
+- `sinyal`: basamağın spektral (bantlar) ve doku bileşenleri kendi gürültüleriyle ayrı test edilir (bileşen_z > `step_k` × bileşen gürültüsü). İkisi de anlamlı → `ikisi`; biri → `spektral` / `doku`; hiçbiri tek başına anlamlı değilse gürültüye göre baskın olan. Parça değeri piksel çoğunluğudur; `spektral_payi`, `doku_payi` de tutulur.
+- Ek kanıt alanları: `skor`, `basamak`, `sonrasi_yil_sayisi`, `yil_payi` (parçada kırılma yılı parçanın yılına eşit olan piksel payı).
+
+### Tür ve güven kuralları — ardışık çift yöntemi (ilk sürüm, eşikler `settings.yaml` içinde)
 
 - `yapilasma_olasi`: doku artışı + kalıcılık + su değil → güven: yüksek. Doku artışı + su değil ama kalıcılık doğrulanamıyor (son yıl) → güven: orta, `durum: "izlemede"`.
 - `bitki_kaybi`: kalıcı NDVI düşüşü, doku artışı yok.
@@ -108,11 +137,16 @@ config/aois.geojson + settings.yaml
 - **Kalibrasyon ve test ayrımı:** Eşikler yalnızca kalibrasyon noktalarıyla ayarlanır (~%30). Test noktalarına eşik ayarlarken dokunulmaz.
 - **Metrikler:** Karışıklık matrisi, kullanıcı ve üretici doğruluğu, yanlış alarm oranı, sınıf başına F1.
 
+- **Geliştirme/test AOI ayrımı:**
+  - Geliştirme AOI'leri: `incek` (yapılaşma ve bitki kaybı kuralları), `golbasi` (su kuralı; Mogan Gölü). Yöntem tasarımı ve eşik denemeleri yalnızca bunlarda yapılır.
+  - Test AOI'leri: `baglica` ve `pursaklar`. Yöntem dondurulana kadar çalıştırılmaz (fetch dahil); dondurulduktan sonra hiçbir ayar değiştirilmeden test edilir.
+  - **Dondurma kaydı:** kırılma yöntemi + yapılaşma ve bitki kaybı kuralları v1 için donduruldu (incek'te eşik denemesi yapılmaz; değişiklik ancak Faz 3 kalibrasyon noktalarıyla). Su kuralı Gölbaşı'nda tasarlanacak.
+
 ### Deneyler (README'de tablo + görsel olarak)
 
 | Kod | Deney | Soru |
 |---|---|---|
-| E1 | Tek sahne ↔ medyan kompozit ↔ kompozit + kalıcılık | Yanlış alarm ne kadar azalıyor? **(ana sonuç)** |
+| E1 | Tek sahne ↔ medyan kompozit ↔ kompozit + kalıcılık (ardışık çift) ↔ kırılma noktası | Yanlış alarm ne kadar azalıyor? **(ana sonuç)** |
 | E2 | Mevsim penceresi: Mayıs–Haziran ↔ Temmuz–Eylül | Ankara'da hangi pencere daha az yanlış alarm veriyor? |
 | E3 | Harmonizasyon açık ↔ kapalı (2021→2023) | Offset düzeltmesi yapılmazsa ne kadar sahte değişim çıkıyor? |
 | E4 | Eski NDBI/BSI artışı tabanlı yapılaşma kuralı ↔ doku + kalıcılık tabanlı kural | Doğrulama noktalarında hangisi yapılaşmayı daha iyi yakalıyor, yanlış alarm ne kadar? |
@@ -157,7 +191,9 @@ tr-changewatch/
 │   ├── mask.py                # SCL maskesi
 │   ├── composite.py           # mevsimsel medyan
 │   ├── indices.py             # NDVI, NDBI, MNDWI, BSI, doku
-│   ├── change.py              # CVA + Otsu
+│   ├── change.py              # CVA + Otsu (ardışık çift yöntemi)
+│   ├── breakpoint.py          # piksel bazında zaman serisi kırılma noktası
+│   ├── evaluate.py            # yöntem karşılaştırması: tür × yıl, yöntemler arası, doğrudan karşılaştırmayla tutarlılık
 │   ├── morphology.py          # açma/kapama, MMU
 │   ├── classify.py            # tür + güven + kalıcılık
 │   ├── vectorize.py           # raster → GeoJSON
@@ -167,7 +203,7 @@ tr-changewatch/
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
-│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect | validate | publish | monitor
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | validate | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/

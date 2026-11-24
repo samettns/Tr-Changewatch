@@ -62,8 +62,9 @@ texture:
   resolution_m: 10           # çalışma ızgarasının (20 m) tam böleni olmalı
   window_px: 5               # 10 m'de 5x5 = 50 m pencerede yerel std
   # Doku her sahnede ayrı hesaplanır, sonra sahnelerin medyanı alınır.
-  # 1.0: içinde tek bir maskeli piksel bulunan pencere o sahnede dışlanır.
-  min_window_valid: 1.0
+  # Pencerede geçerli piksel oranı bunun altındaysa o sahnede doku NaN.
+  # 1.0 denendi: 2017'de her sahnede maskelenen parlak şantiyelerde doku %1,74 boş kalıyordu.
+  min_window_valid: 0.5
 
 change:
   # CVA: iki yılın yansıtım vektörleri arasındaki Öklid uzaklığı (yansıtım birimi)
@@ -72,6 +73,43 @@ change:
   # Her iki büyüklük için eşik AOI içindeki dağılımdan Otsu ile otomatik seçilir
   otsu_bins: 256
   combine: or                # aday = CVA > eşik VEYA doku farkı > eşik ("and" da seçilebilir)
+  # Parça kanıtı "sinyal": bir sinyalin parçadaki işaretli piksel payı bunun altındaysa yok sayılır
+  # ("cva", "doku" ya da "ikisi")
+  signal_min_share: 0.5
+
+# Değişim yöntemi: breakpoint (varsayılan) | pairs (ardışık yıl çiftleri; E1 karşılaştırması için)
+change_method: breakpoint
+
+# Kırılma noktası yöntemi (spec §4). k değerleri kalibrasyonsuz başlangıç değerleridir (Faz 3).
+# Değişkenler (bantlar + doku) kendi gürültü düzeylerine (σ) bölünerek z-ölçeklenir.
+# σ: tüm piksellerin seçilen kırılmaya göre parça içi mutlak sapmalarının medyanı (iki sabit geçiş).
+breakpoint:
+  bands: [B02, B03, B04, B08, B11, B12]
+  include_texture: true
+  min_before: 1
+  min_after: 2                 # kalıcı katman: kırılma sonrası ≥ 2 yıl (son yıl kırılmaları dahil değil)
+  monitor_min_after: 1         # izleme katmanı: son yıldaki kırılmalar ayrı geçişte (güven düşük)
+  score_k: 3.0                 # skor = basamak_z / max(yayılım_z, gürültü_z) > score_k
+  step_k: 3.0                  # basamak_z > step_k × gürültü_z (gürültü_z: piksellerin yayılım_z medyanı)
+  texture_k: 3.0               # doku basamağı anlamlı pozitif: > texture_k × σ_doku
+  ndvi_k: 3.0                  # NDVI basamağı anlamlı negatif: < −ndvi_k × σ_NDVI
+  # sinyal: basamağın spektral (bantlar) ve doku bileşenleri kendi gürültüleriyle ayrı test edilir:
+  # bileşen_z > step_k × bileşen gürültüsü → anlamlı. İkisi de anlamlı → "ikisi"; biri → o;
+  # hiçbiri tek başına anlamlı değilse gürültüye göre büyük olan. Parça: piksel çoğunluğu.
+  year_mode_filter_px: 3       # kırılma yılı mod filtresi penceresi
+  after_years_high: 3          # kırılma sonrası ≥ 3 yıl → güven yüksek
+  after_years_medium: 2        # 2 yıl → orta; 1 yıl → izlemede (düşük)
+
+# Kalıcılık + tür/güven (ilk sürüm; eşikler Faz 3'te kalibrasyon noktalarıyla ayarlanacak)
+classify:
+  # Kalıcılık: (y-1 → y) değişimi y+1'de de sürüyor mu? Piksel bazında, aynı çiftin Otsu eşikleriyle:
+  #  CVA ile işaretli piksel: CVA(y-1 → y+1) > eşik ; doku ile işaretli: aynı yönde |Δdoku(y-1 → y+1)| > eşik
+  persistence_min_share: 0.5     # parçadaki kalıcı piksel payı ≥ bu → kalici_mi = true
+  drop_non_persistent: true      # kalıcı olmayan parçalar (ör. nadas) çıktıya yazılmaz, istatistikte sayılır
+  # Doku artışı: işaretli Δdoku > çiftin doku Otsu eşiği olan piksel payı
+  texture_increase_min_share: 0.5
+  water_mndwi_threshold: 0.0     # su: sonraki yılda (y) ve kalıcılık yılında (y+1) medyan MNDWI > eşik
+  ndvi_drop: 0.10                # bitki kaybı: medyan dNDVI < -eşik ve y+1'de de < -eşik
 
 morphology:
   open_radius_px: 1          # açma: tekil/ince gürültüyü atar (disk yarıçapı, piksel)
@@ -90,6 +128,7 @@ quicklook:
   overlay_color: [1.0, 0.0, 0.0]
   overlay_alpha: 0.45
   overlay_upscale: 2         # PNG'yi gözle kontrol için en yakın komşuyla büyüt
+  boundary_color: [1.0, 1.0, 0.0]   # yapılaşma sınır paneli çizgi rengi
   # İndeks PNG'leri: yıllar arası karşılaştırma için sabit renk aralıkları
   indices:
     NDVI:  {vmin: -0.2, vmax: 0.8,  cmap: RdYlGn}

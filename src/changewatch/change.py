@@ -15,7 +15,8 @@ class Candidates:
     """Aday maskesi ve onu üreten büyüklükler/eşikler."""
 
     cva: np.ndarray            # CVA büyüklüğü (yansıtım)
-    dtexture: np.ndarray       # |doku_b - doku_a|
+    dtexture: np.ndarray       # |doku_b - doku_a| (aday üretimi)
+    dtexture_signed: np.ndarray  # doku_b - doku_a (yapılaşma kuralı işaretli artışı kullanır)
     cva_threshold: float
     texture_threshold: float
     cva_flag: np.ndarray       # bool
@@ -53,7 +54,8 @@ def change_candidates(
     scale = float(settings["stac"]["reflectance_scale"])
     bins = int(cfg["otsu_bins"])
     cva = cva_magnitude(comp_a, comp_b, list(cfg["cva_bands"]), scale)
-    dtex = np.abs(tex_b - tex_a).astype("float32")
+    dtex_signed = (tex_b - tex_a).astype("float32")
+    dtex = np.abs(dtex_signed)
     t_cva = otsu_threshold(cva, region, bins)
     t_tex = otsu_threshold(dtex, region, bins)
     with np.errstate(invalid="ignore"):
@@ -68,4 +70,4 @@ def change_candidates(
         raise ValueError(f"change.combine 'or' veya 'and' olmalı, '{combine}' verildi.")
     if region is not None:
         mask &= region
-    return Candidates(cva, dtex, t_cva, t_tex, f_cva, f_tex, mask)
+    return Candidates(cva, dtex, dtex_signed, t_cva, t_tex, f_cva, f_tex, mask)

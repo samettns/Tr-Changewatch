@@ -289,16 +289,19 @@ def cmd_indices(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_detect(args: argparse.Namespace) -> int:
-    """İki yıl arasında değişim adayları: CVA + doku farkı (Otsu) → açma/kapama → MMU."""
+def _detect_pairs(args: argparse.Namespace) -> int:
+    """Ardışık yıl çiftlerinde aday → morfoloji → MMU → kalıcılık → tür/güven → GeoJSON."""
     import numpy as np
     import xarray as xr
 
     from changewatch import cache
-    from changewatch.change import change_candidates
+    from changewatch.change import change_candidates, cva_magnitude
+    from changewatch.classify import classify_piece, piece_evidence, pixel_persistence
+    from changewatch.indices import spectral_indices
     from changewatch.mask import aoi_raster_mask
-    from changewatch.morphology import apply_mmu, mmu_pixels, open_close
-    from changewatch.quicklook import save_change_panel_png, save_overlay_png
+    from changewatch.morphology import apply_mmu, open_close
+    from changewatch.quicklook import save_overlay_png
+    from changewatch.vectorize import grid_transform, label_pieces, piece_geometries
 
     settings = load_settings(args.config)
     cache_root = require_cache_dir(settings)
@@ -306,51 +309,363 @@ def cmd_detect(args: argparse.Namespace) -> int:
     geom = get_aoi(settings, args.aoi)
     season = args.season or settings["composite"]["season"]
     crs = settings["grid"]["crs"]
-    ya, yb = args.from_year, args.to_year
+    scale = float(settings["stac"]["reflectance_scale"])
+    conn = int(settings["morphology"]["connectivity"])
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    years = parse_years(args.years, settings)
+    if len(years) < 2 or any(b - a != 1 for a, b in zip(years, years[1:])):
+        raise ConfigError(f"En az iki ardışık yıl gerekli: {years}")
+
     cdir = cache.composite_dir(cache_root, args.aoi, season)
-    files = [cdir / f"{ya}.tif", cdir / f"{yb}.tif", cdir / f"{ya}_texture.tif", cdir / f"{yb}_texture.tif"]
-    missing = [str(f) for f in files if not f.exists()]
+    missing = [str(f) for y in years for f in (cdir / f"{y}.tif", cdir / f"{y}_texture.tif") if not f.exists()]
     if missing:
         raise FileNotFoundError("Kompozit eksik; önce `changewatch composite` çalıştırın: " + ", ".join(missing))
-    comp_a, comp_b, ta, tb = (cache.read_dataset(f) for f in files)
-    region = aoi_raster_mask(geom, comp_a, crs)
+    comp = {y: cache.read_dataset(cdir / f"{y}.tif") for y in years}
+    tex = {y: cache.read_dataset(cdir / f"{y}_texture.tif")["TEXTURE"].values for y in years}
+    idx = {y: spectral_indices(comp[y]) for y in years}
+    first = comp[years[0]]
+    region = aoi_raster_mask(geom, first, crs)
+    transform = grid_transform(first["x"].values, first["y"].values)
+    ddir = cache.change_dir(cache_root, args.aoi, season) / "pairs"
+    prev = cache.preview_dir(cache_root, args.aoi) / "change" / "pairs"
 
-    c = change_candidates(comp_a, comp_b, ta["TEXTURE"].values, tb["TEXTURE"].values, settings, region)
-    morph = open_close(c.mask, settings) & region
-    final = apply_mmu(morph, settings)
+    features: list = []
+    rows: list[dict] = []
+    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4}
+    type_map = np.zeros(region.shape, "uint8")
+    year_map = np.zeros(region.shape, "uint16")
+    monitor_px = np.zeros(region.shape, bool)
 
-    n = int(region.sum())
+    for a, b in zip(years, years[1:]):
+        nxt = b + 1 if (b + 1) in comp else None
+        c = change_candidates(comp[a], comp[b], tex[a], tex[b], settings, region)
+        final = apply_mmu(open_close(c.mask, settings) & region, settings)
+        layers = {
+            "cva_flag": c.cva_flag, "texture_flag": c.texture_flag, "dtex_signed": c.dtexture_signed,
+            "dNDVI": idx[b]["NDVI"].values - idx[a]["NDVI"].values,
+            "dNDBI": idx[b]["NDBI"].values - idx[a]["NDBI"].values,
+            "dBSI": idx[b]["BSI"].values - idx[a]["BSI"].values,
+            "dMNDWI": idx[b]["MNDWI"].values - idx[a]["MNDWI"].values,
+            "MNDWI_b": idx[b]["MNDWI"].values,
+            "valid_obs_a": comp[a]["valid_obs"].values, "valid_obs_b": comp[b]["valid_obs"].values,
+            "persistent": None,
+        }
+        if nxt:
+            cva_an = cva_magnitude(comp[a], comp[nxt], list(settings["change"]["cva_bands"]), scale)
+            layers["persistent"] = pixel_persistence(c.cva_flag, c.texture_flag, c.dtexture_signed, cva_an,
+                                                     tex[nxt] - tex[a], c.cva_threshold, c.texture_threshold)
+            layers["MNDWI_next"] = idx[nxt]["MNDWI"].values
+            layers["dNDVI_next"] = idx[nxt]["NDVI"].values - idx[a]["NDVI"].values
+
+        labels, n = label_pieces(final, conn)
+        geoms = piece_geometries(labels, transform, crs, conn) if n else {}
+        kept = np.zeros(region.shape, bool)
+        for k in range(1, n + 1):
+            sel = labels == k
+            ev = piece_evidence(sel, layers, {"texture": c.texture_threshold}, settings)
+            cls = classify_piece(ev, settings)
+            if cls is None:
+                continue
+            kept |= sel
+            props = {"id": f"{args.aoi}-{b}-{k:04d}", "aoi": args.aoi, "degisim_yili": b, "onceki_yil": a,
+                     **cls, "alan_ha": round(ev.pop("piksel") * px_ha, 2), **ev}
+            features.append((geoms[k], props))
+            type_map[sel] = type_codes[cls["tur"]]
+            year_map[sel] = b
+            monitor_px[sel] = cls["durum"] == "izlemede"
+
+        ha_before, ha_after = float(final.sum() * px_ha), float(kept.sum() * px_ha)
+        rows.append({"cift": f"{a}->{b}", "kalicilik_kontrolu": bool(nxt), "parca": n,
+                     "aday_ha": round(ha_before, 1), "kalicilik_sonrasi_ha": round(ha_after, 1),
+                     "cva_esik": round(c.cva_threshold, 4), "doku_esik": round(c.texture_threshold, 4)})
+        log.info("%d→%d: Otsu CVA %.3f, |Δdoku| %.4f | aday %d parça %.0f ha → %s %.0f ha", a, b,
+                 c.cva_threshold, c.texture_threshold, n, ha_before,
+                 "kalıcılık sonrası" if nxt else "izlemede (kontrol yok)", ha_after)
+
+        out = xr.Dataset({
+            "cva": (("y", "x"), c.cva), "dtexture": (("y", "x"), c.dtexture),
+            "dtexture_signed": (("y", "x"), c.dtexture_signed),
+            "cva_flag": (("y", "x"), c.cva_flag.astype("float32")),
+            "texture_flag": (("y", "x"), c.texture_flag.astype("float32")),
+            "candidate_raw": (("y", "x"), c.mask.astype("float32")),
+            "candidate": (("y", "x"), final.astype("float32")),
+            "kept": (("y", "x"), kept.astype("float32")),
+        }, coords={"y": comp[a]["y"], "x": comp[a]["x"]})
+        out.attrs.update(aoi=args.aoi, from_year=a, to_year=b, season=season,
+                         cva_threshold=c.cva_threshold, texture_threshold=c.texture_threshold)
+        cache.write_dataset(out, ddir / f"{a}_{b}_candidates.tif", crs, nodata=np.nan)
+        save_overlay_png(comp[b], final, prev / f"{a}_{b}_{season}_candidates_on_{b}.png", settings)
+
+    _write_change_outputs(args.aoi, season, years, features, rows, type_map, year_map, monitor_px,
+                          comp[years[-1]], ddir, prev, settings, "ardışık çift")
+    return 0
+
+
+def _write_change_outputs(aoi: str, season: str, years: list[int], features: list, rows: list[dict],
+                          type_map, year_map, monitor_px, background, ddir: Path, prev: Path,
+                          settings: dict[str, Any], method_label: str,
+                          geojson_features: list | None = None) -> None:
+    """changes.geojson (geojson_features verilirse yalnızca onlar), stats.json ve tür/yıl haritaları."""
+    import json
+
+    import matplotlib
+
+    from changewatch.quicklook import save_category_map_png
+    from changewatch.vectorize import write_geojson
+
+    gj = write_geojson(features if geojson_features is None else geojson_features, ddir / "changes.geojson")
+    by_type: dict[str, dict[str, float]] = {}
+    for _, p in features:
+        d = by_type.setdefault(p["tur"], {})
+        d[str(p["degisim_yili"])] = round(d.get(str(p["degisim_yili"]), 0.0) + p["alan_ha"], 2)
+    stats = {"aoi": aoi, "season": season, "method": method_label, "years": [years[0], years[-1]],
+             "rows": rows, "by_type_year_ha": by_type}
+    sj = ddir / "stats.json"
+    sj.write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    colors = {1: "#d7191c", 2: "#fdae61", 3: "#2c7bb6", 4: "#7b3294"}
+    names = {1: "yapılaşma (olası)", 2: "bitki kaybı", 3: "su değişimi", 4: "belirsiz"}
+    m1 = save_category_map_png(background, type_map, colors, names, prev / f"{season}_types.png", settings,
+                               f"{aoi} {years[0]}–{years[-1]} ({method_label}): türe göre "
+                               f"(açık ton: izlemede, {years[-1]})", light=monitor_px)
+    yrs = years[1:]
+    cmap = matplotlib.colormaps["viridis"].resampled(len(yrs))
+    ycolors = {y: matplotlib.colors.to_hex(cmap(i)) for i, y in enumerate(yrs)}
+    m2 = save_category_map_png(background, year_map, ycolors, {y: str(y) for y in yrs},
+                               prev / f"{season}_years.png", settings,
+                               f"{aoi} ({method_label}): değişim yılına göre")
+    for p in (gj, sj, m1, m2):
+        log.info("  çıktı: %s (%s)", p, _human(p.stat().st_size))
+    log.info("  toplam %d poligon", len(features))
+
+
+def _detect_breakpoint(args: argparse.Namespace) -> int:
+    """Kırılma noktası: kalıcı katman (min_after) + son yıl izleme katmanı → tür/güven → GeoJSON."""
+    import numpy as np
+    import xarray as xr
+
+    from changewatch import cache
+    from changewatch.breakpoint import detect_breaks, mode_filter_years, segment_medians, segment_step, series_noise
+    from changewatch.classify import break_piece_evidence, classify_break_piece
+    from changewatch.indices import spectral_indices
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.morphology import apply_mmu, open_close
+    from changewatch.quicklook import save_boundary_panel_png
+    from changewatch.vectorize import grid_transform, label_pieces, piece_geometries, write_geojson
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    geom = get_aoi(settings, args.aoi)
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    scale = float(settings["stac"]["reflectance_scale"])
+    conn = int(settings["morphology"]["connectivity"])
     px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
-    from scipy.ndimage import label
+    bp = settings["breakpoint"]
+    years = parse_years(args.years, settings)
+    if any(b - a != 1 for a, b in zip(years, years[1:])):
+        raise ConfigError(f"Yıllar ardışık olmalı: {years}")
 
-    conn = np.ones((3, 3)) if int(settings["morphology"]["connectivity"]) == 2 else None
-    n_obj = label(final, structure=conn)[1]
-    log.info("%s %d→%d | Otsu eşikleri: CVA %.4f, |Δdoku| %.4f (birleştirme: %s)", args.aoi, ya, yb,
-             c.cva_threshold, c.texture_threshold, settings["change"]["combine"])
-    for name, m in (("CVA > eşik", c.cva_flag & region), ("|Δdoku| > eşik", c.texture_flag & region),
-                    ("ham aday", c.mask), ("açma/kapama sonrası", morph),
-                    (f"MMU ({mmu_pixels(settings)} px) sonrası", final)):
-        log.info("  %-22s %6d px  %%%5.2f  %8.1f ha", name, int(m.sum()), 100 * m.sum() / n, m.sum() * px_ha)
-    log.info("  bağlı nesne sayısı: %d", n_obj)
+    cdir = cache.composite_dir(cache_root, args.aoi, season)
+    missing = [str(f) for y in years for f in (cdir / f"{y}.tif", cdir / f"{y}_texture.tif") if not f.exists()]
+    if missing:
+        raise FileNotFoundError("Kompozit eksik; önce `changewatch composite` çalıştırın: " + ", ".join(missing))
+    comp = {y: cache.read_dataset(cdir / f"{y}.tif") for y in years}
+    idx = {y: spectral_indices(comp[y]) for y in years}
+    series = {
+        "TEXTURE": np.stack([cache.read_dataset(cdir / f"{y}_texture.tif")["TEXTURE"].values for y in years]),
+        **{k: np.stack([idx[y][k].values for y in years]) for k in ("NDVI", "NDBI", "BSI", "MNDWI")},
+    }
+    n_spec = len(bp["bands"])
+    var_names = list(bp["bands"]) + (["TEXTURE"] if bp["include_texture"] else [])
+    stack = np.stack([np.stack([comp[y][b].values / scale for b in bp["bands"]]
+                               + ([series["TEXTURE"][i]] if bp["include_texture"] else []))
+                      for i, y in enumerate(years)])
+    valid_obs = np.stack([comp[y]["valid_obs"].values for y in years]).astype("float32")
+    first = comp[years[0]]
+    region = aoi_raster_mask(geom, first, crs)
+    transform = grid_transform(first["x"].values, first["y"].values)
+    ddir = cache.change_dir(cache_root, args.aoi, season) / "breakpoint"
+    prev = cache.preview_dir(cache_root, args.aoi) / "change" / "breakpoint"
+    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4}
+    type_map = np.zeros(region.shape, "uint8")
+    year_map = np.zeros(region.shape, "uint16")
+    monitor_px = np.zeros(region.shape, bool)
+
+    def run_layer(min_after: int, label: str, keep_year=None, exclude=None):
+        """Bir katman: kırılma → morfoloji → yıl bazında MMU → parça kanıtı/tür. (özellikler, maske, bilgi)"""
+        r = detect_breaks(stack, years, settings, region, n_spec=n_spec, min_after=min_after)
+        steps = {k: segment_step(v, r.index) for k, v in series.items()}
+        mb, ma = segment_medians(series["MNDWI"], r.index)
+        sig_tex = series_noise(series["TEXTURE"], r.index, region)
+        sig_ndvi = series_noise(series["NDVI"], r.index, region)
+        th = {"texture": float(bp["texture_k"]) * sig_tex, "ndvi": -float(bp["ndvi_k"]) * sig_ndvi}
+        cand = r.candidate.copy()
+        if keep_year is not None:
+            cand &= r.year == keep_year
+        if exclude is not None:
+            cand &= ~exclude
+        union = open_close(cand, settings) & region
+        if exclude is not None:
+            union &= ~exclude
+        year_s = mode_filter_years(r.year, union, int(bp["year_mode_filter_px"]))
+        layers = {
+            "score": r.score, "step": r.step, "n_after": r.n_after.astype("float32"), "signal": r.signal,
+            "spectral_sig": r.spectral_sig, "texture_sig": r.texture_sig,
+            "tex_step": steps["TEXTURE"], "ndvi_step": steps["NDVI"], "ndbi_step": steps["NDBI"],
+            "bsi_step": steps["BSI"], "mndwi_step": steps["MNDWI"], "mndwi_before": mb, "mndwi_after": ma,
+            "year_agree": (r.year == year_s).astype("float32"),
+        }
+        feats, final_all, rows = [], np.zeros(region.shape, bool), []
+        for b in years[1:]:
+            final = apply_mmu(union & (year_s == b), settings)
+            if not final.any():
+                continue
+            final_all |= final
+            i = years.index(b)
+            layers["valid_obs_a"], layers["valid_obs_b"] = valid_obs[i - 1], valid_obs[i]
+            labels, n = label_pieces(final, conn)
+            geoms = piece_geometries(labels, transform, crs, conn)
+            for k in range(1, n + 1):
+                sel = labels == k
+                ev = break_piece_evidence(sel, layers, th, settings)
+                cls = classify_break_piece(ev, th, settings)
+                props = {"id": f"{args.aoi}-bp-{b}-{k:04d}", "aoi": args.aoi, "yontem": "kirilma",
+                         "katman": label, "degisim_yili": b, "onceki_yil": b - 1, **cls,
+                         "alan_ha": round(ev.pop("piksel") * px_ha, 2), **ev}
+                feats.append((geoms[k], props))
+                type_map[sel] = type_codes[cls["tur"]]
+                year_map[sel] = b
+                monitor_px[sel] = cls["durum"] == "izlemede"
+            rows.append({"katman": label, "kirilma_yili": b, "parca": n, "ha": round(float(final.sum() * px_ha), 1)})
+        log.info("  %s katmanı (min_after=%d): σ %s | gürültü_z %.3f, basamak_z eşiği %.3f | doku > %.4f, "
+                 "NDVI < %.3f | aday %.0f ha → morfoloji %.0f ha → yıl bazında MMU %.0f ha", label, min_after,
+                 ", ".join(f"{nm}={s:.4f}" for nm, s in zip(var_names, r.sigma)), r.noise, r.step_threshold,
+                 th["texture"], th["ndvi"], cand.sum() * px_ha, union.sum() * px_ha, final_all.sum() * px_ha)
+        info = {"katman": label, "min_after": min_after,
+                "sigma": {nm: round(float(s), 5) for nm, s in zip(var_names, r.sigma)},
+                "esikler": {"gurultu_z": round(r.noise, 4), "basamak_z": round(r.step_threshold, 4),
+                            "skor_k": float(bp["score_k"]), "doku": round(th["texture"], 5),
+                            "ndvi": round(th["ndvi"], 4)}}
+        return feats, final_all, rows, info, r, year_s, steps
+
+    log.info("%s kırılma %d–%d", args.aoi, years[0], years[-1])
+    feats, kept, rows, info, r, year_s, steps = run_layer(int(bp["min_after"]), "kalici")
+    m_feats, m_mask, m_rows, m_info, *_ = run_layer(int(bp["monitor_min_after"]), "izleme",
+                                                    keep_year=years[-1], exclude=kept)
 
     out = xr.Dataset({
-        "cva": (("y", "x"), c.cva), "dtexture": (("y", "x"), c.dtexture),
-        "cva_flag": (("y", "x"), c.cva_flag.astype("float32")),
-        "texture_flag": (("y", "x"), c.texture_flag.astype("float32")),
-        "candidate_raw": (("y", "x"), c.mask.astype("float32")),
-        "candidate": (("y", "x"), final.astype("float32")),
-    }, coords={"y": comp_a["y"], "x": comp_a["x"]})
-    out.attrs.update(aoi=args.aoi, from_year=ya, to_year=yb, season=season,
-                     cva_threshold=c.cva_threshold, texture_threshold=c.texture_threshold)
-    ddir = cache.change_dir(cache_root, args.aoi, season)
-    tif = cache.write_dataset(out, ddir / f"{ya}_{yb}_candidates.tif", crs, nodata=np.nan)
-    prev = cache.preview_dir(cache_root, args.aoi) / "change"
-    ov = save_overlay_png(comp_b, final, prev / f"{ya}_{yb}_{season}_candidates_on_{yb}.png", settings)
-    panel = save_change_panel_png(comp_a, comp_b, final, prev / f"{ya}_{yb}_{season}_panel.png", settings,
-                                  (str(ya), str(yb)),
-                                  f"{args.aoi} {ya}→{yb} aday: {final.sum() * px_ha:.0f} ha, {n_obj} nesne")
-    for p in (tif, ov, panel):
-        log.info("  çıktı: %s (%s)", p, _human(p.stat().st_size))
+        "year": (("y", "x"), r.year.astype("float32")), "year_smoothed": (("y", "x"), year_s.astype("float32")),
+        "score": (("y", "x"), r.score), "step": (("y", "x"), r.step), "spread": (("y", "x"), r.spread),
+        "n_after": (("y", "x"), r.n_after.astype("float32")), "signal": (("y", "x"), r.signal.astype("float32")),
+        "tex_step": (("y", "x"), steps["TEXTURE"]), "ndvi_step": (("y", "x"), steps["NDVI"]),
+        "candidate_raw": (("y", "x"), r.candidate.astype("float32")),
+        "candidate": (("y", "x"), kept.astype("float32")),
+        "monitor": (("y", "x"), m_mask.astype("float32")),
+    }, coords={"y": first["y"], "x": first["x"]})
+    out.attrs.update(aoi=args.aoi, years=f"{years[0]}-{years[-1]}", noise_z=r.noise,
+                     step_threshold=r.step_threshold)
+    cache.write_dataset(out, ddir / "breaks.tif", crs, nodata=np.nan)
+    mj = write_geojson(m_feats, ddir / "izleme.geojson")
+    log.info("  çıktı: %s (%s, %d poligon)", mj, _human(mj.stat().st_size), len(m_feats))
+    _write_change_outputs(args.aoi, season, years, feats + m_feats, rows + m_rows + [info, m_info],
+                          type_map, year_map, monitor_px, comp[years[-1]], ddir, prev, settings, "kırılma",
+                          geojson_features=feats)
+    a_y, b_y = (args.panel_years or [years[0], 2024 if 2024 in comp else years[-1]])
+    built = (type_map == 1) & ~monitor_px
+    pnl = save_boundary_panel_png(comp[a_y], comp[b_y], built, prev / f"{season}_built_{a_y}_{b_y}.png",
+                                  settings, (str(a_y), str(b_y)),
+                                  f"{args.aoi}: yapılaşma (olası) sınırları, kalıcı katman "
+                                  f"{years[1]}–{years[-2]} ({built.sum() * px_ha:.0f} ha)")
+    log.info("  çıktı: %s (%s)", pnl, _human(pnl.stat().st_size))
+    return 0
+
+
+def cmd_detect(args: argparse.Namespace) -> int:
+    """Değişim tespiti: --method breakpoint (varsayılan, settings.change_method) veya pairs."""
+    method = args.method or load_settings(args.config).get("change_method", "breakpoint")
+    if method == "pairs":
+        return _detect_pairs(args)
+    if method == "breakpoint":
+        return _detect_breakpoint(args)
+    raise ConfigError(f"Bilinmeyen yöntem: {method} (breakpoint | pairs)")
+
+
+def cmd_evaluate(args: argparse.Namespace) -> int:
+    """Yöntem karşılaştırması: (c) tür × yıl, (d) yöntemler arası, (e) doğrudan A→B ile tutarlılık."""
+    import json
+
+    from changewatch import cache
+    from changewatch.evaluate import (consistency, direct_built_mask, load_features, markdown_type_year,
+                                      method_summary, type_year_table)
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.vectorize import grid_transform
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    geom = get_aoi(settings, args.aoi)
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    years = parse_years(args.years, settings)
+    cdir = cache.change_dir(cache_root, args.aoi, season)
+    methods = [m for m in args.methods if (cdir / m / "changes.geojson").exists()]
+    if not methods:
+        raise FileNotFoundError(f"Değişim çıktısı yok ({cdir}); önce `changewatch detect` çalıştırın.")
+    feats = {m: load_features(cdir / m / "changes.geojson", crs) for m in methods}
+
+    regions = {}
+    if args.region:
+        from changewatch.aoi import load_aois
+
+        gdf = load_aois(args.region).to_crs(crs)
+        for i, row in gdf.iterrows():
+            regions[str(row["name"]) if "name" in gdf.columns and row["name"] else f"bolge_{i}"] = row.geometry
+
+    report: dict[str, Any] = {"aoi": args.aoi, "season": season, "years": [years[0], years[-1]], "methods": {}}
+    for m in methods:
+        tab = type_year_table(feats[m], years[1:])
+        print(f"\n## (c) {m}: tür × yıl (ha)\n")
+        print(markdown_type_year(tab, years[1:]))
+        report["methods"][m] = {"tur_yil_ha": {t: {str(y): round(v, 1) for y, v in d.items()} for t, d in tab.items()},
+                                "ozet": method_summary(feats[m], regions)}
+
+    print("\n## (d) yöntemler arası özet (ha)\n")
+    head = "| yöntem | yapılaşma | tüm türler | ayak izi |" + "".join(
+        f" {n}: ayak izi / yapılaşma |" for n in regions)
+    print(head)
+    print("|---" * (4 + len(regions)) + "|")
+    for m in methods:
+        s = report["methods"][m]["ozet"]
+        print(f"| {m} | {s['yapilasma_ha']:.0f} | {s['tum_turler_ha']:.0f} | {s['ayak_izi_ha']:.0f} |" + "".join(
+            f" {b['ayak_izi_ha']:.0f} / {b['yapilasma_ha']:.0f} (bölge {b['bolge_ha']:.0f}) |"
+            for b in s["bolgeler"].values()))
+
+    a, b = args.direct_years or (years[0], years[-2])
+    comp_dir = cache.composite_dir(cache_root, args.aoi, season)
+    comp_a, comp_b = cache.read_dataset(comp_dir / f"{a}.tif"), cache.read_dataset(comp_dir / f"{b}.tif")
+    tex_a = cache.read_dataset(comp_dir / f"{a}_texture.tif")["TEXTURE"].values
+    tex_b = cache.read_dataset(comp_dir / f"{b}_texture.tif")["TEXTURE"].values
+    region = aoi_raster_mask(geom, comp_a, crs)
+    direct, th = direct_built_mask(comp_a, comp_b, tex_a, tex_b, settings, region)
+    transform = grid_transform(comp_a["x"].values, comp_a["y"].values)
+    print(f"\n## (e) tutarlılık: {a + 1}–{b} yapılaşması ↔ doğrudan {a}→{b} doku artışlı aday "
+          f"(Otsu CVA {th['cva_esik']:.3f}, doku {th['doku_esik']:.4f})\n")
+    print("| yöntem | yöntem yapılaşma (ha) | doğrudan (ha) | yöntemin doğrudan içindeki payı | doğrudanın kapsanan payı |")
+    print("|---|---|---|---|---|")
+    report["tutarlilik"] = {"yillar": [a, b], "esikler": th}
+    pct = lambda v: "-" if v is None else f"%{100 * v:.0f}"  # noqa: E731
+    for m in methods:
+        c = consistency(direct, feats[m], a, b, transform, px_ha)
+        report["tutarlilik"][m] = c
+        print(f"| {m} | {c['yontem_yapilasma_ha']:.0f} | {c['dogrudan_ha']:.0f} | "
+              f"{pct(c['yontemin_dogrudan_icindeki_payi'])} | {pct(c['dogrudanin_kapsanan_payi'])} |")
+
+    out = cdir / "evaluate.json"
+    out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    log.info("çıktı: %s", out)
     return 0
 
 
@@ -392,12 +707,22 @@ def build_parser() -> argparse.ArgumentParser:
     aoi_years(i)
     i.set_defaults(func=cmd_indices)
 
-    d = sub.add_parser("detect", help="İki yıl arası değişim adayları (CVA + doku, Otsu, morfoloji, MMU)")
-    d.add_argument("--aoi", required=True, help="AOI adı (aois.geojson'daki name)")
-    d.add_argument("--from-year", type=int, required=True, help="önceki yıl (ör. 2017)")
-    d.add_argument("--to-year", type=int, required=True, help="sonraki yıl (ör. 2024)")
-    d.add_argument("--season", help="settings.yaml'daki pencere adı (varsayılan: composite.season)")
+    d = sub.add_parser("detect", help="Ardışık yıllarda değişim: aday, kalıcılık, tür/güven, GeoJSON")
+    aoi_years(d)
+    d.add_argument("--method", choices=["breakpoint", "pairs"],
+                   help="breakpoint: piksel serisinde kırılma; pairs: ardışık yıl çiftleri "
+                        "(varsayılan: settings.yaml change_method)")
+    d.add_argument("--panel-years", nargs=2, type=int, metavar=("ÖNCE", "SONRA"),
+                   help="yapılaşma sınır paneli için iki yıl (varsayılan: ilk yıl ve 2024)")
     d.set_defaults(func=cmd_detect)
+
+    e = sub.add_parser("evaluate", help="Yöntem karşılaştırması: tür × yıl, yöntemler arası, tutarlılık")
+    aoi_years(e)
+    e.add_argument("--methods", nargs="+", default=["breakpoint", "pairs"], help="karşılaştırılacak yöntemler")
+    e.add_argument("--direct-years", nargs=2, type=int, metavar=("A", "B"),
+                   help="tutarlılık için doğrudan A→B karşılaştırması (varsayılan: ilk yıl → sondan bir önceki)")
+    e.add_argument("--region", help="isteğe bağlı bölge(ler) GeoJSON'u (properties.name); koda gömülü bölge yok")
+    e.set_defaults(func=cmd_evaluate)
     return p
 
 

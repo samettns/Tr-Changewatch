@@ -98,6 +98,36 @@ def save_overlay_png(ds: xr.Dataset, mask: np.ndarray, path: Path, settings: dic
     return path
 
 
+def save_category_map_png(background: xr.Dataset, categories: np.ndarray, colors: dict[int, Any],
+                          names: dict[int, str], path: Path, settings: dict[str, Any], title: str = "",
+                          light: np.ndarray | None = None) -> Path:
+    """Soluk gri zemin üzerinde kategorik harita (0 = boş). light: True pikseller açık tonla çizilir."""
+    from matplotlib.colors import to_rgb
+    from matplotlib.patches import Patch
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rgba = rgb_array(background, settings)
+    gray = rgba[..., :3].mean(axis=-1, keepdims=True)
+    img = 0.55 + 0.4 * np.repeat(gray, 3, axis=-1)
+    for k, col in colors.items():
+        sel = categories == k
+        c = np.array(to_rgb(col))
+        img[sel] = c
+        if light is not None:
+            img[sel & light] = 0.45 * c + 0.55
+    h, w = categories.shape
+    dpi = int(settings["quicklook"]["dpi"])
+    fig, ax = plt.subplots(figsize=(w / dpi * 2.0 + 2.6, h / dpi * 2.0 + 0.6), dpi=dpi)
+    ax.imshow(np.clip(img, 0, 1), interpolation="nearest")
+    ax.set_axis_off()
+    ax.set_title(title, fontsize=10)
+    handles = [Patch(color=colors[k], label=names[k]) for k in colors if (categories == k).any()]
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=8, frameon=False)
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
 def save_change_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndarray, path: Path,
                           settings: dict[str, Any], labels: tuple[str, str], title: str = "") -> Path:
     """Önce | sonra | sonra + aday maskesi yan yana."""
@@ -111,6 +141,36 @@ def save_change_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndarra
     ax[2].imshow(np.clip(overlay_array(after, mask, s2), 0, 1), interpolation="nearest")
     for a, lab in zip(ax, (labels[0], labels[1], f"{labels[1]} + aday")):
         a.set_title(lab, fontsize=9)
+        a.set_axis_off()
+    fig.suptitle(title, fontsize=10)
+    fig.tight_layout()
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
+def save_boundary_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndarray, path: Path,
+                            settings: dict[str, Any], labels: tuple[str, str], title: str = "") -> Path:
+    """İki doğal renk görüntü yan yana; maske sınırları ikisinin üzerine de çizilir (gözle kontrol)."""
+    from skimage.segmentation import find_boundaries
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    k = int(settings["quicklook"]["overlay_upscale"])
+    up = lambda a: np.repeat(np.repeat(a, k, axis=0), k, axis=1)  # noqa: E731
+    edge = find_boundaries(up(mask.astype("uint8")), mode="inner")
+    color = np.array(settings["quicklook"]["boundary_color"], dtype=float)
+    panels = []
+    for ds in (before, after):
+        rgba = rgb_array(ds, settings)
+        rgb = up(rgba[..., :3] * rgba[..., 3:4])
+        rgb[edge] = color
+        panels.append(np.clip(rgb, 0, 1))
+    h, w = panels[0].shape[:2]
+    dpi = int(settings["quicklook"]["dpi"])
+    fig, ax = plt.subplots(1, 2, figsize=(2 * w / dpi + 0.4, h / dpi + 0.7), dpi=dpi)
+    for a, img, lab in zip(ax, panels, labels):
+        a.imshow(img, interpolation="nearest")
+        a.set_title(lab, fontsize=10)
         a.set_axis_off()
     fig.suptitle(title, fontsize=10)
     fig.tight_layout()
