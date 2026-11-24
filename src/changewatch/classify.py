@@ -169,7 +169,7 @@ def classify_break_piece(ev: dict[str, Any], thresholds: dict[str, float],
     tex_up = ev["doku_artisi"] is not None and ev["doku_artisi"] > thresholds["texture"]
     ndvi_down = ev["dNDVI"] is not None and ev["dNDVI"] < thresholds["ndvi"]
     if after is not None and before is not None and after > w >= before:
-        tur = "su_degisimi"
+        tur = "belirsiz"  # su geçişi su katmanında (water.py) sınıflanır; burada yapılaşma/bitki sayılmaz
     elif tex_up:
         tur = "yapilasma_olasi"
     elif ndvi_down:

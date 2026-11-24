@@ -149,7 +149,7 @@ def _ev(**kw):
     ({"sonrasi_yil_sayisi": 2}, "yapilasma_olasi", "orta", "kalici"),
     ({"sonrasi_yil_sayisi": 1}, "yapilasma_olasi", "dusuk", "izlemede"),
     ({"doku_artisi": 0.0, "dNDVI": -0.2}, "bitki_kaybi", "yuksek", "kalici"),
-    ({"mndwi_sonra": 0.2}, "su_degisimi", "yuksek", "kalici"),
+    ({"mndwi_sonra": 0.2}, "belirsiz", "dusuk", "kalici"),   # su geçişi su katmanının işi
     ({"doku_artisi": 0.0, "dNDVI": 0.0}, "belirsiz", "dusuk", "kalici"),
 ])
 def test_classify_break_piece(kw, tur, guven, durum):

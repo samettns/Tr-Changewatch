@@ -331,7 +331,8 @@ def _detect_pairs(args: argparse.Namespace) -> int:
 
     features: list = []
     rows: list[dict] = []
-    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4}
+    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4,
+                  "su_kazanimi": 5, "su_kaybi": 6, "sulak_alan_belirsiz": 7}
     type_map = np.zeros(region.shape, "uint8")
     year_map = np.zeros(region.shape, "uint16")
     monitor_px = np.zeros(region.shape, bool)
@@ -423,8 +424,10 @@ def _write_change_outputs(aoi: str, season: str, years: list[int], features: lis
     sj = ddir / "stats.json"
     sj.write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    colors = {1: "#d7191c", 2: "#fdae61", 3: "#2c7bb6", 4: "#7b3294"}
-    names = {1: "yapılaşma (olası)", 2: "bitki kaybı", 3: "su değişimi", 4: "belirsiz"}
+    colors = {1: "#d7191c", 2: "#fdae61", 3: "#2c7bb6", 4: "#7b3294", 5: "#2c7bb6", 6: "#8c510a",
+              7: "#35978f"}
+    names = {1: "yapılaşma (olası)", 2: "bitki kaybı", 3: "su değişimi (çift yöntemi)", 4: "belirsiz",
+             5: "su kazanımı", 6: "su kaybı", 7: "sulak alan (belirsiz)"}
     m1 = save_category_map_png(background, type_map, colors, names, prev / f"{season}_types.png", settings,
                                f"{aoi} {years[0]}–{years[-1]} ({method_label}): türe göre "
                                f"(açık ton: izlemede, {years[-1]})", light=monitor_px)
@@ -437,6 +440,76 @@ def _write_change_outputs(aoi: str, season: str, years: list[int], features: lis
     for p in (gj, sj, m1, m2):
         log.info("  çıktı: %s (%s)", p, _human(p.stat().st_size))
     log.info("  toplam %d poligon", len(features))
+
+
+def _water_layer(aoi: str, years: list[int], series: dict, valid_obs, region, transform,
+                 settings: dict[str, Any], type_map, year_map):
+    """Su katmanı: MNDWI serisinde kırılma + yıllık su maskesi çoğunluğu → su_kazanimi/su_kaybi/sulak_alan_belirsiz."""
+    import numpy as np
+
+    from changewatch.breakpoint import detect_breaks, mode_filter_years, segment_medians, segment_step
+    from changewatch.morphology import apply_mmu, open_close
+    from changewatch.vectorize import label_pieces, piece_geometries
+    from changewatch.water import (annual_thresholds, classify_water_piece, segment_water_state, water_masks,
+                                   wetland_pixels)
+
+    w = settings["water"]
+    crs = settings["grid"]["crs"]
+    conn = int(settings["morphology"]["connectivity"])
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    codes = {"su_kazanimi": 5, "su_kaybi": 6, "sulak_alan_belirsiz": 7}
+    mndwi = series["MNDWI"]
+    th = annual_thresholds(mndwi, region, settings)
+    water, valid = water_masks(mndwi, th.used)
+    r = detect_breaks(mndwi[:, None], years, settings, region, n_spec=1, min_after=int(w["min_after"]))
+    before, after = segment_water_state(water, valid, r.index, float(w["majority"]))
+    gain, loss = ~before & after, before & ~after
+    cand = r.candidate & (gain | loss)
+    nb, na = segment_medians(series["NDVI"], r.index)
+    mb, ma = segment_medians(mndwi, r.index)
+    thr_ref = float(np.median(th.used))
+    wet = wetland_pixels(nb, na, mb, ma, thr_ref, settings)
+    dmndwi = segment_step(mndwi, r.index)
+    union = open_close(cand, settings) & region
+    year_s = mode_filter_years(r.year, union, int(settings["breakpoint"]["year_mode_filter_px"]))
+    feats, rows, final_all = [], [], np.zeros(region.shape, bool)
+    for b in years[1:]:
+        final = apply_mmu(union & (year_s == b), settings)
+        if not final.any():
+            continue
+        final_all |= final
+        i = years.index(b)
+        labels, n = label_pieces(final, conn)
+        geoms = piece_geometries(labels, transform, crs, conn)
+        for k in range(1, n + 1):
+            sel = labels == k
+            n_after = int(np.median(r.n_after[sel]))
+            cls = classify_water_piece(float(gain[sel].mean()), float(loss[sel].mean()), float(wet[sel].mean()),
+                                       n_after, settings)
+            med = lambda a: float(np.nanmedian(a[sel])) if np.isfinite(a[sel]).any() else None  # noqa: E731
+            props = {"id": f"{aoi}-su-{b}-{k:04d}", "aoi": aoi, "yontem": "kirilma_su", "katman": "kalici",
+                     "degisim_yili": b, "onceki_yil": b - 1, **cls, "alan_ha": round(int(sel.sum()) * px_ha, 2),
+                     "skor": med(r.score), "basamak": med(r.step), "sonrasi_yil_sayisi": n_after,
+                     "dMNDWI": med(dmndwi), "mndwi_once": med(mb), "mndwi_sonra": med(ma),
+                     "ndvi_once": med(nb), "ndvi_sonra": med(na),
+                     "su_kazanim_payi": round(float(gain[sel].mean()), 3),
+                     "su_kayip_payi": round(float(loss[sel].mean()), 3),
+                     "sulak_alan_payi": round(float(wet[sel].mean()), 3),
+                     "su_esigi": round(thr_ref, 4), "su_esik_yontemi": th.mode,
+                     "gecerli_gozlem_sayisi": round(float(np.nanmean(valid_obs[i][sel])), 1),
+                     "dusuk_gozlem": {"ort_gozlem": round(float(np.nanmean(valid_obs[i - 1][sel])), 1),
+                                      "dusuk_piksel_orani": round(float((valid_obs[i - 1][sel] < int(
+                                          settings["composite"]["min_valid_obs"])).mean()), 3)}}
+            feats.append((geoms[k], props))
+            type_map[sel] = codes[cls["tur"]]
+            year_map[sel] = b
+        rows.append({"katman": "su", "kirilma_yili": b, "parca": n, "ha": round(float(final.sum() * px_ha), 1)})
+    log.info("  su katmanı: eşik %s (Otsu aralığı %.3f; yıllık Otsu %s) | aday %.0f ha → %.0f ha, %d poligon",
+             th.mode, th.otsu_range, ", ".join(f"{v:.3f}" for v in th.otsu), cand.sum() * px_ha,
+             final_all.sum() * px_ha, len(feats))
+    info = {"katman": "su", "esik_yontemi": th.mode, "otsu_esikleri": [round(v, 4) for v in th.otsu],
+            "kullanilan_esikler": [round(v, 4) for v in th.used], "otsu_araligi": round(th.otsu_range, 4)}
+    return feats, final_all, rows, info
 
 
 def _detect_breakpoint(args: argparse.Namespace) -> int:
@@ -488,7 +561,8 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
     transform = grid_transform(first["x"].values, first["y"].values)
     ddir = cache.change_dir(cache_root, args.aoi, season) / "breakpoint"
     prev = cache.preview_dir(cache_root, args.aoi) / "change" / "breakpoint"
-    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4}
+    type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4,
+                  "su_kazanimi": 5, "su_kaybi": 6, "sulak_alan_belirsiz": 7}
     type_map = np.zeros(region.shape, "uint8")
     year_map = np.zeros(region.shape, "uint16")
     monitor_px = np.zeros(region.shape, bool)
@@ -551,9 +625,13 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
         return feats, final_all, rows, info, r, year_s, steps
 
     log.info("%s kırılma %d–%d", args.aoi, years[0], years[-1])
-    feats, kept, rows, info, r, year_s, steps = run_layer(int(bp["min_after"]), "kalici")
+    w_feats, w_mask, w_rows, w_info = _water_layer(args.aoi, years, series, valid_obs, region, transform,
+                                                   settings, type_map, year_map)
+    feats, kept, rows, info, r, year_s, steps = run_layer(int(bp["min_after"]), "kalici", exclude=w_mask)
     m_feats, m_mask, m_rows, m_info, *_ = run_layer(int(bp["monitor_min_after"]), "izleme",
-                                                    keep_year=years[-1], exclude=kept)
+                                                    keep_year=years[-1], exclude=kept | w_mask)
+    feats = w_feats + feats
+    rows = w_rows + rows
 
     out = xr.Dataset({
         "year": (("y", "x"), r.year.astype("float32")), "year_smoothed": (("y", "x"), year_s.astype("float32")),
@@ -563,13 +641,14 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
         "candidate_raw": (("y", "x"), r.candidate.astype("float32")),
         "candidate": (("y", "x"), kept.astype("float32")),
         "monitor": (("y", "x"), m_mask.astype("float32")),
+        "water_change": (("y", "x"), w_mask.astype("float32")),
     }, coords={"y": first["y"], "x": first["x"]})
     out.attrs.update(aoi=args.aoi, years=f"{years[0]}-{years[-1]}", noise_z=r.noise,
                      step_threshold=r.step_threshold)
     cache.write_dataset(out, ddir / "breaks.tif", crs, nodata=np.nan)
     mj = write_geojson(m_feats, ddir / "izleme.geojson")
     log.info("  çıktı: %s (%s, %d poligon)", mj, _human(mj.stat().st_size), len(m_feats))
-    _write_change_outputs(args.aoi, season, years, feats + m_feats, rows + m_rows + [info, m_info],
+    _write_change_outputs(args.aoi, season, years, feats + m_feats, rows + m_rows + [w_info, info, m_info],
                           type_map, year_map, monitor_px, comp[years[-1]], ddir, prev, settings, "kırılma",
                           geojson_features=feats)
     a_y, b_y = (args.panel_years or [years[0], 2024 if 2024 in comp else years[-1]])
@@ -669,6 +748,71 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_water(args: argparse.Namespace) -> int:
+    """Yıllık su maskesi (MNDWI + Otsu/sabit eşik), su alanı serisi (CSV/JSON + grafik) ve maske paneli."""
+    import csv
+    import json
+
+    import numpy as np
+    import xarray as xr
+
+    from changewatch import cache
+    from changewatch.indices import spectral_indices
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.quicklook import save_mask_pair_png, save_series_png
+    from changewatch.water import annual_thresholds, water_area_series, water_masks
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    geom = get_aoi(settings, args.aoi)
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    years = parse_years(args.years, settings)
+    cdir = cache.composite_dir(cache_root, args.aoi, season)
+    comp = {y: cache.read_dataset(cdir / f"{y}.tif") for y in years}
+    mndwi = np.stack([spectral_indices(comp[y])["MNDWI"].values for y in years])
+    region = aoi_raster_mask(geom, comp[years[0]], crs)
+    th = annual_thresholds(mndwi, region, settings)
+    water, valid = water_masks(mndwi, th.used)
+    series = water_area_series(water, valid, region, px_ha)
+    log.info("%s su eşiği: %s (yıllık Otsu aralığı %.3f; sınır %.2f, aşılırsa sabit %.2f)", args.aoi, th.mode,
+             th.otsu_range, float(settings["water"]["max_threshold_range"]),
+             float(settings["water"]["fixed_threshold"]))
+    rows = [{"yil": y, "otsu_esik": round(o, 4), "kullanilan_esik": round(u, 4), **s}
+            for y, o, u, s in zip(years, th.otsu, th.used, series)]
+    for r in rows:
+        log.info("  %d: Otsu %.3f → eşik %.3f | su %.1f ha | geçersiz %%%.2f", r["yil"], r["otsu_esik"],
+                 r["kullanilan_esik"], r["su_ha"], 100 * r["gecersiz_orani"])
+
+    wdir = cache.water_dir(cache_root, args.aoi, season)
+    wdir.mkdir(parents=True, exist_ok=True)
+    with (wdir / "water_series.csv").open("w", newline="", encoding="utf-8") as f:
+        wr = csv.DictWriter(f, fieldnames=list(rows[0]))
+        wr.writeheader()
+        wr.writerows(rows)
+    summary = {"aoi": args.aoi, "season": season, "esik_yontemi": th.mode, "otsu_araligi": round(th.otsu_range, 4),
+               "yillar": rows}
+    (wdir / "water_series.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    ds = xr.Dataset({str(y): (("y", "x"), np.where(valid[i], water[i], np.nan).astype("float32"))
+                     for i, y in enumerate(years)}, coords={"y": comp[years[0]]["y"], "x": comp[years[0]]["x"]})
+    cache.write_dataset(ds, wdir / "water_masks.tif", crs, nodata=np.nan)
+    prev = cache.preview_dir(cache_root, args.aoi) / "water"
+    method = "yıllık Otsu" if th.mode == "otsu" else "sabit"
+    g = save_series_png(years, [r["su_ha"] for r in rows], prev / f"{season}_water_area.png", settings,
+                        f"{args.aoi}: yaz kompozitinde su alanı (ha), {years[0]}–{years[-1]}", "su alanı (ha)",
+                        f"Su = MNDWI > eşik ({method}); yaz penceresi medyan kompoziti; AOI içi.")
+    a, b = args.mask_years or (years[0], years[-2])
+    ia, ib = years.index(a), years.index(b)
+    mp = save_mask_pair_png(comp[a], comp[b], water[ia] & region, water[ib] & region,
+                            prev / f"{season}_water_masks_{a}_{b}.png", settings, (str(a), str(b)),
+                            f"{args.aoi}: su maskesi (MNDWI > {th.used[ia]:.2f} / {th.used[ib]:.2f})")
+    for pth in (wdir / "water_series.csv", wdir / "water_masks.tif", g, mp):
+        log.info("  çıktı: %s (%s)", pth, _human(pth.stat().st_size))
+    return 0
+
+
 # ---------------------------------------------------------------- ayrıştırıcı
 
 def build_parser() -> argparse.ArgumentParser:
@@ -715,6 +859,12 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("--panel-years", nargs=2, type=int, metavar=("ÖNCE", "SONRA"),
                    help="yapılaşma sınır paneli için iki yıl (varsayılan: ilk yıl ve 2024)")
     d.set_defaults(func=cmd_detect)
+
+    wt = sub.add_parser("water", help="Yıllık su maskesi, su alanı serisi ve grafiği")
+    aoi_years(wt)
+    wt.add_argument("--mask-years", nargs=2, type=int, metavar=("A", "B"),
+                    help="yan yana maske paneli yılları (varsayılan: ilk yıl ve sondan bir önceki)")
+    wt.set_defaults(func=cmd_water)
 
     e = sub.add_parser("evaluate", help="Yöntem karşılaştırması: tür × yıl, yöntemler arası, tutarlılık")
     aoi_years(e)

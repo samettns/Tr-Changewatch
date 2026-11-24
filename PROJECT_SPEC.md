@@ -110,7 +110,7 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - Kırılma yılı = `degisim_yili`; 3×3 mod filtresiyle yumuşatılır. Morfoloji tüm aday maskesine, MMU her kırılma yılına ayrı uygulanır.
 - Her yıl farklı ürün ekilen tarla: parça içi yayılım büyük → skor düşük → aday olmaz. Bu, kalıcılık kuralının yapısal karşılığıdır.
 - Tür (parça medyanlarıyla; "anlamlı" = k × o değişkenin σ'sı, σ aynı yöntemle):
-  - `su_degisimi`: sonrası medyan MNDWI > su eşiği ve öncesi ≤ su eşiği.
+  - Su geçişi (sonrası medyan MNDWI > su eşiği ≥ öncesi): bu katmanda `belirsiz`; su değişimi ayrı su katmanında sınıflanır (aşağıda).
   - `yapilasma_olasi`: doku basamağı anlamlı pozitif (ve su değil).
   - `bitki_kaybi`: NDVI basamağı anlamlı negatif ve doku artışı yok.
   - `belirsiz`: diğerleri.
@@ -120,11 +120,20 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - `sinyal`: basamağın spektral (bantlar) ve doku bileşenleri kendi gürültüleriyle ayrı test edilir (bileşen_z > `step_k` × bileşen gürültüsü). İkisi de anlamlı → `ikisi`; biri → `spektral` / `doku`; hiçbiri tek başına anlamlı değilse gürültüye göre baskın olan. Parça değeri piksel çoğunluğudur; `spektral_payi`, `doku_payi` de tutulur.
 - Ek kanıt alanları: `skor`, `basamak`, `sonrasi_yil_sayisi`, `yil_payi` (parçada kırılma yılı parçanın yılına eşit olan piksel payı).
 
+### Su kuralı (geliştirme AOI'si: golbasi; `water.py`)
+
+- **Yıllık su maskesi:** her yılın yaz kompozitinde MNDWI üzerinde AOI içi Otsu eşiği. Yıllık Otsu eşiklerinin aralığı (max − min) `max_threshold_range`'i (0,15) aşarsa tüm yıllar sabit eşiğe (`fixed_threshold`, 0) geçer; hangi yöntemin kullanıldığı çıktılara ve log'a yazılır.
+- **Yıllık su alanı serisi** (ha) CSV/JSON + grafik (`changewatch water`).
+- **Su kırılması:** kırılma yöntemi MNDWI serisine (tek değişken) uygulanır, `min_after: 2`. Aday = kırılma adayı **ve** su durumu değişimi: kırılma öncesi yılların çoğunluğunda su ≠ sonrası yılların çoğunluğunda su. (Tek değişkende gürültü kuyruğu ağırdır; kırılma adayı tek başına sabit piksellerin ~%10'unu işaretler, özgüllüğü su durumu koşulu sağlar.)
+- **Türler:** `su_kazanimi` (önce kara, sonra su), `su_kaybi` (önce su, sonra kara), `sulak_alan_belirsiz` (parçanın ≥ %50'si kıyı/sazlık: kırılmanın bir yanında NDVI > 0,3 ve |MNDWI − eşik| < 0,15). Güven: kırılma sonrası ≥ 3 yıl → yüksek, 2 → orta; `sulak_alan_belirsiz` düşük.
+- Su katmanı pikselleri ana (yapılaşma/bitki) katmandan düşülür. Ana katmandaki yapılaşma ve bitki kaybı kuralları değişmez (dondurulmuş).
+- Ek kanıt alanları: `su_kazanim_payi`, `su_kayip_payi`, `sulak_alan_payi`, `su_esigi`, `su_esik_yontemi`, `mndwi_once`, `mndwi_sonra`, `ndvi_once`, `ndvi_sonra`.
+
 ### Tür ve güven kuralları — ardışık çift yöntemi (ilk sürüm, eşikler `settings.yaml` içinde)
 
 - `yapilasma_olasi`: doku artışı + kalıcılık + su değil → güven: yüksek. Doku artışı + su değil ama kalıcılık doğrulanamıyor (son yıl) → güven: orta, `durum: "izlemede"`.
 - `bitki_kaybi`: kalıcı NDVI düşüşü, doku artışı yok.
-- `su_degisimi`: sonraki yılda MNDWI > su eşiği (`settings.yaml`, varsayılan 0) ve bu durum kalıcı.
+- `su_degisimi`: sonraki yılda MNDWI > su eşiği (`settings.yaml`, varsayılan 0) ve bu durum kalıcı. (Yalnızca ardışık çift yönteminde; kırılma yönteminde su katmanı kullanılır.)
 - `belirsiz`: aday ama yukarıdakilerin hiçbirine yeterince uymuyor. Gizlenmez, haritada ayrı renkte gösterilir.
 - Her poligonda kanıt alanları tutulur: `dNDVI`, `dNDBI`, `dBSI`, `dMNDWI`, `doku_artisi`, `kalici_mi`, `gecerli_gozlem_sayisi`, `dusuk_gozlem`.
 - `dusuk_gozlem`: poligonun önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve geçerli gözlemi < `min_valid_obs` (3) olan piksel oranı. Neden: 04.00 öncesi baseline'larda (02.12 ve 03.00; 2017–2021) parlak yüzeyler (şantiye, yol, parlak çatı) bulutsuz sahnelerde de SCL 8/9 (bulut) sınıflandırılabiliyor; bu pikseller önceki yılda seyrek gözlemlenir. Maske değiştirilmez, durum kanıt olarak raporlanır.
@@ -196,6 +205,7 @@ tr-changewatch/
 │   ├── change.py              # CVA + Otsu (ardışık çift yöntemi)
 │   ├── breakpoint.py          # piksel bazında zaman serisi kırılma noktası
 │   ├── evaluate.py            # yöntem karşılaştırması: tür × yıl, yöntemler arası, doğrudan karşılaştırmayla tutarlılık
+│   ├── water.py               # yıllık su maskesi, su alanı serisi, su kazanımı/kaybı
 │   ├── morphology.py          # açma/kapama, MMU
 │   ├── classify.py            # tür + güven + kalıcılık
 │   ├── vectorize.py           # raster → GeoJSON
@@ -205,7 +215,7 @@ tr-changewatch/
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
-│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | validate | publish | monitor
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | water | validate | experiments | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/

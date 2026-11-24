@@ -100,6 +100,17 @@ breakpoint:
   after_years_high: 3          # kırılma sonrası ≥ 3 yıl → güven yüksek
   after_years_medium: 2        # 2 yıl → orta; 1 yıl → izlemede (düşük)
 
+# Su kuralı (geliştirme AOI'si: golbasi). Kırılma yöntemi MNDWI serisine uygulanır.
+water:
+  otsu_bins: 256
+  max_threshold_range: 0.15    # yıllık Otsu eşiklerinin (max − min) farkı bunu aşarsa tüm yıllar sabit eşik
+  fixed_threshold: 0.0
+  min_after: 2                 # su kırılmaları: kırılma sonrası ≥ 2 yıl
+  majority: 0.5                # parça (öncesi/sonrası) su durumu: yılların > yarısında su
+  wetland_ndvi_min: 0.3        # sulak_alan_belirsiz: NDVI > bu …
+  wetland_mndwi_margin: 0.15   # … ve |MNDWI − eşik| < bu (kırılmanın iki yanından birinde)
+  wetland_min_share: 0.5       # parçada bu paydan fazla kıyı/sazlık pikseli → sulak_alan_belirsiz
+
 # Kalıcılık + tür/güven (ilk sürüm; eşikler Faz 3'te kalibrasyon noktalarıyla ayarlanacak)
 classify:
   # Kalıcılık: (y-1 → y) değişimi y+1'de de sürüyor mu? Piksel bazında, aynı çiftin Otsu eşikleriyle:
@@ -129,6 +140,7 @@ quicklook:
   overlay_alpha: 0.45
   overlay_upscale: 2         # PNG'yi gözle kontrol için en yakın komşuyla büyüt
   boundary_color: [1.0, 1.0, 0.0]   # yapılaşma sınır paneli çizgi rengi
+  series_color: "#2a78d6"     # tek serili grafikler ve su maskesi (tek ton)
   # İndeks PNG'leri: yıllar arası karşılaştırma için sabit renk aralıkları
   indices:
     NDVI:  {vmin: -0.2, vmax: 0.8,  cmap: RdYlGn}

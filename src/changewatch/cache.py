@@ -30,6 +30,11 @@ def change_dir(cache: Path, aoi: str, season: str) -> Path:
     return cache / aoi / "change" / season
 
 
+def water_dir(cache: Path, aoi: str, season: str) -> Path:
+    """Su maskesi ve serisi: <cache>/<aoi>/water/<mevsim>/."""
+    return cache / aoi / "water" / season
+
+
 def composite_dir(cache: Path, aoi: str, season: str) -> Path:
     """Kompozitlerin klasörü: <cache>/<aoi>/composite/<mevsim>/."""
     return cache / aoi / "composite" / season

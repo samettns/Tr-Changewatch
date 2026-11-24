@@ -177,3 +177,63 @@ def save_boundary_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndar
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
     return path
+
+
+def save_series_png(years: list[int], values: list[float], path: Path, settings: dict[str, Any], title: str,
+                    ylabel: str, note: str = "") -> Path:
+    """Tek serili yıllık çizgi grafiği (tek eksen, tek renk; lejant yok, başlık seriyi adlandırır)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    q = settings["quicklook"]
+    ink, muted = "#1f2328", "#6e7781"
+    fig, ax = plt.subplots(figsize=(7.5, 3.6), dpi=int(q["dpi"]) * 1.5)
+    ax.plot(years, values, color=q["series_color"], lw=2, marker="o", ms=6, mec="white", mew=1.5, zorder=3)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color("#d0d7de")
+    ax.grid(axis="y", color="#eaeef2", lw=0.8, zorder=0)
+    ax.tick_params(colors=muted, labelsize=8)
+    ax.set_xticks(years)
+    lo, hi = min(values), max(values)
+    pad = max((hi - lo) * 0.15, hi * 0.02, 1)
+    ax.set_ylim(max(0, lo - pad), hi + pad)
+    ax.set_ylabel(ylabel, color=muted, fontsize=8)
+    ax.set_title(title, color=ink, fontsize=10, loc="left")
+    i_min, i_max = int(np.argmin(values)), int(np.argmax(values))
+    for i in {i_min, i_max}:
+        ax.annotate(f"{values[i]:.0f}", (years[i], values[i]), textcoords="offset points",
+                    xytext=(0, 8 if i == i_max else -14), ha="center", fontsize=8, color=ink)
+    if note:
+        fig.text(0.01, 0.01, note, fontsize=7, color=muted)
+    fig.tight_layout(rect=(0, 0.04 if note else 0, 1, 1))
+    fig.savefig(path)
+    plt.close(fig)
+    return path
+
+
+def save_mask_pair_png(ds_a: xr.Dataset, ds_b: xr.Dataset, mask_a: np.ndarray, mask_b: np.ndarray, path: Path,
+                       settings: dict[str, Any], labels: tuple[str, str], title: str = "") -> Path:
+    """İki yılın maskesi, kendi doğal renk görüntüleri üzerinde yan yana (yarı saydam)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    q = settings["quicklook"]
+    color = np.array(matplotlib.colors.to_rgb(q["series_color"]))
+    k = int(q["overlay_upscale"])
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    imgs = []
+    for ds, m in ((ds_a, mask_a), (ds_b, mask_b)):
+        rgba = rgb_array(ds, settings)
+        rgb = rgba[..., :3] * rgba[..., 3:4]
+        rgb[m] = 0.35 * rgb[m] + 0.65 * color
+        imgs.append(np.clip(np.repeat(np.repeat(rgb, k, axis=0), k, axis=1), 0, 1))
+    h, w = imgs[0].shape[:2]
+    dpi = int(q["dpi"])
+    fig, ax = plt.subplots(1, 2, figsize=(2 * w / dpi + 0.4, h / dpi + 0.7), dpi=dpi)
+    for a, img, lab, m in zip(ax, imgs, labels, (mask_a, mask_b)):
+        a.imshow(img, interpolation="nearest")
+        a.set_title(f"{lab}: su {m.sum() * px_ha:.0f} ha", fontsize=10)
+        a.set_axis_off()
+    fig.suptitle(title, fontsize=10)
+    fig.tight_layout()
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path

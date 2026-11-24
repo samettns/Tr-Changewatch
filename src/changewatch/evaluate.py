@@ -18,7 +18,8 @@ from rasterio.features import rasterize
 from shapely.geometry import shape
 from shapely.ops import unary_union
 
-TYPES = ["yapilasma_olasi", "bitki_kaybi", "su_degisimi", "belirsiz"]
+TYPES = ["yapilasma_olasi", "bitki_kaybi", "su_kazanimi", "su_kaybi", "sulak_alan_belirsiz", "su_degisimi",
+         "belirsiz"]
 BUILT = "yapilasma_olasi"
 
 
