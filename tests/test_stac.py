@@ -122,3 +122,16 @@ def test_fine_geobox_nests_in_work_grid():
 
     with pytest.raises(ValueError):
         fine_geobox(gb, 15)
+
+
+def test_filter_acquisitions_keeps_all_tiles_if_any_passes():
+    from changewatch.stac import filter_acquisitions
+
+    a = _dup("a_tvk", "05.10", tile="36TVK")
+    a.properties["eo:cloud_cover"] = 70.0
+    b = _dup("a_svj", "05.10", tile="36SVJ")
+    b.properties["eo:cloud_cover"] = 20.0
+    c = _dup("c_tvk", "05.10", tile="36TVK", day=10)
+    c.properties["eo:cloud_cover"] = 80.0
+    out = {i.id for i in filter_acquisitions([a, b, c], 60)}
+    assert out == {"a_tvk", "a_svj"}

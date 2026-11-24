@@ -144,3 +144,19 @@ def scene_info(item: pystac.Item) -> SceneInfo:
         processing_baseline=p.get("s2:processing_baseline"),
         mgrs_tile=p.get("s2:mgrs_tile"),
     )
+
+
+def filter_acquisitions(items: Sequence[pystac.Item], max_cloud: float) -> list[pystac.Item]:
+    """Bulut ön filtresi çekim bazında: çekimin (uydu + zaman) HERHANGİ bir karesi eo:cloud_cover < max_cloud
+    ise o çekimin TÜM kareleri tutulur. Kare bazında filtre, AOI'yi kaplayan çekimin yalnızca bir karesini
+    bırakıp kısmi sahne üretiyordu; asıl eleme birleştirmeden sonra AOI geçerli piksel oranıyla yapılır.
+    """
+    groups: dict[tuple, list[pystac.Item]] = {}
+    for it in items:
+        groups.setdefault((it.properties.get("platform"), it.datetime), []).append(it)
+    out = []
+    for grp in groups.values():
+        clouds = [i.properties.get("eo:cloud_cover") for i in grp]
+        if any(c is not None and c < max_cloud for c in clouds):
+            out.extend(grp)
+    return out

@@ -125,8 +125,8 @@ def cmd_scenes(args: argparse.Namespace) -> int:
 def cmd_fetch(args: argparse.Namespace) -> int:
     """AOI penceresini okuyup ham sahneleri cache_dir'e GeoTIFF olarak kaydeder (önbellekte varsa atlar)."""
     from changewatch import cache
-    from changewatch.stac import (aoi_geobox, dedupe_items, fine_geobox, load_item, search_items,
-                                  season_dates)
+    from changewatch.stac import (aoi_geobox, dedupe_items, filter_acquisitions, fine_geobox, load_item,
+                                  search_items, season_dates)
 
     settings = load_settings(args.config)
     cache_root = require_cache_dir(settings)
@@ -142,9 +142,9 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     total_new = 0
     for year in parse_years(args.years, settings):
         start, end = season_dates(year, settings, args.season)
-        found = search_items(geom.bounds, start, end, settings, max_cloud=max_cloud)
+        found = filter_acquisitions(search_items(geom.bounds, start, end, settings), max_cloud)
         items = dedupe_items(found)
-        log.info("%d: %d öğe (bulut < %%%g), kopya ayıklama sonrası %d", year, len(found), max_cloud,
+        log.info("%d: %d öğe (çekimin bir karesi bulut < %%%g), kopya ayıklama sonrası %d", year, len(found), max_cloud,
                  len(items))
         layers = [  # (klasör, ızgara, bantlar, örnekleme)
             (cache.raw_dir(cache_root, args.aoi, year), gbox, cfg["bands"], cfg["resampling"]),
