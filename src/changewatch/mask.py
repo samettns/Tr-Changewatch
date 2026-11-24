@@ -9,8 +9,11 @@ import xarray as xr
 
 
 def valid_mask(scl: np.ndarray, settings: dict[str, Any]) -> np.ndarray:
-    """SCL maskelenen sınıflardan biri değilse True."""
-    return ~np.isin(scl, settings["mask"]["scl_masked_classes"])
+    """SCL sonlu ve maskelenen sınıflardan biri değilse True.
+
+    Kare ayak izi dışı float dosyalarda SCL NaN gelebilir (ör. Gölbaşı 36SVJ); NaN geçersizdir.
+    """
+    return np.isfinite(scl) & ~np.isin(scl, settings["mask"]["scl_masked_classes"])
 
 
 def apply_mask(ds: xr.Dataset, settings: dict[str, Any]) -> xr.Dataset:
@@ -20,6 +23,9 @@ def apply_mask(ds: xr.Dataset, settings: dict[str, Any]) -> xr.Dataset:
     """
     scl_name = settings["stac"]["scl_band"]
     valid = valid_mask(ds[scl_name].values, settings)
+    for name in ds.data_vars:  # herhangi bir bandı NaN olan piksel de geçersiz
+        if name != scl_name:
+            valid &= np.isfinite(ds[name].values)
     out = xr.Dataset(coords=ds.coords, attrs=dict(ds.attrs))
     for name in ds.data_vars:
         if name == scl_name:

@@ -44,3 +44,24 @@ def test_pngs_written(tmp_path):
     p = save_rgb_png(comp, tmp_path / "rgb.png", S)
     assert Image.open(p).size == (2, 2)
     assert save_valid_obs_png(comp, tmp_path / "obs.png", S, "test").stat().st_size > 0
+
+
+def test_fuse_acquisitions_merges_tiles_of_same_acquisition():
+    from changewatch.composite import fuse_acquisitions
+
+    left = np.array([[True, False], [True, False]])
+    right = np.array([[True, True], [False, True]])   # örtüşme: sol sütunun üstü
+    a = _scene(100, left)
+    b = _scene(200, right)
+    c = _scene(300, np.ones((2, 2), bool))
+    for ds, iid, t in ((a, "S2A_x_T36TVK", "2024-07-04T08:35:59"), (b, "S2A_x_T36SVJ", "2024-07-04T08:35:59"),
+                       (c, "S2B_y_T36TVK", "2024-07-09T08:36:01")):
+        ds.attrs.update(item_id=iid, acquired=t)
+    out = fuse_acquisitions([a, b, c])
+    assert len(out) == 2
+    f = out[0]
+    assert f["valid"].values.all()
+    assert f["B04"].values.tolist() == [[100, 200], [100, 200]]   # örtüşmede ilk kare, boşluk ikinciden
+    assert f.attrs["fused_tiles"] == 2
+    comp = median_composite(out, S)
+    assert comp["valid_obs"].values.tolist() == [[2, 2], [2, 2]]   # 2 çekim; örtüşme iki kez sayılmaz

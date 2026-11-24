@@ -104,6 +104,9 @@ breakpoint:
 
 # Su kuralı (geliştirme AOI'si: golbasi). Kırılma yöntemi MNDWI serisine uygulanır.
 water:
+  # ARA ÇÖZÜM (karar bekliyor): su katmanı yalnızca bu AOI'lerde çalışır. İncek'te su yok; MNDWI tek tepeli,
+  # Otsu −0,35'te kararlı çıkıp karayı su sayıyor ve dondurulmuş yapılaşma katmanını 518 → 314 ha'ya düşürüyordu.
+  aois: [golbasi]
   otsu_bins: 256
   max_threshold_range: 0.15    # yıllık Otsu eşiklerinin (max − min) farkı bunu aşarsa tüm yıllar sabit eşik
   fixed_threshold: 0.0

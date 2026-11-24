@@ -173,7 +173,7 @@ def cmd_composite(args: argparse.Namespace) -> int:
     import xarray as xr
 
     from changewatch import cache
-    from changewatch.composite import median_composite
+    from changewatch.composite import acquisition_key, fuse_acquisitions, median_composite
     from changewatch.harmonize import harmonize_scene
     from changewatch.indices import texture
     from changewatch.mask import aoi_raster_mask, apply_mask, valid_fraction
@@ -192,20 +192,27 @@ def cmd_composite(args: argparse.Namespace) -> int:
         if not files:
             log.warning("%d: önbellekte sahne yok; önce `changewatch fetch` çalıştırın.", year)
             continue
-        kept, kept_ids, aoi_mask = [], set(), None
+        masked_all, aoi_mask = [], None
         for f in files:
             raw = cache.read_dataset(f)
             if aoi_mask is None:
                 aoi_mask = aoi_raster_mask(geom, raw, crs)
-            masked = apply_mask(harmonize_scene(raw, settings), settings)
+            masked_all.append(apply_mask(harmonize_scene(raw, settings), settings))
+        # Aynı çekimin farklı MGRS kareleri (kare örtüşmesi) tek sahneye birleştirilir
+        fused = fuse_acquisitions(masked_all)
+        if len(fused) < len(masked_all):
+            log.info("%d: %d kare-sahnesi → %d çekim (MGRS kare örtüşmesi birleştirildi)", year,
+                     len(masked_all), len(fused))
+        kept, kept_keys = [], set()
+        for masked in fused:
             frac = valid_fraction(masked["valid"].values, aoi_mask)
             if frac < min_frac:
                 log.warning("%d: %s kompozite alınmadı (AOI içi geçerli piksel %%%.0f < %%%.0f)",
-                            year, raw.attrs["item_id"], 100 * frac, 100 * min_frac)
+                            year, masked.attrs["item_id"], 100 * frac, 100 * min_frac)
                 continue
             kept.append(masked)
-            kept_ids.add(f.name)
-        log.info("%d: %d/%d sahne kompozite alındı", year, len(kept), len(files))
+            kept_keys.add(acquisition_key(masked))
+        log.info("%d: %d/%d çekim kompozite alındı", year, len(kept), len(fused))
         if not kept:
             continue
         comp = median_composite(kept, settings)
@@ -225,18 +232,18 @@ def cmd_composite(args: argparse.Namespace) -> int:
 
         # Doku: her sahnede ayrı (maskeli 10 m B08 → yerel std → 20 m), sonra sahnelerin medyanı.
         # 20 m'de kompozite alınan sahnelerin aynısı kullanılır.
-        files10 = [f for f in sorted(cache.raw10_dir(cache_root, args.aoi, year).glob("*.tif"))
-                   if f.name in kept_ids]
-        if len(files10) != len(kept_ids):
-            log.warning("%d: 10 m katmanında %d/%d sahne var; `changewatch fetch` ile tamamlayın.",
-                        year, len(files10), len(kept_ids))
-        if files10:
+        m10_all = [apply_mask(harmonize_scene(cache.read_dataset(f), settings), settings)
+                   for f in sorted(cache.raw10_dir(cache_root, args.aoi, year).glob("*.tif"))]
+        fused10 = [m for m in fuse_acquisitions(m10_all) if acquisition_key(m) in kept_keys]
+        if len(fused10) != len(kept_keys):
+            log.warning("%d: 10 m katmanında %d/%d çekim var; `changewatch fetch` ile tamamlayın.",
+                        year, len(fused10), len(kept_keys))
+        if fused10:
             tband = settings["texture"]["band"]
             scale = float(settings["stac"]["reflectance_scale"])
             work_res = float(settings["grid"]["resolution_m"])
             tex_scenes = []
-            for f in files10:
-                m10 = apply_mask(harmonize_scene(cache.read_dataset(f), settings), settings)
+            for m10 in fused10:
                 tex = texture(m10[tband].values / scale, settings, work_res)
                 tex_scenes.append(xr.Dataset({"TEXTURE": (("y", "x"), tex),
                                               "valid": (("y", "x"), ~np.isnan(tex))},
@@ -625,8 +632,12 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
         return feats, final_all, rows, info, r, year_s, steps
 
     log.info("%s kırılma %d–%d", args.aoi, years[0], years[-1])
-    w_feats, w_mask, w_rows, w_info = _water_layer(args.aoi, years, series, valid_obs, region, transform,
-                                                   settings, type_map, year_map)
+    if args.aoi in settings["water"].get("aois", []):
+        w_feats, w_mask, w_rows, w_info = _water_layer(args.aoi, years, series, valid_obs, region, transform,
+                                                       settings, type_map, year_map)
+    else:
+        log.info("  su katmanı: %s için kapalı (settings water.aois)", args.aoi)
+        w_feats, w_mask, w_rows, w_info = [], np.zeros(region.shape, bool), [], {"katman": "su", "durum": "kapali"}
     feats, kept, rows, info, r, year_s, steps = run_layer(int(bp["min_after"]), "kalici", exclude=w_mask)
     m_feats, m_mask, m_rows, m_info, *_ = run_layer(int(bp["monitor_min_after"]), "izleme",
                                                     keep_year=years[-1], exclude=kept | w_mask)

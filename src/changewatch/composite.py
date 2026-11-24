@@ -33,3 +33,39 @@ def median_composite(scenes: Sequence[xr.Dataset], settings: dict[str, Any]) -> 
     out["valid_obs"] = (("y", "x"), count)
     out.attrs.update(n_scenes=len(scenes), min_valid_obs=min_obs)
     return out
+
+
+def acquisition_key(ds: xr.Dataset) -> str:
+    """Çekim anahtarı: uydu (S2A/S2B/S2C) + çekim zamanı. Aynı çekimin farklı MGRS kareleri aynı anahtarı alır."""
+    return f"{str(ds.attrs.get('item_id', ''))[:3]}_{ds.attrs['acquired']}"
+
+
+def fuse_acquisitions(scenes: Sequence[xr.Dataset]) -> list[xr.Dataset]:
+    """Aynı çekimin (farklı MGRS kareleri) maskelenmiş sahnelerini piksel bazında birleştirir.
+
+    Kare örtüşmesinde aynı gözlem medyana iki kez girmesin diye: her pikselde ilk geçerli değer alınır.
+    Girdi sahneleri aynı ızgarada, harmonize ve maskeli ('valid' değişkenli) olmalı. Sıra korunur.
+    """
+    groups: dict[str, list[xr.Dataset]] = {}
+    for s in scenes:
+        groups.setdefault(acquisition_key(s), []).append(s)
+    out = []
+    for key, grp in groups.items():
+        if len(grp) == 1:
+            out.append(grp[0])
+            continue
+        base = grp[0].copy(deep=True)
+        valid = base["valid"].values.copy()
+        for other in grp[1:]:
+            fill = ~valid & other["valid"].values
+            for b in base.data_vars:
+                if b == "valid":
+                    continue
+                arr = base[b].values
+                arr[fill] = other[b].values[fill]
+            valid |= other["valid"].values
+        base["valid"] = (base["valid"].dims, valid)
+        base.attrs["item_id"] = "+".join(str(g.attrs.get("item_id", "")) for g in grp)
+        base.attrs["fused_tiles"] = len(grp)
+        out.append(base)
+    return out

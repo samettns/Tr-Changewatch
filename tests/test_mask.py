@@ -33,3 +33,14 @@ def test_valid_fraction_inside_aoi_only():
     assert valid_fraction(valid, aoi) == 0.5
     assert valid_fraction(valid) == 0.25
     assert valid_fraction(valid, np.zeros_like(valid)) == 0.0
+
+
+def test_nan_scl_or_band_is_invalid():
+    """Kare ayak izi dışında float dosyada SCL ve bantlar NaN gelebilir (Gölbaşı 36SVJ)."""
+    ds = xr.Dataset({
+        "B04": (("y", "x"), np.array([[100.0, np.nan], [300.0, 400.0]], dtype="float32")),
+        "SCL": (("y", "x"), np.array([[4.0, 4.0], [np.nan, 5.0]], dtype="float32")),
+    })
+    out = apply_mask(ds, S)
+    assert out["valid"].values.tolist() == [[True, False], [False, True]]
+    assert not valid_mask(np.array([np.nan]), S)[0]
