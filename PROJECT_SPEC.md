@@ -25,8 +25,8 @@ Ankara'daki seçili bölgeler için Sentinel-2 görüntülerini otomatik indiren
   Aday bölgeler: İncek–Kızılcaşar, Gölbaşı (Mogan çevresi), Bağlıca–Etimesgut, Pursaklar.
   Sınırlar geojson.io'da çizilip `config/aois.geojson` dosyasına konur.
 - **Veri:** Sentinel-2 L2A (Planetary Computer STAC). Derin öğrenme ve yüksek çözünürlüklü veri setleri (LEVIR-CD, WHU-CD) v1'de **yok**.
-- **Yıllar:** 2019–2026 (8 yıllık kompozit, 7 yıl-yıl geçişi) + aylık izleme.
-  - 2017–2018 eklenebilir: Faz 1'de bu yılların Ankara için yeterli bulutsuz gözlemi olup olmadığı kontrol edilir, yeterliyse aralık genişletilir.
+- **Yıllar:** 2017–2026 (10 yıllık kompozit, 9 yıl-yıl geçişi) + aylık izleme.
+  - 2017–2018 Faz 1'de kontrol edildi: İncek yaz penceresinde yılda 13–16 bulutsuz tarih var, aralık 2017'ye genişletildi.
   - Kalıcılık kuralı gereği son yılın (2026) değişimleri `durum: "izlemede"` olarak işaretlenir. 2027 kompoziti gelince doğrulanır.
   - Her yeni yılın yaz penceresi bitince (Eylül sonrası) o yıl otomatik olarak eklenir.
 - **Çıktılar:** GeoJSON poligonlar, özet istatistik JSON'ları, küçük önizleme PNG'leri, statik web haritası.
@@ -60,6 +60,7 @@ config/aois.geojson + settings.yaml
 | Harmonizasyon | Processing baseline ≥ 04.00 sahnelerde −1000 DN offset düzeltmesi. Karar sahnenin `s2:processing_baseline` alanına göre verilir (ESA'nın yeniden işlediği eski sahneler de PB ≥ 04.00 olabilir). Alan yoksa tarihe göre karar verilir (25.01.2022 ve sonrası → düzelt) ve log'a uyarı yazılır. İki durumun da unit testi olur (Faz 1). | Yapılmazsa 2021→2022 arası her yerde sahte değişim çıkar |
 | Veri önbelleği | Ham veri ve ara çıktılar `settings.yaml` içindeki `cache_dir`'de (harici SSD: `D:\tr-changewatch-data`). Klasör yoksa program anlaşılır bir hata verir. Sanal ortam (`.venv`) proje klasöründe, yerel diskte kalır. | Büyük veriler sistem diskini doldurmaz |
 | Maskelenen SCL sınıfları | 0, 1, 3, 8, 9, 10, 11 | No-data, doymuş, gölge, bulut (orta/yüksek), sirrus, kar |
+| Sahne seçimi | Sahne düzeyinde `eo:cloud_cover` < %60 (gevşek ön filtre). Aynı çekim + MGRS karesinin birden fazla işlenmiş sürümü varsa (ör. 2022–2023'te 04.00/05.09 ve 2024 yeniden işlemesi 05.10) en yüksek baseline'lı öğe tutulur. SCL maskesinden sonra AOI içindeki geçerli piksel oranı `min_valid_fraction` (%20) altındaki sahne kompozite alınmaz ve log'a yazılır. | Kopyalar medyanda iki kez sayılmasın; asıl bulut temizliği piksel düzeyinde SCL ile yapılır |
 | Kompozit | Piksel bazlı medyan, en az N geçerli gözlem (varsayılan 3) | Tek sahne gürültüsünü ve kalan bulutları bastırır |
 | Mevsim penceresi | Varsayılan 1 Temmuz–15 Eylül; alternatif 1 Mayıs–30 Haziran | Deney E2 ile karar verilecek |
 | MMU | 0,5 ha (~13 piksel) | Tekil piksel gürültüsünü atar |
@@ -84,7 +85,8 @@ config/aois.geojson + settings.yaml
 - `bitki_kaybi`: kalıcı NDVI düşüşü, NDBI ve doku artışı yok.
 - `su_degisimi`: MNDWI işareti değişmiş.
 - `belirsiz`: aday ama yukarıdakilerin hiçbirine yeterince uymuyor. Gizlenmez, haritada ayrı renkte gösterilir.
-- Her poligonda kanıt alanları tutulur: `dNDVI`, `dNDBI`, `dBSI`, `dMNDWI`, `doku_artisi`, `kalici_mi`, `gecerli_gozlem_sayisi`.
+- Her poligonda kanıt alanları tutulur: `dNDVI`, `dNDBI`, `dBSI`, `dMNDWI`, `doku_artisi`, `kalici_mi`, `gecerli_gozlem_sayisi`, `dusuk_gozlem`.
+- `dusuk_gozlem`: poligonun önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve geçerli gözlemi < `min_valid_obs` (3) olan piksel oranı. Neden: 02.12 baseline'ında (2017–2020) parlak yüzeyler (şantiye, yol, parlak çatı) bulutsuz sahnelerde de SCL 8/9 (bulut) sınıflandırılabiliyor; bu pikseller önceki yılda seyrek gözlemlenir. Maske değiştirilmez, durum kanıt olarak raporlanır.
 
 ## 5. Doğrulama (projenin asıl farkı)
 
@@ -151,7 +153,8 @@ tr-changewatch/
 │   ├── monitor.py             # aylık izleme
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
-│   └── cli.py                 # changewatch check-aois | fetch | composite | detect | validate | publish | monitor
+│   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | detect | validate | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/
@@ -167,6 +170,8 @@ tr-changewatch/
 
 **CLI — `changewatch check-aois`:** `config/aois.geojson` içindeki her AOI için adını, km² cinsinden alanını (EPSG:32636'da) ve sınırlarını yazdırır. Alan `max_aoi_km2`'den (100 km²) büyükse veya AOI `settings.yaml`'daki kaba Ankara sınır kutusunun dışına taşıyorsa uyarı verir. Uyarılar AOI'yi engellemez.
 
+**CLI — `changewatch scenes --aoi <ad> [--years ...]`:** Yalnızca STAC meta verisini sorgular (indirme yok). Her yıl için yaz penceresindeki sahne sayısını, farklı tarih sayısını, bulut < `report_cloud_threshold` olanları ve processing baseline dağılımını tablo olarak yazdırır.
+
 **Teknolojiler:** Python 3.12 (≥ 3.11), pyyaml, pystac-client, planetary-computer, odc-stac, xarray, rasterio, numpy, scipy, scikit-image (Otsu, morfoloji), geopandas, shapely, matplotlib, pytest. Web tarafında Leaflet + leaflet-side-by-side.
 
 ## 9. Fazlar ve "bitti" ölçütleri
@@ -176,7 +181,7 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 | Faz | Süre | İş | Bitti sayılması için |
 |---|---|---|---|
 | 0 | 1 gün | Repo, ortam, AOI'leri çiz | `changewatch --help` çalışıyor, AOI'ler QGIS'te doğru yerde |
-| 1 | 3–4 gün | Adım 1–5: STAC, pencereli okuma, harmonizasyon, maske, kompozit | İncek 2019 ve 2024 kompozit PNG'leri bulutsuz ve renkleri doğal; harmonizasyon testi geçiyor |
+| 1 | 3–4 gün | Adım 1–5: STAC, pencereli okuma, harmonizasyon, maske, kompozit | İncek 2017 ve 2024 kompozit PNG'leri bulutsuz ve renkleri doğal; harmonizasyon testi geçiyor |
 | 2 | 4–5 gün | Adım 6–11: indeksler, CVA, morfoloji, kurallar, GeoJSON | GeoJSON QGIS'te açılıyor; İncek'teki bilinen yeni yapılaşma alanları yakalanmış |
 | 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E3 | Metrik tabloları ve 3 deney görseli hazır |
 | 4 | 3 gün | Leaflet haritası, GitHub Pages | Canlı linkte AOI ve yıl seçilebiliyor, popup'lar çalışıyor |

@@ -11,7 +11,7 @@ def test_default_settings_load():
     s = load_settings()
     assert s["grid"]["crs"] == "EPSG:32636"
     assert s["grid"]["resolution_m"] == 20
-    assert s["years"] == {"start": 2019, "end": 2026}
+    assert s["years"] == {"start": 2017, "end": 2026}
 
 
 def test_cache_dir_windows_path_not_mangled():

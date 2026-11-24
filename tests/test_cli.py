@@ -38,3 +38,19 @@ def test_check_aois_empty_template(tmp_path, capsys):
 def test_check_aois_missing_file(tmp_path, capsys):
     assert main(["check-aois", "--aois", str(tmp_path / "yok.geojson")]) == 2
     assert "HATA" in capsys.readouterr().err
+
+
+def test_parse_years():
+    from changewatch.cli import parse_years
+    from changewatch.config import load_settings
+
+    s = load_settings()
+    assert parse_years(["2017", "2024"], s) == [2017, 2024]
+    assert parse_years(["2019-2021", "2024"], s) == [2019, 2020, 2021, 2024]
+    assert parse_years(None, s) == list(range(2017, 2027))
+
+
+def test_unknown_aoi_gives_clear_error(capsys):
+    assert main(["scenes", "--aoi", "yok"]) == 2
+    err = capsys.readouterr().err
+    assert "AOI bulunamadı" in err and "incek" in err
