@@ -2,7 +2,7 @@
 
 Ankara'daki seçili bölgelerde Sentinel-2 L2A ile yapılaşma ve arazi örtüsü değişimini kanıtıyla ve güven düzeyiyle haritalayan değişim izleme sistemi. Kapsam ve mimari: [PROJECT_SPEC.md](PROJECT_SPEC.md).
 
-> Geliştirme sürüyor (Faz 2). Kırılma yöntemi ve yapılaşma/bitki kaybı kuralları v1 için donduruldu; su kuralı Gölbaşı'nda tasarlanıyor.
+> Geliştirme sürüyor (Faz 3 hazırlığı). Kırılma yöntemi ve yapılaşma/bitki kaybı kuralları v1 için donduruldu; su kuralı Gölbaşı'nda tasarlandı; doğrulama noktaları etiketlenmeyi bekliyor.
 
 ## Kurulum
 
@@ -12,20 +12,28 @@ py -3.12 -m venv .venv
 changewatch --help
 ```
 
-Ham veri önbelleği `config/settings.yaml` içindeki `paths.cache_dir` klasörüne yazılır.
+Ham veri önbelleği ve ara çıktılar `config/settings.yaml` içindeki `paths.cache_dir` klasörüne yazılır (harici disk). Repoya yalnızca kod, GeoJSON, JSON, CSV ve küçük PNG girer.
 
 ## Komutlar
 
 ```bash
 changewatch check-aois                                  # AOI alan/sınır kontrolü
-changewatch scenes    --aoi incek --years 2017-2026     # sahne/bulut/baseline özeti (indirme yok)
-changewatch fetch     --aoi incek --years 2017 2024     # AOI penceresini önbelleğe indir
-changewatch composite --aoi incek --years 2017 2024     # harmonizasyon + SCL maskesi + medyan kompozit (20 m + 10 m B08)
-changewatch indices   --aoi incek --years 2017 2024     # NDVI, NDBI, MNDWI, BSI, doku (GeoTIFF + PNG)
-changewatch detect    --aoi incek                       # kırılma noktası (varsayılan) → changes.geojson + izleme.geojson
-changewatch detect    --aoi incek --method pairs        # ardışık yıl çiftleri (E1 karşılaştırması)
-changewatch evaluate  --aoi incek --direct-years 2017 2024  # tür × yıl, yöntemler arası, tutarlılık
+changewatch scenes      --aoi incek --years 2017-2026   # sahne/bulut/baseline özeti (indirme yok)
+changewatch fetch       --aoi incek                     # AOI penceresini önbelleğe indir (20 m + 10 m B08)
+changewatch composite   --aoi incek                     # harmonizasyon + SCL maskesi + medyan kompozit + sahne bazında doku
+changewatch indices     --aoi incek --years 2017 2024   # NDVI, NDBI, MNDWI, BSI, doku (GeoTIFF + PNG)
+changewatch detect      --aoi incek                     # kırılma noktası (varsayılan) → changes.geojson + izleme.geojson
+changewatch detect      --aoi incek --method pairs      # ardışık yıl çiftleri (E1 karşılaştırması için)
+changewatch water       --aoi golbasi                   # yıllık su maskesi, su alanı serisi ve grafiği
+changewatch evaluate    --aoi incek --direct-years 2017 2024  # tür × yıl, yöntemler arası, tutarlılık
+changewatch sample                                      # Faz 3: tabakalı örnekleme, labels.csv şablonu, çipler, QGIS yükleyici
+changewatch validate                                    # etiketlerden karışıklık matrisi, tür ve yıl bazlı metrikler
+changewatch experiments                                 # E1–E5 (etiket yoksa kuru çalıştırma)
 ```
+
+## Geliştirme ve test AOI'leri
+
+Yöntem tasarımı ve eşik denemeleri yalnızca **geliştirme AOI'lerinde** yapılır: `incek` (yapılaşma, bitki kaybı) ve `golbasi` (su kuralı, Mogan Gölü). **Test AOI'leri** `baglica` ve `pursaklar`, yöntem dondurulana kadar hiç çalıştırılmaz (indirme dahil); dondurulduktan sonra hiçbir ayar değiştirilmeden çalıştırılır. Böylece test AOI'lerindeki sonuçlar, yöntemin o bölgelere göre ayarlanmamış olduğunu gösterir.
 
 ## Bulgu: İncek'te NDBI ve BSI ters çalışıyor
 
@@ -43,9 +51,28 @@ Literatürde yapılaşma için sık kullanılan "NDBI artışı" İncek'te geçe
 
 Bu ölçüm keşif amaçlıdır; doğrulama noktası kullanılmadı ve eşik ayarlanmadı. Sonuç olarak yapılaşma kuralının birincil kanıtı **doku artışı + kalıcılık** oldu; NDVI, NDBI ve BSI farkları işaretli değerleriyle kanıt alanı olarak tutuluyor. İki kuralın doğrulama noktalarındaki karşılaştırması deney **E4**'te yapılacak.
 
+## Yöntem geçişi: ardışık yıl çiftlerinden kırılma noktasına
+
+İlk yöntem her ardışık yıl çiftinde (2017→2018 … 2025→2026) CVA büyüklüğü ve doku farkını Otsu ile eşikleyip bir sonraki yılda "geri dönmüyor mu" diye kalıcılık arıyordu. İncek'te iki yapısal sorun çıktı:
+
+- **Otsu yıllık farklarda gürültüyü bölüyor.** Gerçek değişim alanın birkaç yüzdesiyken her yıl alanın %7–19'u aday oldu; 9 yılda AOI'nin %47'si en az bir kez "değişti".
+- **Kalıcılık testi tarla rotasyonunu elemiyor.** Her yıl farklı ürün ekilen tarla "geri dönmediği" için kalıcı sayıldı.
+
+Bu yüzden LandTrendr/BFAST'ın basitleştirilmiş bir hâline geçildi: her pikselin 2017–2026 serisinde (bantlar + doku, her biri kendi gürültüsüyle z-ölçekli) tek bir basamak aranır; kırılma yılı parça içi sapmayı en aza indiren yıldır, aday için basamak gürültünün k katını aşmalıdır. Yıl yıl değişen tarlanın parça içi yayılımı büyük olduğu için skoru düşük kalır; kalıcılık yöntemin içindedir.
+
+| İncek, 2017–2026 | Ardışık çift | Kırılma noktası |
+|---|---|---|
+| Yapılaşma (ha) | 1 545 | 417 (+ 2026 izleme 117) |
+| Tüm türler, ayak izi (ha) | 2 826 | 518 |
+| Doğrudan 2017→2024 doku artışlı adayla örtüşme (yöntemin içeride kalan payı) | %36 | %59 |
+
+Ardışık çift yöntemi silinmedi (`--method pairs`); doğrulama noktalarında E1'de karşılaştırılacak.
+
 ## Bilinen sınırlamalar
 
 - **04.00 öncesi baseline'larda parlak yüzeyler bulut sayılabiliyor.** 2017–2021 sahneleri (processing baseline 02.12 ve 03.00) bulutsuz günlerde bile parlak yüzeyleri (şantiye, yol, parlak çatı) SCL 8/9 (orta/yüksek olasılıklı bulut) olarak sınıflandırabiliyor. İncek yaz kompozitlerinde 2017–2021 arasında AOI piksellerinin %0,05–0,35'inde 3'ten az geçerli gözlem kaldı (2022 ve sonrasında %0); bu pikseller kompozitte boş bırakılır. Maske değiştirilmedi; bunun yerine her değişim poligonunda `dusuk_gozlem` kanıt alanı (önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve <3 gözlemli piksel oranı) raporlanır.
 - **Son yıl sıçramaları kalıcı katmana sızabilir.** Kalıcı katman en az 2 yıllık "sonrası" ister; yalnızca son yılda (ör. 2026) sıçrayan bir piksel b = 2025'te yarım basamak gösterir ve tek tük pikseller kalıcı katmanda 2025 kırılması olarak geçebilir (MMU tekilleri büyük ölçüde atar). 2026 kırılmaları ayrı `izleme.geojson` katmanındadır.
-- **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir).
+- **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir); etkisi deney E5'te ölçülecek.
+- **Tek değişkenli su kırılması gürültüye duyarlı.** MNDWI serisinde kırılma adayı tek başına sabit piksellerin bir kısmını işaretler; su katmanında özgüllüğü "kırılma öncesi ve sonrası yılların çoğunluğunda su durumu farklı" koşulu sağlar.
+- **Doğrulama metrikleri nokta sayısına dayalı.** Tabakalı örneklemede alan ağırlıklı (Olofsson vd.) kestirim henüz uygulanmadı.
 - Sahne düzeyindeki bulut oranı (`eo:cloud_cover`) 100×100 km MGRS karesine aittir, AOI'ye değil. Asıl temizlik piksel düzeyinde SCL maskesiyle yapılır.
