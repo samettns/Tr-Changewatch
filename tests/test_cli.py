@@ -28,8 +28,10 @@ def test_check_aois_prints_reports(capsys):
     assert "4 AOI kontrol edildi" in out
 
 
-def test_check_aois_empty_template(capsys):
-    assert main(["check-aois"]) == 0
+def test_check_aois_empty_template(tmp_path, capsys):
+    p = tmp_path / "bos.geojson"
+    p.write_text('{"type": "FeatureCollection", "features": []}', encoding="utf-8")
+    assert main(["check-aois", "--aois", str(p)]) == 0
     assert "AOI bulunamadı" in capsys.readouterr().out
 
 

@@ -1,5 +1,26 @@
 {
   "type": "FeatureCollection",
   "name": "tr_changewatch_aois",
-  "features": []
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "incek"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.68, 39.79], [32.77, 39.79], [32.77, 39.86], [32.68, 39.86], [32.68, 39.79]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "golbasi"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.77, 39.74], [32.86, 39.74], [32.86, 39.81], [32.77, 39.81], [32.77, 39.74]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "baglica"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.58, 39.885], [32.67, 39.885], [32.67, 39.955], [32.58, 39.955], [32.58, 39.885]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "pursaklar"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.86, 40.00], [32.95, 40.00], [32.95, 40.07], [32.86, 40.07], [32.86, 40.00]]]}
+    }
+  ]
 }

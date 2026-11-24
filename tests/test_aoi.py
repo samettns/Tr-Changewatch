@@ -39,12 +39,10 @@ def test_missing_name_warns(reports):
     assert len(unnamed) == 1 and any("name" in w for w in unnamed[0].warnings)
 
 
-def test_empty_template_returns_no_reports():
-    s = load_settings()
-    from changewatch.config import resolve_path
-
-    gdf = load_aois(resolve_path(s, s["paths"]["aois"]))
-    assert check_aois(gdf, s) == []
+def test_empty_template_returns_no_reports(tmp_path):
+    p = tmp_path / "bos.geojson"
+    p.write_text('{"type": "FeatureCollection", "features": []}', encoding="utf-8")
+    assert check_aois(load_aois(p), load_settings()) == []
 
 
 def test_empty_geodataframe():

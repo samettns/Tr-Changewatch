@@ -51,6 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     """CLI giriş noktası."""
+    for stream in (sys.stdout, sys.stderr):  # pipe/dosyada da Türkçe karakterler bozulmasın
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     parser = build_parser()
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):
