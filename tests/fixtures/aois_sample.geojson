@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "name": "test_aois",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "kucuk_incek"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.70, 39.78], [32.75, 39.78], [32.75, 39.82], [32.70, 39.82], [32.70, 39.78]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "buyuk_ankara"},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.50, 39.80], [32.70, 39.80], [32.70, 39.95], [32.50, 39.95], [32.50, 39.80]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "istanbul_disarida"},
+      "geometry": {"type": "Polygon", "coordinates": [[[29.00, 41.00], [29.03, 41.00], [29.03, 41.03], [29.00, 41.03], [29.00, 41.00]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {"type": "Polygon", "coordinates": [[[32.80, 39.90], [32.82, 39.90], [32.82, 39.92], [32.80, 39.92], [32.80, 39.90]]]}
+    }
+  ]
+}

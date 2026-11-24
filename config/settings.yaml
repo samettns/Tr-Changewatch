@@ -1,0 +1,52 @@
+# TR-ChangeWatch ayarları. Eşikler ve parametreler yalnızca burada tutulur.
+# Not: Windows yolları TEK tırnakla yazılmalı ("..." içinde \t sekmeye dönüşür).
+
+paths:
+  # Ham veri önbelleği ve ara çıktılar (harici SSD). Klasör yoksa program hata verir.
+  cache_dir: 'D:\tr-changewatch-data'
+  aois: config/aois.geojson
+
+aoi_checks:
+  max_aoi_km2: 100.0
+  # Ankara ilinin kaba sınır kutusu (WGS84). Yalnızca uyarı için kullanılır.
+  ankara_bbox:
+    min_lon: 30.8
+    min_lat: 38.6
+    max_lon: 34.2
+    max_lat: 40.8
+
+grid:
+  crs: EPSG:32636          # UTM 36N
+  resolution_m: 20
+
+years:
+  start: 2019
+  end: 2026
+
+stac:
+  url: https://planetarycomputer.microsoft.com/api/stac/v1
+  collection: sentinel-2-l2a
+  max_cloud_cover: 60      # sahne düzeyinde ön filtre (%); asıl maske SCL ile
+  bands: [B02, B03, B04, B08, B11, B12, SCL]
+
+harmonize:
+  min_baseline: "04.00"
+  offset_dn: 1000
+  # s2:processing_baseline alanı yoksa bu tarih ve sonrası düzeltilir (log'a uyarı yazılır).
+  fallback_date: "2022-01-25"
+
+mask:
+  scl_masked_classes: [0, 1, 3, 8, 9, 10, 11]
+
+composite:
+  min_valid_obs: 3
+  season: summer           # E2 deneyi ile karar verilecek
+  windows:
+    summer: {start: "07-01", end: "09-15"}
+    spring: {start: "05-01", end: "06-30"}
+
+morphology:
+  mmu_ha: 0.5
+
+# Faz 2+ eşikleri (indeks farkları, güven kuralları), Faz 5 izleme kapsama eşiği
+# ilgili fazlarda buraya eklenecek.

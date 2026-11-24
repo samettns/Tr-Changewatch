@@ -1,0 +1,32 @@
+# Veri ve raster dosyaları (asla commit'lenmez)
+/data/
+*.tif
+*.tiff
+*.TIF
+*.TIFF
+*.nc
+*.zarr/
+
+# Python önbellekleri
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Sanal ortamlar
+.venv/
+venv/
+env/
+
+# Editör / işletim sistemi
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Yerel Claude ayarları
+.claude/settings.local.json
