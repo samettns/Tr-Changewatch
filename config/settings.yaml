@@ -134,8 +134,8 @@ validation:
   chip_px: 41                  # çip kenarı (piksel; 41 × 20 m = 820 m)
   chip_upscale: 5
   label_roles: [test]          # etiketleme arayüzüne gelen roller (kalibrasyon gizli; yöntem donduruldu)
-  label_big_px: 400            # etiket çipi: ilk ve son yıl karesi kenarı (yaklaşık; tam sayı büyütme, en yakın komşu)
-  label_strip_upscale: 4       # etiket çipi: alttaki tüm yıllar şeridi (2 × 5) büyütmesi
+  label_big_px: 330            # etiket çipi (solda): ilk ve son yıl karesi kenarı (yaklaşık; tam sayı büyütme → 328)
+  label_strip_upscale: 3       # etiket çipi (sağda): tüm yıllar şeridi 2 × 5, kare kenarı 41 × 3 = 123 px
   label_ring_m: 100            # nokta çevresindeki halka yarıçapı
   label_scalebar_m: 200        # ölçek çubuğu uzunluğu
   label_seed: 7                # etiketleme arayüzünde karışık sıra

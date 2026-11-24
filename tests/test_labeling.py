@@ -105,7 +105,7 @@ def test_metrics_ignore_unknown_year():
 
 
 def test_label_chip_png(tmp_path):
-    """Etiket çipi: üstte iki büyük kare, altta şerit; dosya üretilir ve boyutu beklenen ölçekte."""
+    """Etiket çipi (yatay): solda iki büyük kare yan yana, sağda 2 × 5 şerit; 1920 × 1080 ekrana sığar."""
     import xarray as xr
     from PIL import Image
 
@@ -114,11 +114,11 @@ def test_label_chip_png(tmp_path):
     settings = {"grid": {"resolution_m": 20},
                 "stac": {"reflectance_scale": 10000},
                 "quicklook": {"rgb_bands": ["B04", "B03", "B02"], "rgb_min": 0.0, "rgb_max": 0.3, "gamma": 1.0},
-                "validation": {"chip_px": 41, "label_big_px": 400, "label_strip_upscale": 4, "label_ring_m": 100,
+                "validation": {"chip_px": 41, "label_big_px": 330, "label_strip_upscale": 3, "label_ring_m": 100,
                                "label_scalebar_m": 200}}
     rng = np.random.default_rng(0)
     seq = [(y, xr.Dataset({b: (("y", "x"), rng.uniform(0, 3000, (60, 60))) for b in ("B04", "B03", "B02")}))
            for y in YEARS]
     out = save_label_chip_png(seq, 30, 30, tmp_path / "c.png", settings)
     w, h = Image.open(out).size
-    assert w >= 2 * 410 and h >= 410 + 2 * 164
+    assert w >= 2 * 328 + 5 * 123 and h >= 328 and w <= 1800 and h <= 450

@@ -154,22 +154,49 @@ def run_app(index_path: Path) -> None:  # pragma: no cover - arayüz
     root.title("TR-ChangeWatch etiketleme")
     state: dict[str, Any] = {"pos": start, "entry": {}, "img": None, "dirty": False}
 
-    top = tk.Label(root, font=("Segoe UI", 11), anchor="w")
-    top.pack(fill="x", padx=10, pady=(6, 0))
-    tk.Label(root, text=QUESTION, font=("Segoe UI", 15, "bold"), anchor="w").pack(fill="x", padx=10, pady=(2, 4))
-    canvas = tk.Label(root)
-    canvas.pack(padx=10)
-    cur = tk.Label(root, font=("Segoe UI", 13, "bold"), anchor="w", justify="left")
+    try:
+        root.state("zoomed")                        # Windows: ekranı kapla
+    except tk.TclError:
+        root.attributes("-zoomed", True)            # Linux
+
+    # en alt: her zaman görünen sabit satır (önce paketlenir ki küçülen pencerede kesilmesin)
+    footer = tk.Frame(root, bd=1, relief="groove")
+    footer.pack(side="bottom", fill="x")
+    cur = tk.Label(footer, font=("Segoe UI", 14, "bold"), anchor="w", justify="left")
     cur.pack(fill="x", padx=10, pady=(4, 0))
-    msg = tk.Label(root, font=("Segoe UI", 10), fg="#b35900", anchor="w")
+    msg = tk.Label(footer, font=("Segoe UI", 10), fg="#b35900", anchor="w")
     msg.pack(fill="x", padx=10)
-    help_txt = ("E evet · H hayır · U emin değilim   |   başka tür (isteğe bağlı): Y yapılaşma · B bitki kaybı · "
-                "K su kazanımı · L su kaybı · D diğer   |   yıl (isteğe bağlı): son hane 8=2018 … 6=2026 · "
-                "X bilinmiyor   |   N not · Enter kaydet+sonraki · ←/→ gezin · G Google Haritalar")
-    tk.Label(root, text=help_txt, font=("Segoe UI", 9), fg="#555", wraplength=880, justify="left").pack(
-        fill="x", padx=10, pady=(0, 4))
-    bar = tk.Frame(root)
-    bar.pack(pady=(0, 8))
+    help_txt = ("E evet  ·  H hayır  ·  U emin değilim   |   yıl: son hane (7=2017 … 0=2020 … 6=2026), X bilinmiyor   |"
+                "   G harita  ·  Enter kaydet  ·  ←/→ gezin   |   tür (isteğe bağlı): Y yapılaşma · B bitki kaybı · "
+                "K su kazanımı · L su kaybı · D diğer  ·  N not")
+    tk.Label(footer, text=help_txt, font=("Segoe UI", 10), fg="#333", anchor="w", justify="left").pack(
+        fill="x", padx=10)
+    bar = tk.Frame(footer)
+    bar.pack(anchor="w", padx=6, pady=(2, 6))
+
+    # gövde: kaydırılabilir alan (sığmazsa fare tekerleği / Shift+teker)
+    body = tk.Frame(root)
+    body.pack(side="top", fill="both", expand=True)
+    sc = tk.Canvas(body, highlightthickness=0)
+    vsb = tk.Scrollbar(body, orient="vertical", command=sc.yview)
+    hsb = tk.Scrollbar(body, orient="horizontal", command=sc.xview)
+    sc.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+    vsb.pack(side="right", fill="y")
+    hsb.pack(side="bottom", fill="x")
+    sc.pack(side="left", fill="both", expand=True)
+    inner = tk.Frame(sc)
+    sc.create_window((0, 0), window=inner, anchor="nw")
+    inner.bind("<Configure>", lambda _: sc.configure(scrollregion=sc.bbox("all")))
+    root.bind_all("<MouseWheel>", lambda ev: sc.yview_scroll(int(-ev.delta / 120), "units"))
+    root.bind_all("<Shift-MouseWheel>", lambda ev: sc.xview_scroll(int(-ev.delta / 120), "units"))
+    root.bind_all("<Button-4>", lambda _: sc.yview_scroll(-1, "units"))
+    root.bind_all("<Button-5>", lambda _: sc.yview_scroll(1, "units"))
+
+    top = tk.Label(inner, font=("Segoe UI", 11), anchor="w")
+    top.pack(fill="x", padx=10, pady=(6, 0))
+    tk.Label(inner, text=QUESTION, font=("Segoe UI", 15, "bold"), anchor="w").pack(fill="x", padx=10, pady=(2, 4))
+    canvas = tk.Label(inner)
+    canvas.pack(anchor="w", padx=10, pady=(0, 6))
 
     def counts() -> tuple[int, int]:
         done = [rows[i] for i in ids if is_labeled(rows[i])]

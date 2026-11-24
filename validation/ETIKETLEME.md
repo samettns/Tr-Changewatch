@@ -13,12 +13,14 @@ Kalibrasyon noktaları gizlidir (yöntem donduruldu; `validation.label_roles` il
 
 ## Ekranda ne var
 
-- Üstte **2017** ve **2026** büyük, yan yana (820 m × 820 m, piksel büyütülmüş). Kırmızı artı = değerlendirilen 20 m piksel (ortası boş, piksel görünsün diye); kırmızı halka = 100 m yarıçap; sol altta 200 m ölçek çubuğu.
-- Altta 2017–2026 tüm yıllar (2 × 5), aynı artı işaretiyle: değişimin hangi yıl başladığını buradan okuyun.
+- Pencere tam ekran açılır. Solda **2017** ve **2026** büyük, yan yana (820 m × 820 m, ~330 px, piksel büyütülmüş). Kırmızı artı = değerlendirilen 20 m piksel (ortası boş, piksel görünsün diye); kırmızı halka = 100 m yarıçap; sol altta 200 m ölçek çubuğu.
+- Sağda 2017–2026 tüm yıllar (2 satır × 5 küçük kare), aynı artı işaretiyle: değişimin hangi yıl başladığını buradan okuyun.
 - Karar **artının merkezindeki piksel** içindir; halka yakın çevreyi gösterir.
 - **G**: Google Haritalar uydu görünümü, noktada iğne ile açılır (güncel görüntü; geçmiş için Google Earth Pro "geçmiş görüntüler"; bu görüntüler repoya konmaz).
 
 ## Klavye
+
+Kısayollar ve noktanın şu anki cevabı pencerenin en altındaki sabit satırda her zaman görünür. Görüntü alanı ekrana sığmazsa fare tekerleğiyle (yatayda Shift + teker) kaydırılır.
 
 | Tuş | Anlamı |
 |---|---|

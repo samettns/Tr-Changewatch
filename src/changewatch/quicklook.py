@@ -312,8 +312,9 @@ def _draw_cross(ax: Any, c: float, k: int, lw: float) -> None:
 
 def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col: int, path: Path,
                         settings: dict[str, Any], ncols: int = 5) -> Path:
-    """Kör etiketleme çipi. Üstte ilk ve son yıl büyük (en yakın komşu), kırmızı artı + yarıçap halkası +
-    ölçek çubuğu; altta tüm yıllar şeridi (aynı artı). Yalnızca yıl yazılır: tahmin, tabaka, AOI, kimlik yok."""
+    """Kör etiketleme çipi (yatay). Solda ilk ve son yıl büyük, yan yana (en yakın komşu), kırmızı artı + yarıçap
+    halkası + ölçek çubuğu; sağda tüm yıllar şeridi (2 × 5, aynı artı). Yalnızca yıl yazılır: tahmin, tabaka, AOI,
+    kimlik yok."""
     path.parent.mkdir(parents=True, exist_ok=True)
     v = settings["validation"]
     res = float(settings["grid"]["resolution_m"])
@@ -322,10 +323,10 @@ def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col:
     kb = max(1, round(int(v["label_big_px"]) / side))
     ks = int(v["label_strip_upscale"])
     big, small = side * kb, side * ks
-    m, gap, sgap, lab = 10, 20, 6, 22
+    m, gap, sgap, lab, sep = 10, 16, 6, 22, 28
     nrows = int(np.ceil(len(composites) / ncols))
-    W = max(2 * big + gap, ncols * small + (ncols - 1) * sgap) + 2 * m
-    H = m + lab + big + 16 + nrows * (lab + small) + m
+    W = m + 2 * big + gap + sep + ncols * small + (ncols - 1) * sgap + m
+    H = m + max(lab + big, nrows * (lab + small)) + m
     fig = plt.figure(figsize=(W / 100, H / 100), dpi=100)
 
     def axes(x: float, y: float, s: int) -> Any:
@@ -335,7 +336,7 @@ def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col:
 
     crops = {yy: _chip_crop(ds, row, col, half, settings) for yy, ds in composites}
     up = lambda a, k: np.clip(np.repeat(np.repeat(a, k, axis=0), k, axis=1), 0, 1)  # noqa: E731
-    x0 = (W - (2 * big + gap)) / 2
+    x0 = m
     for i, yy in enumerate((composites[0][0], composites[-1][0])):
         x = x0 + i * (big + gap)
         fig.text((x + big / 2) / W, 1 - (m + lab - 4) / H, str(yy), ha="center", va="bottom", fontsize=13,
@@ -354,8 +355,8 @@ def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col:
                 path_effects=[matplotlib.patheffects.withStroke(linewidth=2.5, foreground="black")])
         ax.set_xlim(-0.5, big - 0.5)
         ax.set_ylim(big - 0.5, -0.5)
-    xs = (W - (ncols * small + (ncols - 1) * sgap)) / 2
-    y0 = m + lab + big + 16
+    xs = m + 2 * big + gap + sep
+    y0 = m
     for idx, (yy, _) in enumerate(composites):
         r, cc = divmod(idx, ncols)
         x, y = xs + cc * (small + sgap), y0 + r * (lab + small)
