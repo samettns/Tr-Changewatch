@@ -143,6 +143,10 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - **Yöntem:** Tabakalı rastgele nokta örneklemesi. Poligon çizilmez; nokta etiketlemek çok daha hızlıdır.
   - Tabakalar: her değişim türü + "değişim yok". Toplam ~250–300 nokta.
   - Etiketleme: QGIS'te, Sentinel-2 kompozitleri ve Google Earth Pro geçmiş görüntülerine bakarak. Google Earth görüntüleri repoya **konmaz**; yalnızca etiketler (`validation/labels.csv`) paylaşılır.
+- **Örnekleme uygulaması (`changewatch sample`):** tabakalar kırılma yönteminin kalıcı katmanındaki her tür + `degisim_yok` (hiçbir kalıcı/izleme poligonu dışındaki AOI pikselleri). İzleme katmanı (son yıl) örneklenmez ve `degisim_yok`'tan da dışlanır. Dağıtım: `degisim_yok` 100 nokta; kalan 180 nokta değişim tabakalarına alanla orantılı, tabaka başına en az 20 (piksel sayısını aşmadan). Tabaka içinde eşit olasılıklı piksel seçimi, sabit seed (42); tabaka içinde rastgele %30 kalibrasyon. Geliştirme AOI'leri (incek, golbasi) örneklenir.
+  - Çıktılar: `validation/points.geojson` (tahmin, tabaka, rol, önce/sonra yılı), `validation/labels.csv` şablonu (`nokta_id, aoi, gercek_degisim [evet/hayir], gercek_tur, gercek_yil, not`; dolu etiketlerin üzerine `--force` olmadan yazılmaz), etiketleme çipleri ve QGIS katman yükleyicisi (`<cache_dir>/validation/`; makineye özgü yollar repoya girmez).
+  - `changewatch validate`: etiket yoksa uyarır; varsa test (varsayılan) / kalibrasyon / tüm noktalarda karışıklık matrisi, kullanıcı/üretici doğruluğu, F1, yanlış alarm oranı, tahmin yılına göre doğruluk ve kırılma yılı isabeti (tam, ±1). Metrikler şimdilik nokta sayısına dayalıdır (alan ağırlıklı kestirim değil).
+  - `changewatch experiments`: E1–E5 varyantlarının durumunu (hazır / eksik / henüz uygulanmadı) gösterir; etiketler varken hazır varyantların haritalarını test noktalarında değerlendirir.
 - **Kalibrasyon ve test ayrımı:** Eşikler yalnızca kalibrasyon noktalarıyla ayarlanır (~%30). Test noktalarına eşik ayarlarken dokunulmaz.
 - **Metrikler:** Karışıklık matrisi, kullanıcı ve üretici doğruluğu, yanlış alarm oranı, sınıf başına F1.
   - **Yıl bazında da raporlanır:** tahmin edilen değişim yılına göre doğruluk ve yanlış alarm oranı; doğru yakalanan değişimlerde kırılma yılı isabeti (tam ve ±1 yıl).
@@ -211,11 +215,12 @@ tr-changewatch/
 │   ├── vectorize.py           # raster → GeoJSON
 │   ├── quicklook.py           # önizleme PNG
 │   ├── validate.py            # örnekleme + metrikler
+│   ├── experiments.py         # E1–E5 varyant kaydı (hangi çıktı, nasıl üretilir)
 │   ├── monitor.py             # aylık izleme
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
-│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | water | validate | experiments | publish | monitor
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | water | sample | validate | experiments | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/

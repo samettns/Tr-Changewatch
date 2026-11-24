@@ -813,6 +813,278 @@ def cmd_water(args: argparse.Namespace) -> int:
     return 0
 
 
+def _aoi_layers(settings: dict[str, Any], cache_root: Path, aoi: str, season: str):
+    """Bir AOI'nin kırılma çıktıları: ızgara (breaks.tif), kalıcı ve izleme özellikleri (proje CRS'i)."""
+    from changewatch import cache
+    from changewatch.evaluate import load_features
+
+    ddir = cache.change_dir(cache_root, aoi, season) / settings["validation"]["method"]
+    if not (ddir / "changes.geojson").exists():
+        raise FileNotFoundError(f"{ddir / 'changes.geojson'} yok; önce `changewatch detect --aoi {aoi}` çalıştırın.")
+    crs = settings["grid"]["crs"]
+    grid = cache.read_dataset(ddir / "breaks.tif")
+    kept = load_features(ddir / "changes.geojson", crs)
+    mon = load_features(ddir / "izleme.geojson", crs) if (ddir / "izleme.geojson").exists() else []
+    return grid, kept, mon
+
+
+def cmd_sample(args: argparse.Namespace) -> int:
+    """Tabakalı rastgele örnekleme → validation/points.geojson + labels.csv şablonu + çipler + QGIS yükleyicisi."""
+    import json
+
+    import numpy as np
+    from pyproj import Transformer
+    from rasterio.features import rasterize
+
+    from changewatch import cache
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.quicklook import save_chip_png
+    from changewatch.validate import NO_CHANGE, allocate, sample_pixels, summary_counts, write_label_template
+    from changewatch.vectorize import grid_transform
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    v = settings["validation"]
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    aois = args.aois or list(v["aois"])
+    years = parse_years(None, settings)
+    smaps, feats_ix, grids = {}, {}, {}
+    px = Counter()
+    for aoi in aois:
+        grid, kept, mon = _aoi_layers(settings, cache_root, aoi, season)
+        shape = (grid["y"].size, grid["x"].size)
+        tr = grid_transform(grid["x"].values, grid["y"].values)
+        region = aoi_raster_mask(get_aoi(settings, aoi), grid, crs)
+        idx = (rasterize([(g, i + 1) for i, (g, _) in enumerate(kept)], out_shape=shape, transform=tr,
+                         dtype="int32") if kept else np.zeros(shape, "int32"))
+        mon_m = (rasterize([(g, 1) for g, _ in mon], out_shape=shape, transform=tr).astype(bool)
+                 if mon else np.zeros(shape, bool))
+        smap = np.full(shape, "", dtype=object)
+        for i, (_, p) in enumerate(kept):
+            smap[idx == i + 1] = p["tur"]
+        smap[region & (idx == 0) & ~mon_m] = NO_CHANGE
+        smap[~region] = ""
+        smaps[aoi], feats_ix[aoi], grids[aoi] = smap, (idx, kept), grid
+        for s, n in zip(*np.unique(smap[smap != ""], return_counts=True)):
+            px[str(s)] += int(n)
+    alloc = allocate(dict(px), int(v["total_points"]), int(v["no_change_points"]), int(v["min_per_stratum"]))
+    log.info("tabaka piksel sayıları: %s", dict(px))
+    log.info("nokta dağıtımı: %s (toplam %d)", alloc, sum(alloc.values()))
+    pts = sample_pixels(smaps, alloc, int(v["seed"]), float(v["calibration_share"]))
+
+    to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    features = []
+    for p in pts:
+        g = grids[p["aoi"]]
+        x, y = float(g["x"].values[p["col"]]), float(g["y"].values[p["row"]])
+        idx, kept = feats_ix[p["aoi"]]
+        k = int(idx[p["row"], p["col"]])
+        pr = kept[k - 1][1] if k else None
+        yil = int(pr["degisim_yili"]) if pr else None
+        once, sonra = (yil - 1, yil) if yil else (years[0], years[-2])
+        lon, lat = to_wgs(x, y)
+        props = {"nokta_id": p["nokta_id"], "aoi": p["aoi"], "tabaka": p["tabaka"], "rol": p["rol"],
+                 "tahmin_tur": pr["tur"] if pr else NO_CHANGE, "tahmin_yil": yil,
+                 "tahmin_guven": pr["guven"] if pr else None, "kaynak_id": pr["id"] if pr else None,
+                 "once_yil": once, "sonra_yil": sonra, "x": round(x, 2), "y": round(y, 2), "row": p["row"],
+                 "col": p["col"], "tabaka_alan_ha": round(px[p["tabaka"]] * px_ha, 1),
+                 "yontem": v["method"], "mevsim": season}
+        features.append({"type": "Feature", "properties": props,
+                         "geometry": {"type": "Point", "coordinates": [round(lon, 7), round(lat, 7)]}})
+    out = resolve_path(settings, settings["paths"]["validation_points"])
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"type": "FeatureCollection", "features": features}, ensure_ascii=False, indent=1),
+                   encoding="utf-8")
+    lab = write_label_template([f["properties"] for f in features],
+                               resolve_path(settings, settings["paths"]["validation_labels"]), force=args.force)
+    log.info("çıktı: %s (%d nokta), %s", out, len(features), lab)
+
+    chip_dir = cache_root / "validation" / "chips"
+    comps: dict[tuple[str, int], Any] = {}
+    for f in features:
+        p = f["properties"]
+        for yy in (p["once_yil"], p["sonra_yil"]):
+            if (p["aoi"], yy) not in comps:
+                comps[(p["aoi"], yy)] = cache.read_dataset(cache.composite_dir(cache_root, p["aoi"], season)
+                                                           / f"{yy}.tif")
+        title = (f"{p['nokta_id']} · {p['aoi']} · tahmin: {p['tahmin_tur']}"
+                 + (f" ({p['tahmin_yil']})" if p["tahmin_yil"] else "") + f" · {p['rol']}")
+        save_chip_png(comps[(p["aoi"], p["once_yil"])], comps[(p["aoi"], p["sonra_yil"])], p["row"], p["col"],
+                      chip_dir / f"{p['nokta_id']}.png", settings, (str(p["once_yil"]), str(p["sonra_yil"])), title)
+    log.info("çipler: %s (%d)", chip_dir, len(features))
+    loader = _write_qgis_loader(settings, cache_root, aois, season, out, years)
+    log.info("QGIS: %s", loader)
+
+    print("\n| tabaka | toplam | " + " | ".join(aois) + " | kalibrasyon | test | tabaka alanı (ha) |")
+    print("|---|---|" + "---|" * len(aois) + "---|---|---|")
+    for s, c in sorted(summary_counts([f["properties"] for f in features]).items(),
+                       key=lambda kv: (kv[0] == NO_CHANGE, kv[0])):
+        print(f"| {s} | {c['toplam']} | " + " | ".join(str(c.get(a, 0)) for a in aois)
+              + f" | {c.get('kalibrasyon', 0)} | {c.get('test', 0)} | {px[s] * px_ha:.0f} |")
+    return 0
+
+
+def _write_qgis_loader(settings: dict[str, Any], cache_root: Path, aois: list[str], season: str, points: Path,
+                       years: list[int]) -> Path:
+    """QGIS Python konsolunda çalıştırılacak katman yükleyici + düz katman listesi (cache_dir/validation)."""
+    from changewatch import cache
+
+    method = settings["validation"]["method"]
+    layers: list[tuple[str, str, str]] = [("vector", "doğrulama noktaları", str(points))]
+    for aoi in aois:
+        ddir = cache.change_dir(cache_root, aoi, season) / method
+        layers += [("vector", f"{aoi} değişim (kalıcı)", str(ddir / "changes.geojson")),
+                   ("vector", f"{aoi} izleme", str(ddir / "izleme.geojson"))]
+        wm = cache.water_dir(cache_root, aoi, season) / "water_masks.tif"
+        if wm.exists():
+            layers.append(("raster", f"{aoi} su maskeleri", str(wm)))
+        for y in reversed(years):
+            layers.append(("raster", f"{aoi} {y} kompozit", str(cache.composite_dir(cache_root, aoi, season)
+                                                                  / f"{y}.tif")))
+    vdir = cache_root / "validation"
+    vdir.mkdir(parents=True, exist_ok=True)
+    (vdir / "qgis_katmanlar.txt").write_text("\n".join(f"{k}\t{n}\t{p}" for k, n, p in layers), encoding="utf-8")
+    rgb = [settings["stac"]["bands"].index(b) + 1 for b in settings["quicklook"]["rgb_bands"]]
+    hi = float(settings["quicklook"]["rgb_max"]) * float(settings["stac"]["reflectance_scale"])
+    script = f'''# QGIS > Eklentiler > Python Konsolu > Düzenleyici: bu dosyayı açıp çalıştırın.
+# Üreten: changewatch sample. Kompozitler doğal renk (bant {rgb}, 0–{hi:.0f}) olarak gösterilir.
+from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer, QgsMultiBandColorRenderer, QgsContrastEnhancement
+
+LAYERS = {layers!r}
+root = QgsProject.instance().layerTreeRoot()
+grp = root.addGroup("TR-ChangeWatch doğrulama")
+for kind, name, path in LAYERS:
+    lyr = QgsVectorLayer(path, name, "ogr") if kind == "vector" else QgsRasterLayer(path, name)
+    if not lyr.isValid():
+        print("açılamadı:", path)
+        continue
+    if kind == "raster" and "kompozit" in name:
+        r = QgsMultiBandColorRenderer(lyr.dataProvider(), {rgb[0]}, {rgb[1]}, {rgb[2]})
+        for setter in (r.setRedContrastEnhancement, r.setGreenContrastEnhancement, r.setBlueContrastEnhancement):
+            ce = QgsContrastEnhancement(lyr.dataProvider().dataType(1))
+            ce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+            ce.setMinimumValue(0)
+            ce.setMaximumValue({hi:.0f})
+            setter(ce)
+        lyr.setRenderer(r)
+    QgsProject.instance().addMapLayer(lyr, False)
+    node = grp.addLayer(lyr)
+    if kind == "raster" and "kompozit" in name:
+        node.setItemVisibilityChecked(False)
+print("yüklendi:", len(LAYERS), "katman")
+'''
+    loader = vdir / "qgis_load_layers.py"
+    loader.write_text(script, encoding="utf-8")
+    return loader
+
+
+def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cache_root: Path | None,
+                     season: str) -> tuple[list[dict], int, int]:
+    """Etiketli noktaları (ref, pred, yıllar) kayıtlarına çevirir. (kayıtlar, toplam nokta, dolu etiket)."""
+    from changewatch.evaluate import load_features
+    from changewatch.validate import filled_labels, load_points, lookup_predictions, read_labels, reference_class
+
+    pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
+    rows = {r["nokta_id"]: r for r in filled_labels(read_labels(resolve_path(settings,
+                                                                             settings["paths"]["validation_labels"])))}
+    sel = [p for p in pts if p["nokta_id"] in rows and (role == "hepsi" or p["rol"] == role)]
+    if use_current and sel:
+        from changewatch import cache
+
+        feats = {}
+        for aoi in {p["aoi"] for p in sel}:
+            pth = cache.change_dir(cache_root, aoi, season) / settings["validation"]["method"] / "changes.geojson"
+            feats[aoi] = load_features(pth, settings["grid"]["crs"])
+        preds = lookup_predictions(sel, feats)
+    else:
+        preds = [(p["tahmin_tur"], p["tahmin_yil"]) for p in sel]
+    recs = [{"ref": reference_class(rows[p["nokta_id"]]), "pred": pr, "pred_year": py,
+             "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None, "aoi": p["aoi"]}
+            for p, (pr, py) in zip(sel, preds)]
+    return recs, len(pts), len(rows)
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    """Etiketlerden karışıklık matrisi, tür bazlı metrikler ve yıl bazlı doğruluk."""
+    import json
+
+    from changewatch.validate import format_report, metrics
+
+    settings = load_settings(args.config)
+    setup_logging(settings)
+    season = args.season or settings["composite"]["season"]
+    cache_root = require_cache_dir(settings) if args.map == "current" else None
+    recs, n_pts, n_lab = _labeled_records(settings, args.set, args.map == "current", cache_root, season)
+    if not n_lab:
+        print(f"UYARI: etiket girilmemiş (0/{n_pts} nokta). "
+              f"{settings['paths']['validation_labels']} dosyasında gercek_degisim (evet/hayir), gercek_tur, "
+              "gercek_yil sütunlarını doldurun; çipler <cache_dir>/validation/chips/ altında.")
+        return 0
+    if not recs:
+        print(f"UYARI: {n_lab} etiket var ama '{args.set}' kümesinde etiketli nokta yok.")
+        return 0
+    rep = metrics(recs)
+    rep.update(kume=args.set, harita=args.map, etiketli=n_lab, toplam_nokta=n_pts)
+    print(f"## Doğrulama ({args.set} noktaları, harita: {args.map})\n")
+    print(format_report(rep))
+    out = resolve_path(settings, "validation") / f"metrics_{args.set}.json"
+    out.write_text(json.dumps(rep, ensure_ascii=False, indent=2, default=float), encoding="utf-8")
+    log.info("çıktı: %s", out)
+    return 0
+
+
+def cmd_experiments(args: argparse.Namespace) -> int:
+    """E1–E5: etiket varsa hazır varyantları test noktalarında değerlendirir; yoksa/--dry-run ise durum tablosu."""
+    from changewatch.evaluate import load_features
+    from changewatch.experiments import EXPERIMENTS, status
+    from changewatch.validate import (filled_labels, load_points, lookup_predictions, metrics, read_labels,
+                                      reference_class)
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    aois = args.aois or list(settings["validation"]["aois"])
+    labels = filled_labels(read_labels(resolve_path(settings, settings["paths"]["validation_labels"])))
+    dry = args.dry_run or not labels
+    if dry:
+        print("Kuru çalıştırma" + ("" if args.dry_run else " (etiket yok)") +
+              f": AOI'ler {', '.join(aois)}. Etiketler gelince her 'hazır' varyantın haritası TEST noktalarında "
+              "değerlendirilir (genel doğruluk, yanlış alarm, yapılaşma F1, yıl isabeti).\n")
+    print("| deney | varyant | durum | üretim |")
+    print("|---|---|---|---|")
+    for code, (desc, variants) in EXPERIMENTS.items():
+        for v in variants:
+            st = status(v, cache_root, aois)
+            prod = v.produce.format(aoi="<aoi>") if st != "hazır" else "-"
+            print(f"| {code} | {v.name} | {st} | {prod} |")
+    if dry:
+        return 0
+
+    pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
+    rows = {r["nokta_id"]: r for r in labels}
+    test = [p for p in pts if p["rol"] == "test" and p["nokta_id"] in rows and p["aoi"] in aois]
+    pct = lambda x: "-" if x is None else f"%{100 * x:.0f}"  # noqa: E731
+    print(f"\n## Test noktalarında sonuçlar (n = {len(test)})\n")
+    print("| deney | varyant | genel doğruluk | yanlış alarm | yapılaşma F1 | yıl tam isabet |")
+    print("|---|---|---|---|---|---|")
+    for code, (desc, variants) in EXPERIMENTS.items():
+        for v in variants:
+            if status(v, cache_root, aois) != "hazır":
+                continue
+            feats = {a: load_features(v.path(cache_root, a), settings["grid"]["crs"]) for a in aois}
+            preds = lookup_predictions(test, feats)
+            recs = [{"ref": reference_class(rows[p["nokta_id"]]), "pred": pr, "pred_year": py,
+                     "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None} for p, (pr, py) in zip(test, preds)]
+            m = metrics(recs)
+            f1 = m["sinif_metrikleri"].get("yapilasma_olasi", {}).get("f1")
+            print(f"| {code} | {v.name} | {pct(m['genel_dogruluk'])} | {pct(m['yanlis_alarm_orani'])} | "
+                  f"{pct(f1)} | {pct(m['yil']['tam_isabet'])} |")
+    return 0
+
+
 # ---------------------------------------------------------------- ayrıştırıcı
 
 def build_parser() -> argparse.ArgumentParser:
@@ -865,6 +1137,25 @@ def build_parser() -> argparse.ArgumentParser:
     wt.add_argument("--mask-years", nargs=2, type=int, metavar=("A", "B"),
                     help="yan yana maske paneli yılları (varsayılan: ilk yıl ve sondan bir önceki)")
     wt.set_defaults(func=cmd_water)
+
+    sm = sub.add_parser("sample", help="Faz 3: tabakalı örnekleme, labels.csv şablonu, çipler, QGIS yükleyici")
+    sm.add_argument("--aois", nargs="+", help="örneklenecek AOI'ler (varsayılan: settings validation.aois)")
+    sm.add_argument("--season", help="settings.yaml'daki pencere adı (varsayılan: composite.season)")
+    sm.add_argument("--force", action="store_true", help="dolu labels.csv'nin üzerine yaz")
+    sm.set_defaults(func=cmd_sample)
+
+    va = sub.add_parser("validate", help="Etiketlerden karışıklık matrisi, tür ve yıl bazlı metrikler")
+    va.add_argument("--set", choices=["test", "kalibrasyon", "hepsi"], default="test",
+                    help="hangi noktalar (varsayılan: test)")
+    va.add_argument("--map", choices=["stored", "current"], default="stored",
+                    help="stored: örnekleme anındaki tahmin; current: güncel changes.geojson'dan okunur")
+    va.add_argument("--season", help="--map current için pencere adı")
+    va.set_defaults(func=cmd_validate)
+
+    ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")
+    ex.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings validation.aois)")
+    ex.add_argument("--dry-run", action="store_true", help="yalnızca varyant durumlarını göster")
+    ex.set_defaults(func=cmd_experiments)
 
     e = sub.add_parser("evaluate", help="Yöntem karşılaştırması: tür × yıl, yöntemler arası, tutarlılık")
     aoi_years(e)

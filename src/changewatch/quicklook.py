@@ -237,3 +237,37 @@ def save_mask_pair_png(ds_a: xr.Dataset, ds_b: xr.Dataset, mask_a: np.ndarray, m
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
     return path
+
+
+def save_chip_png(before: xr.Dataset, after: xr.Dataset, row: int, col: int, path: Path,
+                  settings: dict[str, Any], labels: tuple[str, str], title: str = "") -> Path:
+    """Etiketleme çipi: noktanın çevresi, önceki ve sonraki yıl yan yana; nokta merkezde işaretli."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    v = settings["validation"]
+    half = int(v["chip_px"]) // 2
+    k = int(v["chip_upscale"])
+    res = float(settings["grid"]["resolution_m"])
+    imgs = []
+    for ds in (before, after):
+        rgba = rgb_array(ds, settings)
+        rgb = rgba[..., :3] * rgba[..., 3:4]
+        h, w = rgb.shape[:2]
+        pad = np.zeros((h + 2 * half, w + 2 * half, 3))
+        pad[half:half + h, half:half + w] = rgb
+        crop = pad[row:row + 2 * half + 1, col:col + 2 * half + 1]
+        imgs.append(np.repeat(np.repeat(crop, k, axis=0), k, axis=1))
+    size = imgs[0].shape[0]
+    c = half * k + k / 2 - 0.5
+    fig, ax = plt.subplots(1, 2, figsize=(2 * size / 100 + 0.3, size / 100 + 0.55), dpi=100)
+    for a, img, lab in zip(ax, imgs, labels):
+        a.imshow(np.clip(img, 0, 1), interpolation="nearest")
+        a.add_patch(matplotlib.patches.Rectangle((half * k - 0.5, half * k - 0.5), k, k, fill=False,
+                                                 ec="yellow", lw=1.2))
+        a.add_patch(matplotlib.patches.Circle((c, c), 3 * k, fill=False, ec="yellow", lw=0.8, ls="--"))
+        a.set_title(lab, fontsize=9)
+        a.set_axis_off()
+    fig.suptitle(f"{title}  ·  {int((2 * half + 1) * res)} m kare", fontsize=8)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+    return path
