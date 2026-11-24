@@ -136,6 +136,7 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
   - Etiketleme: QGIS'te, Sentinel-2 kompozitleri ve Google Earth Pro geçmiş görüntülerine bakarak. Google Earth görüntüleri repoya **konmaz**; yalnızca etiketler (`validation/labels.csv`) paylaşılır.
 - **Kalibrasyon ve test ayrımı:** Eşikler yalnızca kalibrasyon noktalarıyla ayarlanır (~%30). Test noktalarına eşik ayarlarken dokunulmaz.
 - **Metrikler:** Karışıklık matrisi, kullanıcı ve üretici doğruluğu, yanlış alarm oranı, sınıf başına F1.
+  - **Yıl bazında da raporlanır:** tahmin edilen değişim yılına göre doğruluk ve yanlış alarm oranı; doğru yakalanan değişimlerde kırılma yılı isabeti (tam ve ±1 yıl).
 
 - **Geliştirme/test AOI ayrımı:**
   - Geliştirme AOI'leri: `incek` (yapılaşma ve bitki kaybı kuralları), `golbasi` (su kuralı; Mogan Gölü). Yöntem tasarımı ve eşik denemeleri yalnızca bunlarda yapılır.
@@ -150,6 +151,7 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 | E2 | Mevsim penceresi: Mayıs–Haziran ↔ Temmuz–Eylül | Ankara'da hangi pencere daha az yanlış alarm veriyor? |
 | E3 | Harmonizasyon açık ↔ kapalı (2021→2023) | Offset düzeltmesi yapılmazsa ne kadar sahte değişim çıkıyor? |
 | E4 | Eski NDBI/BSI artışı tabanlı yapılaşma kuralı ↔ doku + kalıcılık tabanlı kural | Doğrulama noktalarında hangisi yapılaşmayı daha iyi yakalıyor, yanlış alarm ne kadar? |
+| E5 | Doku ham ↔ yıllık normalize doku (her yılın dokusu, o yılın kırılmasız piksellerinin doku medyanına bölünür) | İncek'te doku 2017→2026 kademeli yükseliyor (AOI medyanı 0,021 → 0,030; değişmeyen piksellerde ~%15). Normalizasyonla 2024–2025 yapılaşması değişiyor mu; doğrulama metrikleri (özellikle yıl bazlı) iyileşiyor mu? |
 
 ## 6. Web arayüzü
 
@@ -232,7 +234,7 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 | 0 | 1 gün | Repo, ortam, AOI'leri çiz | `changewatch --help` çalışıyor, AOI'ler QGIS'te doğru yerde |
 | 1 | 3–4 gün | Adım 1–5: STAC, pencereli okuma, harmonizasyon, maske, kompozit | İncek 2017 ve 2024 kompozit PNG'leri bulutsuz ve renkleri doğal; harmonizasyon testi geçiyor |
 | 2 | 4–5 gün | Adım 6–11: indeksler, CVA, morfoloji, kurallar, GeoJSON | GeoJSON QGIS'te açılıyor; İncek'teki bilinen yeni yapılaşma alanları yakalanmış |
-| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E4 | Metrik tabloları ve 4 deney görseli hazır |
+| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E5 | Metrik tabloları ve 5 deney görseli hazır |
 | 4 | 3 gün | Leaflet haritası, GitHub Pages | Canlı linkte AOI ve yıl seçilebiliyor, popup'lar çalışıyor |
 | 5 | 2 gün | Actions (tests + monthly), README, demo GIF | Elle tetiklenen monthly işi başarılı commit atıyor |
 
