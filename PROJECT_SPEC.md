@@ -120,15 +120,15 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - `sinyal`: basamağın spektral (bantlar) ve doku bileşenleri kendi gürültüleriyle ayrı test edilir (bileşen_z > `step_k` × bileşen gürültüsü). İkisi de anlamlı → `ikisi`; biri → `spektral` / `doku`; hiçbiri tek başına anlamlı değilse gürültüye göre baskın olan. Parça değeri piksel çoğunluğudur; `spektral_payi`, `doku_payi` de tutulur.
 - Ek kanıt alanları: `skor`, `basamak`, `sonrasi_yil_sayisi`, `yil_payi` (parçada kırılma yılı parçanın yılına eşit olan piksel payı).
 
-### Su kuralı (geliştirme AOI'si: golbasi; `water.py`)
+### Su kuralı (geliştirme AOI'si: golbasi; tüm AOI'lerde çalışır; `water.py`)
 
-- **Yıllık su maskesi:** her yılın yaz kompozitinde MNDWI üzerinde AOI içi Otsu eşiği. Yıllık Otsu eşiklerinin aralığı (max − min) `max_threshold_range`'i (0,15) aşarsa tüm yıllar sabit eşiğe (`fixed_threshold`, 0) geçer; hangi yöntemin kullanıldığı çıktılara ve log'a yazılır.
-- **Yıllık su alanı serisi** (ha) CSV/JSON + grafik (`changewatch water`).
-- **Su kırılması:** kırılma yöntemi MNDWI serisine (tek değişken) uygulanır, `min_after: 2`. Aday = kırılma adayı **ve** su durumu değişimi: kırılma öncesi yılların çoğunluğunda su ≠ sonrası yılların çoğunluğunda su. (Tek değişkende gürültü kuyruğu ağırdır; kırılma adayı tek başına sabit piksellerin ~%10'unu işaretler, özgüllüğü su durumu koşulu sağlar.)
-- **Türler:** `su_kazanimi` (önce kara, sonra su), `su_kaybi` (önce su, sonra kara), `sulak_alan_belirsiz` (parçanın ≥ %50'si kıyı/sazlık: kırılmanın bir yanında NDVI > 0,3 ve |MNDWI − eşik| < 0,15). Güven: kırılma sonrası ≥ 3 yıl → yüksek, 2 → orta; `sulak_alan_belirsiz` düşük.
-- **Ara çözüm (karar bekliyor):** su katmanı yalnızca `water.aois` listesindeki AOI'lerde çalışır (şimdilik golbasi). Su olmayan İncek'te MNDWI tek tepeli; Otsu −0,35'te kararlı çıkıp karayı su sayıyor (254 ha sahte su değişimi) ve ana katmanı 518 → 314 ha'ya düşürüyordu.
-- Su katmanı pikselleri ana (yapılaşma/bitki) katmandan düşülür. Ana katmandaki yapılaşma ve bitki kaybı kuralları değişmez (dondurulmuş).
-- Ek kanıt alanları: `su_kazanim_payi`, `su_kayip_payi`, `sulak_alan_payi`, `su_esigi`, `su_esik_yontemi`, `mndwi_once`, `mndwi_sonra`, `ndvi_once`, `ndvi_sonra`.
+- **Yıllık su maskesi:** su = MNDWI > 0 (sabit eşik) **ve** alanı ≥ 5 ha olan bağlı (8-komşu) su kütlesine ait. Küçük parçalar (MNDWI > 0 veren çatı, sera, gölcük) elenir. Kütlenin iç delikleri doldurulur (göl içinde MNDWI'yi düşüren renk/bulanıklık değişimi su sayılır ve kıyı üretmez). Yıllık Otsu eşikleri yalnızca tanı amaçlı `water_series.csv`'ye yazılır. (Gerekçe: Otsu su olmayan İncek'te tek tepeli dağılımda −0,35'te kararlı çıkıp karayı su sayıyordu; Gölbaşı'nda yıllık aralığı 0,166 idi; scikit-image platodaki ilk maksimumu seçtiği için eşik kara tepesinin kenarına düşüyordu.)
+- **Yıllık su alanı serisi** (ha) CSV/JSON + grafik (`changewatch water`); grafikte eski seri (MNDWI > 0, tüm pikseller; çatılar dahil) kesikli çizgiyle gösterilir.
+- **Su kırılması:** kırılma yöntemi MNDWI serisine (tek değişken) uygulanır; kalıcı katman `min_after: 2`, son yıl için izleme katmanı `min_after: 1`. Aday = kırılma adayı **ve** su durumu değişimi (kırılma öncesi/sonrası yılların çoğunluğunda su kütlesi durumu farklı) **ve** kıyı şeridi: kırılmadan önceki yıl (b−1) veya kırılma yılında (b) su kütlesi sınırına ≤ 3 piksel. Göl içindeki renk/bulanıklık değişimi kazanım sayılmaz.
+- **Morfoloji:** su türleri için açma uygulanmaz (ince kıyı şeritleri korunur), kapama ana katmanla aynı; ayrı MMU 0,2 ha.
+- **Türler:** `su_kazanimi`, `su_kaybi`, `sulak_alan_belirsiz` (parçanın ≥ %50'si kıyı/sazlık: kırılmanın bir yanında NDVI > 0,3 ve |MNDWI| < 0,15). Güven: kırılma sonrası ≥ 3 yıl → yüksek, 2 → orta, 1 (izleme) → düşük; `sulak_alan_belirsiz` düşük.
+- Su katmanı pikselleri ana (yapılaşma/bitki) katmandan düşülür; ana katmandaki yapılaşma ve bitki kaybı kuralları değişmez (dondurulmuş).
+- Ek kanıt alanları: `su_kazanim_payi`, `su_kayip_payi`, `sulak_alan_payi`, `kiyi_payi`, `mndwi_once`, `mndwi_sonra`, `ndvi_once`, `ndvi_sonra`.
 
 ### Tür ve güven kuralları — ardışık çift yöntemi (ilk sürüm, eşikler `settings.yaml` içinde)
 

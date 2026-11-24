@@ -179,14 +179,26 @@ def save_boundary_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndar
     return path
 
 
-def save_series_png(years: list[int], values: list[float], path: Path, settings: dict[str, Any], title: str,
-                    ylabel: str, note: str = "") -> Path:
-    """Tek serili yıllık çizgi grafiği (tek eksen, tek renk; lejant yok, başlık seriyi adlandırır)."""
+def save_series_png(years: list[int], series: list[dict[str, Any]], path: Path, settings: dict[str, Any],
+                    title: str, ylabel: str, note: str = "") -> Path:
+    """Yıllık çizgi grafiği, tek eksen. series: [{"label", "values", "style": "solid"|"dashed"}].
+
+    Birincil seri (ilk) series_color ile düz; diğerleri gri kesikli. ≥ 2 seride lejant + son noktada doğrudan etiket.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     q = settings["quicklook"]
     ink, muted = "#1f2328", "#6e7781"
-    fig, ax = plt.subplots(figsize=(7.5, 3.6), dpi=int(q["dpi"]) * 1.5)
-    ax.plot(years, values, color=q["series_color"], lw=2, marker="o", ms=6, mec="white", mew=1.5, zorder=3)
+    fig, ax = plt.subplots(figsize=(7.5, 3.8), dpi=int(q["dpi"]) * 1.5)
+    allv = [v for s in series for v in s["values"]]
+    for i, s in enumerate(series):
+        primary = i == 0
+        color = q["series_color"] if primary else "#8c959f"
+        ax.plot(years, s["values"], color=color, lw=2, ls="-" if s.get("style", "solid") == "solid" else "--",
+                marker="o" if primary else None, ms=6, mec="white", mew=1.5, zorder=3 if primary else 2,
+                label=s["label"])
+        if len(series) > 1:
+            ax.annotate(f"{s['values'][-1]:.0f}", (years[-1], s["values"][-1]), textcoords="offset points",
+                        xytext=(6, 0), va="center", fontsize=8, color=ink)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     for side in ("left", "bottom"):
@@ -194,15 +206,19 @@ def save_series_png(years: list[int], values: list[float], path: Path, settings:
     ax.grid(axis="y", color="#eaeef2", lw=0.8, zorder=0)
     ax.tick_params(colors=muted, labelsize=8)
     ax.set_xticks(years)
-    lo, hi = min(values), max(values)
-    pad = max((hi - lo) * 0.15, hi * 0.02, 1)
+    lo, hi = min(allv), max(allv)
+    pad = max((hi - lo) * 0.12, hi * 0.02, 1)
     ax.set_ylim(max(0, lo - pad), hi + pad)
+    ax.set_xlim(years[0] - 0.4, years[-1] + 0.9)
     ax.set_ylabel(ylabel, color=muted, fontsize=8)
     ax.set_title(title, color=ink, fontsize=10, loc="left")
-    i_min, i_max = int(np.argmin(values)), int(np.argmax(values))
-    for i in {i_min, i_max}:
-        ax.annotate(f"{values[i]:.0f}", (years[i], values[i]), textcoords="offset points",
-                    xytext=(0, 8 if i == i_max else -14), ha="center", fontsize=8, color=ink)
+    if len(series) > 1:
+        ax.legend(frameon=False, fontsize=8, loc="upper left", labelcolor=ink)
+    else:
+        vals = series[0]["values"]
+        for i in {int(np.argmin(vals)), int(np.argmax(vals))}:
+            ax.annotate(f"{vals[i]:.0f}", (years[i], vals[i]), textcoords="offset points",
+                        xytext=(0, 8 if vals[i] == max(vals) else -14), ha="center", fontsize=8, color=ink)
     if note:
         fig.text(0.01, 0.01, note, fontsize=7, color=muted)
     fig.tight_layout(rect=(0, 0.04 if note else 0, 1, 1))

@@ -102,16 +102,16 @@ breakpoint:
   after_years_high: 3          # kırılma sonrası ≥ 3 yıl → güven yüksek
   after_years_medium: 2        # 2 yıl → orta; 1 yıl → izlemede (düşük)
 
-# Su kuralı (geliştirme AOI'si: golbasi). Kırılma yöntemi MNDWI serisine uygulanır.
+# Su kuralı (geliştirme AOI'si: golbasi; tüm AOI'lerde çalışır). Kırılma yöntemi MNDWI serisine uygulanır.
 water:
-  # ARA ÇÖZÜM (karar bekliyor): su katmanı yalnızca bu AOI'lerde çalışır. İncek'te su yok; MNDWI tek tepeli,
-  # Otsu −0,35'te kararlı çıkıp karayı su sayıyor ve dondurulmuş yapılaşma katmanını 518 → 314 ha'ya düşürüyordu.
-  aois: [golbasi]
-  otsu_bins: 256
-  max_threshold_range: 0.15    # yıllık Otsu eşiklerinin (max − min) farkı bunu aşarsa tüm yıllar sabit eşik
-  fixed_threshold: 0.0
-  min_after: 2                 # su kırılmaları: kırılma sonrası ≥ 2 yıl
+  threshold: 0.0               # su = MNDWI > eşik (sabit; Otsu yalnızca tanı amaçlı CSV'de)
+  min_body_ha: 5.0             # yalnızca ≥ bu alandaki bağlı su kütleleri su sayılır (çatı/sera elenir)
+  shore_px: 3                  # kazanım/kayıp yalnızca kıyı şeridinde: b−1 veya b yılında su kütlesi sınırına ≤ N piksel
+  mmu_ha: 0.2                  # su türleri için ayrı MMU; açma işlemi uygulanmaz
+  min_after: 2                 # kalıcı su katmanı
+  monitor_min_after: 1         # son yıl su izleme katmanı
   majority: 0.5                # parça (öncesi/sonrası) su durumu: yılların > yarısında su
+  otsu_bins: 256               # yalnızca tanı (water_series.csv)
   wetland_ndvi_min: 0.3        # sulak_alan_belirsiz: NDVI > bu …
   wetland_mndwi_margin: 0.15   # … ve |MNDWI − eşik| < bu (kırılmanın iki yanından birinde)
   wetland_min_share: 0.5       # parçada bu paydan fazla kıyı/sazlık pikseli → sulak_alan_belirsiz

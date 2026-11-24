@@ -35,3 +35,8 @@ def apply_mmu(mask: np.ndarray, settings: dict[str, Any]) -> np.ndarray:
 def clean_mask(mask: np.ndarray, settings: dict[str, Any]) -> np.ndarray:
     """Açma/kapama + MMU."""
     return apply_mmu(open_close(mask, settings), settings)
+
+
+def remove_small_objects_px(mask: np.ndarray, min_px: int, connectivity: int) -> np.ndarray:
+    """min_px'ten küçük bağlı bileşenleri atar (MMU'nun piksel sayısıyla verilen hâli)."""
+    return remove_small_objects(mask.astype(bool), max_size=max(min_px - 1, 0), connectivity=connectivity)
