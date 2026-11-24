@@ -908,13 +908,22 @@ def cmd_sample(args: argparse.Namespace) -> int:
         smaps[aoi], feats_ix[aoi], grids[aoi] = smap, (idx, kept), grid
         for s, n in zip(*np.unique(smap[smap != ""], return_counts=True)):
             px[str(s)] += int(n)
-    alloc = allocate(dict(px), int(v["total_points"]), int(v["no_change_points"]), int(v["min_per_stratum"]))
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    alloc = allocate(dict(px), int(v["total_points"]), int(v["no_change_points"]), int(v["min_per_stratum"]),
+                     min_px_for_min=int(round(float(v["min_stratum_area_ha"]) / px_ha)))
     log.info("tabaka piksel sayıları: %s", dict(px))
     log.info("nokta dağıtımı: %s (toplam %d)", alloc, sum(alloc.values()))
-    pts = sample_pixels(smaps, alloc, int(v["seed"]), float(v["calibration_share"]))
+    pts = sample_pixels(smaps, alloc, int(v["seed"]), float(v["calibration_share"]),
+                        polygon_maps={a: feats_ix[a][0] for a in aois},
+                        max_per_polygon=int(v["max_points_per_polygon"]),
+                        min_dist_px=float(v["min_point_distance_m"]) / float(settings["grid"]["resolution_m"]))
+    for s in alloc:
+        got = sum(p["tabaka"] == s for p in pts)
+        if got < alloc[s]:
+            log.warning("tabaka %s: %d nokta istendi, kısıtlar (poligon başına ≤ %s, aralık ≥ %s m) yüzünden %d",
+                        s, alloc[s], v["max_points_per_polygon"], v["min_point_distance_m"], got)
 
     to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
-    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
     features = []
     for p in pts:
         g = grids[p["aoi"]]
@@ -942,6 +951,10 @@ def cmd_sample(args: argparse.Namespace) -> int:
     log.info("çıktı: %s (%d nokta), %s", out, len(features), lab)
 
     chip_dir = cache_root / "validation" / "chips"
+    if chip_dir.exists():  # eski örneklemenin çipleri karışmasın
+        import shutil
+
+        shutil.rmtree(chip_dir)
     comps: dict[tuple[str, int], Any] = {}
     for f in features:
         p = f["properties"]
@@ -1041,7 +1054,8 @@ def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cac
     else:
         preds = [(p["tahmin_tur"], p["tahmin_yil"]) for p in sel]
     recs = [{"ref": reference_class(rows[p["nokta_id"]]), "pred": pr, "pred_year": py,
-             "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None, "aoi": p["aoi"]}
+             "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None, "aoi": p["aoi"],
+             "stratum": p["tabaka"], "stratum_area_ha": p["tabaka_alan_ha"]}
             for p, (pr, py) in zip(sel, preds)]
     return recs, len(pts), len(rows)
 
@@ -1050,7 +1064,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     """Etiketlerden karışıklık matrisi, tür bazlı metrikler ve yıl bazlı doğruluk."""
     import json
 
-    from changewatch.validate import format_report, metrics
+    from changewatch.validate import format_olofsson, format_report, metrics, olofsson
 
     settings = load_settings(args.config)
     setup_logging(settings)
@@ -1066,9 +1080,13 @@ def cmd_validate(args: argparse.Namespace) -> int:
         print(f"UYARI: {n_lab} etiket var ama '{args.set}' kümesinde etiketli nokta yok.")
         return 0
     rep = metrics(recs)
+    rep["olofsson"] = olofsson(recs, {r["stratum"]: float(r["stratum_area_ha"]) for r in recs})
     rep.update(kume=args.set, harita=args.map, etiketli=n_lab, toplam_nokta=n_pts)
     print(f"## Doğrulama ({args.set} noktaları, harita: {args.map})\n")
+    print("### Nokta bazlı\n")
     print(format_report(rep))
+    print("\n### Alan ağırlıklı (Olofsson vd. 2014; tabaka = örnekleme anındaki harita sınıfı)\n")
+    print(format_olofsson(rep["olofsson"]))
     out = resolve_path(settings, "validation") / f"metrics_{args.set}.json"
     out.write_text(json.dumps(rep, ensure_ascii=False, indent=2, default=float), encoding="utf-8")
     log.info("çıktı: %s", out)

@@ -120,10 +120,13 @@ water:
 validation:
   aois: [incek, golbasi]       # geliştirme AOI'leri; test AOI'leri (baglica, pursaklar) dondurulmuş yöntemle sonra
   method: breakpoint
-  seed: 42
+  seed: 43                     # su kuralı değişince yeniden örnekleme (önceki: 42)
   total_points: 280
   no_change_points: 100        # degisim_yok tabakası (sabit)
-  min_per_stratum: 20          # değişim tabakaları: kalan noktalar alanla orantılı, tabaka başına en az bu kadar
+  min_per_stratum: 20          # değişim tabakaları: kalan noktalar alanla orantılı, tabaka başına en az bu kadar…
+  min_stratum_area_ha: 20      # …yalnızca alanı ≥ bu olan tabakalarda (küçük tabakalar yalnızca orantılı pay)
+  max_points_per_polygon: 3
+  min_point_distance_m: 60     # aynı AOI'de noktalar arası en az
   calibration_share: 0.3       # tabaka içinde rastgele %30 kalibrasyon, %70 test
   chip_px: 41                  # çip kenarı (piksel; 41 × 20 m = 820 m)
   chip_upscale: 5

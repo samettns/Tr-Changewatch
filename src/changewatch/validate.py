@@ -21,22 +21,24 @@ LABEL_FIELDS = ["nokta_id", "aoi", "gercek_degisim", "gercek_tur", "gercek_yil",
 
 # ---------------------------------------------------------------- örnekleme
 
-def allocate(stratum_px: dict[str, int], total: int, no_change_n: int, min_per: int) -> dict[str, int]:
-    """Nokta dağıtımı: degisim_yok sabit; kalan, değişim tabakalarına alanla orantılı, tabaka başına ≥ min_per.
+def allocate(stratum_px: dict[str, int], total: int, no_change_n: int, min_per: int,
+             min_px_for_min: int = 0) -> dict[str, int]:
+    """Nokta dağıtımı: degisim_yok sabit; kalan, değişim tabakalarına alanla orantılı.
 
-    Hiçbir tabakaya piksel sayısından fazla nokta verilmez.
+    Tabaka başına en az min_per kuralı yalnızca alanı ≥ min_px_for_min piksel olan tabakalara uygulanır;
+    küçük tabakalar yalnızca orantılı paylarını alır (0 olabilir). Hiçbir tabakaya piksel sayısından fazla
+    nokta verilmez.
     """
     alloc = {NO_CHANGE: min(no_change_n, stratum_px.get(NO_CHANGE, 0))}
     change = {k: v for k, v in stratum_px.items() if k != NO_CHANGE and v > 0}
     rest = max(total - alloc[NO_CHANGE], 0)
-    base = {k: min(min_per, v) for k, v in change.items()}
+    base = {k: (min(min_per, v) if v >= min_px_for_min else 0) for k, v in change.items()}
     left = rest - sum(base.values())
     if left > 0 and change:
         tot = sum(change.values())
         extra = {k: left * v / tot for k, v in change.items()}
         for k in change:
             base[k] = min(change[k], base[k] + int(math.floor(extra[k])))
-        # yuvarlama artığını en büyük kesirlere dağıt
         rem = rest - sum(base.values())
         for k in sorted(change, key=lambda k: -(extra[k] - math.floor(extra[k]))):
             if rem <= 0:
@@ -49,10 +51,14 @@ def allocate(stratum_px: dict[str, int], total: int, no_change_n: int, min_per: 
 
 
 def sample_pixels(stratum_maps: dict[str, np.ndarray], alloc: dict[str, int], seed: int,
-                  calibration_share: float) -> list[dict[str, Any]]:
+                  calibration_share: float, polygon_maps: dict[str, np.ndarray] | None = None,
+                  max_per_polygon: int = 0, min_dist_px: float = 0.0) -> list[dict[str, Any]]:
     """Her tabakadan (tüm AOI'ler birlikte) eşit olasılıklı piksel seçer; tabaka içinde kalibrasyon payını işaretler.
 
     stratum_maps: "<aoi>" → (H, W) tabaka adı dizisi ('' = örnekleme dışı).
+    polygon_maps: "<aoi>" → (H, W) poligon kimliği (0 = poligon yok); max_per_polygon > 0 ise poligon başına üst sınır.
+    min_dist_px > 0 ise aynı AOI'deki noktalar arası en az bu kadar piksel (tüm tabakalar birlikte).
+    Kısıtlar yüzünden tabaka dolmazsa daha az nokta döner.
     """
     rng = np.random.default_rng(seed)
     pool: dict[str, list[tuple[str, int, int]]] = defaultdict(list)
@@ -62,20 +68,35 @@ def sample_pixels(stratum_maps: dict[str, np.ndarray], alloc: dict[str, int], se
                 continue
             rr, cc = np.nonzero(smap == s)
             pool[str(s)].extend((aoi, int(r), int(c)) for r, c in zip(rr, cc))
+    accepted: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    per_poly: Counter = Counter()
     points = []
-    for s in sorted(alloc):
+    # küçük tabakalar önce: kısıtlar büyük tabakaları değil, zaten az pikseli olanları zorlar
+    for s in sorted(alloc, key=lambda k: (len(pool.get(k, [])), k)):
         cand = pool.get(s, [])
-        n = min(alloc[s], len(cand))
-        if n == 0:
-            continue
-        pick = rng.choice(len(cand), n, replace=False)
+        want = min(alloc[s], len(cand))
+        chosen = []
+        for i in rng.permutation(len(cand)):
+            if len(chosen) >= want:
+                break
+            aoi, r, c = cand[i]
+            pid = int(polygon_maps[aoi][r, c]) if polygon_maps and aoi in polygon_maps else 0
+            if max_per_polygon and pid and per_poly[(aoi, pid)] >= max_per_polygon:
+                continue
+            if min_dist_px and any((r - rr) ** 2 + (c - cc) ** 2 < min_dist_px ** 2 for rr, cc in accepted[aoi]):
+                continue
+            chosen.append((aoi, r, c))
+            accepted[aoi].append((r, c))
+            if pid:
+                per_poly[(aoi, pid)] += 1
+        n = len(chosen)
         n_cal = int(round(n * calibration_share))
         roles = np.array(["kalibrasyon"] * n_cal + ["test"] * (n - n_cal))
         rng.shuffle(roles)
-        for j, i in enumerate(sorted(pick)):
-            aoi, r, c = cand[i]
+        for j, (aoi, r, c) in enumerate(sorted(chosen)):
             points.append({"aoi": aoi, "tabaka": s, "row": r, "col": c, "rol": str(roles[j]),
-                           "tabaka_piksel": len(cand)})
+                           "tabaka_piksel": len(cand), "istenen": alloc[s]})
+    points.sort(key=lambda p: (p["tabaka"] == NO_CHANGE, p["tabaka"], p["aoi"], p["row"], p["col"]))
     for k, p in enumerate(points, start=1):
         p["nokta_id"] = f"P{k:03d}"
     return points
@@ -173,6 +194,76 @@ def metrics(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
             "tahmin_yilina_gore": by_year,
         },
     }
+
+
+def olofsson(records: Sequence[dict[str, Any]], stratum_area_ha: dict[str, float],
+             z: float = 1.96) -> dict[str, Any]:
+    """Olofsson vd. (2014) alan ağırlıklı doğruluk ve alan kestirimi (± z·SE güven aralığı, ha).
+
+    records: {"stratum": harita sınıfı = örnekleme tabakası, "ref": referans sınıf}.
+    stratum_area_ha: tabaka (harita sınıfı) alanları. Tabaka içi n < 2 ise o terimin varyansı hesaplanamaz.
+    """
+    strata = [s for s in stratum_area_ha if any(r["stratum"] == s for r in records)]
+    if not strata:
+        return {}
+    A = float(sum(stratum_area_ha[s] for s in strata))
+    classes = sorted({r["ref"] for r in records} | set(strata), key=lambda c: (c == NO_CHANGE, c))
+    n_i = {s: sum(r["stratum"] == s for r in records) for s in strata}
+    n_ij = {(s, j): sum(r["stratum"] == s and r["ref"] == j for r in records) for s in strata for j in classes}
+    W = {s: stratum_area_ha[s] / A for s in strata}
+    p = {(s, j): W[s] * n_ij[(s, j)] / n_i[s] for s in strata for j in classes}
+    pj = {j: sum(p[(s, j)] for s in strata) for j in classes}
+
+    def var_term(s, j):
+        q = n_ij[(s, j)] / n_i[s]
+        return q * (1 - q) / (n_i[s] - 1) if n_i[s] > 1 else None
+
+    oa = sum(p[(c, c)] for c in strata if c in classes)
+    v_oa = [W[s] ** 2 * var_term(s, s) for s in strata]
+    out: dict[str, Any] = {
+        "toplam_alan_ha": round(A, 1),
+        "genel_dogruluk": oa,
+        "genel_dogruluk_ga": None if None in v_oa else z * float(np.sqrt(sum(v_oa))),
+        "siniflar": {},
+    }
+    for j in classes:
+        ua = n_ij[(j, j)] / n_i[j] if j in strata else None
+        ua_ci = z * float(np.sqrt(var_term(j, j))) if j in strata and var_term(j, j) is not None else None
+        terms = [W[s] ** 2 * var_term(s, j) for s in strata]
+        area_se = None if None in terms else float(np.sqrt(sum(terms)))
+        pa = p[(j, j)] / pj[j] if j in strata and pj[j] > 0 else None
+        pa_ci = None
+        if pa is not None:
+            N = {s: stratum_area_ha[s] for s in strata}
+            Nj_hat = sum(N[s] * n_ij[(s, j)] / n_i[s] for s in strata)
+            t1 = N[j] ** 2 * (1 - pa) ** 2 * (var_term(j, j) or 0.0)
+            t2 = pa ** 2 * sum(N[s] ** 2 * (var_term(s, j) or 0.0) for s in strata if s != j)
+            pa_ci = z * float(np.sqrt((t1 + t2) / Nj_hat ** 2)) if Nj_hat > 0 else None
+        out["siniflar"][j] = {
+            "harita_alani_ha": round(stratum_area_ha.get(j, 0.0), 1),
+            "kestirilen_alan_ha": round(A * pj[j], 1),
+            "alan_ga_ha": None if area_se is None else round(z * A * area_se, 1),
+            "kullanici_dogrulugu": ua, "kullanici_ga": ua_ci,
+            "uretici_dogrulugu": pa, "uretici_ga": pa_ci,
+        }
+    return out
+
+
+def format_olofsson(rep: dict[str, Any]) -> str:
+    """Olofsson sonuçlarını markdown olarak biçimlendirir."""
+    if not rep:
+        return "Olofsson: hesaplanacak tabaka yok."
+    pct = lambda v, ci=None: "-" if v is None else (f"%{100 * v:.0f}" + ("" if ci is None else f" ± {100 * ci:.0f}"))  # noqa: E731
+    lines = [f"Alan ağırlıklı (Olofsson) genel doğruluk: {pct(rep['genel_dogruluk'], rep['genel_dogruluk_ga'])} "
+             f"(toplam alan {rep['toplam_alan_ha']:.0f} ha, %95 GA)", "",
+             "| sınıf | harita alanı (ha) | kestirilen alan (ha) ± %95 GA | kullanıcı d. | üretici d. |",
+             "|---|---|---|---|---|"]
+    for c, v in rep["siniflar"].items():
+        ci = "" if v["alan_ga_ha"] is None else f" ± {v['alan_ga_ha']:.0f}"
+        lines.append(f"| {c} | {v['harita_alani_ha']:.0f} | {v['kestirilen_alan_ha']:.0f}{ci} | "
+                     f"{pct(v['kullanici_dogrulugu'], v['kullanici_ga'])} | "
+                     f"{pct(v['uretici_dogrulugu'], v['uretici_ga'])} |")
+    return "\n".join(lines)
 
 
 def _group(records: Sequence[dict], key: str) -> dict[Any, list[dict]]:

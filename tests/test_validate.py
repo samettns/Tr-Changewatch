@@ -94,3 +94,49 @@ def test_experiment_registry_and_status(tmp_path):
     assert status(e2["yaz"], tmp_path, ["incek"]) == "hazır"
     e5 = dict((v.name, v) for v in EXPERIMENTS["E5"][1])
     assert status(e5["normalize"], tmp_path, ["incek"]) == "henüz uygulanmadı"
+
+
+def test_allocate_min_only_for_large_strata():
+    px = {NO_CHANGE: 100_000, "yapilasma_olasi": 9000, "su_kazanimi": 120, "bitki_kaybi": 2000}
+    a = allocate(px, total=280, no_change_n=100, min_per=20, min_px_for_min=500)   # 20 ha = 500 px
+    assert a["bitki_kaybi"] >= 20 and a["su_kazanimi"] < 20                     # küçük tabaka yalnızca orantılı
+    assert sum(a.values()) == 280
+
+
+def test_sample_pixels_polygon_cap_and_min_distance():
+    sm = np.full((60, 60), NO_CHANGE, dtype=object)
+    poly = np.zeros((60, 60), int)
+    sm[0:10, 0:10] = "yapilasma_olasi"
+    poly[0:10, 0:10] = 1                                   # tek poligon
+    pts = sample_pixels({"incek": sm}, {"yapilasma_olasi": 10, NO_CHANGE: 30}, seed=3, calibration_share=0.3,
+                        polygon_maps={"incek": poly}, max_per_polygon=3, min_dist_px=3)
+    assert sum(p["tabaka"] == "yapilasma_olasi" for p in pts) == 3              # poligon başına ≤ 3
+    xy = np.array([(p["row"], p["col"]) for p in pts])
+    d = np.sqrt(((xy[:, None] - xy[None]) ** 2).sum(-1)) + np.eye(len(xy)) * 99
+    assert d.min() >= 3                                                           # ≥ 60 m
+
+
+def test_olofsson_hand_computed():
+    from changewatch.validate import olofsson
+
+    Y, N = "yapilasma_olasi", NO_CHANGE
+    recs = ([{"stratum": Y, "ref": Y}] * 3 + [{"stratum": Y, "ref": N}]
+            + [{"stratum": N, "ref": N}] * 4 + [{"stratum": N, "ref": Y}])
+    o = olofsson(recs, {Y: 10.0, N: 90.0})
+    assert o["genel_dogruluk"] == pytest.approx(0.795)
+    assert o["genel_dogruluk_ga"] == pytest.approx(1.96 * np.sqrt(0.033025), rel=1e-6)
+    y = o["siniflar"][Y]
+    assert y["kestirilen_alan_ha"] == pytest.approx(25.5)
+    assert y["alan_ga_ha"] == pytest.approx(1.96 * 100 * np.sqrt(0.033025), abs=0.1)
+    assert y["kullanici_dogrulugu"] == pytest.approx(0.75)
+    assert y["uretici_dogrulugu"] == pytest.approx(0.075 / 0.255)
+    assert o["siniflar"][N]["kestirilen_alan_ha"] == pytest.approx(74.5)
+
+
+def test_olofsson_perfect_map_reproduces_map_areas():
+    from changewatch.validate import olofsson
+
+    recs = [{"stratum": "a", "ref": "a"}] * 5 + [{"stratum": NO_CHANGE, "ref": NO_CHANGE}] * 5
+    o = olofsson(recs, {"a": 30.0, NO_CHANGE: 70.0})
+    assert o["genel_dogruluk"] == 1.0 and o["genel_dogruluk_ga"] == 0.0
+    assert o["siniflar"]["a"]["kestirilen_alan_ha"] == 30.0 and o["siniflar"]["a"]["alan_ga_ha"] == 0.0
