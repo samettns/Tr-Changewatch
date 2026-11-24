@@ -1,0 +1,8125 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P001",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0004",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474030.0,
+    "y": 4411490.0,
+    "row": 39,
+    "col": 71,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6964082,
+     39.8530364
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P002",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0004",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474330.0,
+    "y": 4411490.0,
+    "row": 39,
+    "col": 86,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6999151,
+     39.8530456
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P003",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0004",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 473950.0,
+    "y": 4411470.0,
+    "row": 40,
+    "col": 67,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6954738,
+     39.8528538
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P004",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0004",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474490.0,
+    "y": 4411430.0,
+    "row": 42,
+    "col": 94,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7017879,
+     39.8525098
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P005",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0004",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474390.0,
+    "y": 4411310.0,
+    "row": 48,
+    "col": 89,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7006236,
+     39.8514256
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P006",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2023-0009",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 477510.0,
+    "y": 4411230.0,
+    "row": 52,
+    "col": 245,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7370982,
+     39.8507932
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P007",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2018-0014",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 473330.0,
+    "y": 4409730.0,
+    "row": 127,
+    "col": 36,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6882969,
+     39.8371573
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P008",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2019-0013",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 477350.0,
+    "y": 4409690.0,
+    "row": 129,
+    "col": 237,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7352812,
+     39.8369136
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P009",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2019-0014",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 474310.0,
+    "y": 4409510.0,
+    "row": 138,
+    "col": 85,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6997591,
+     39.8352053
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P010",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2019-0014",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 474350.0,
+    "y": 4409490.0,
+    "row": 139,
+    "col": 87,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7002273,
+     39.8350263
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P011",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2019-0014",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 474250.0,
+    "y": 4409430.0,
+    "row": 142,
+    "col": 82,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.699061,
+     39.8344827
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P012",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2018-0016",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474310.0,
+    "y": 4409410.0,
+    "row": 143,
+    "col": 85,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.699763,
+     39.8343043
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P013",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2022-0031",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 474850.0,
+    "y": 4409270.0,
+    "row": 150,
+    "col": 112,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7060792,
+     39.8330591
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P014",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2019-0015",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 476970.0,
+    "y": 4409250.0,
+    "row": 151,
+    "col": 218,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7308555,
+     39.832939
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P015",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2022-0031",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 474810.0,
+    "y": 4409210.0,
+    "row": 153,
+    "col": 110,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7056141,
+     39.8325173
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P016",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2018-0017",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474630.0,
+    "y": 4409150.0,
+    "row": 156,
+    "col": 101,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7035128,
+     39.8319714
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P017",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2021-0015",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 473130.0,
+    "y": 4408290.0,
+    "row": 199,
+    "col": 26,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6860185,
+     39.8241767
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P018",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2021-0015",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 473130.0,
+    "y": 4408270.0,
+    "row": 200,
+    "col": 26,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6860194,
+     39.8239965
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P019",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2020-0016",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 474550.0,
+    "y": 4405330.0,
+    "row": 347,
+    "col": 97,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7027262,
+     39.7975509
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P020",
+    "aoi": "incek",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "incek-bp-2018-0028",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 473150.0,
+    "y": 4404950.0,
+    "row": 366,
+    "col": 27,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.686389,
+     39.794084
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P021",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2023-0002",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 483690.0,
+    "y": 4406130.0,
+    "row": 28,
+    "col": 170,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8094672,
+     39.8049833
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P022",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2021-0002",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 480970.0,
+    "y": 4405950.0,
+    "row": 37,
+    "col": 34,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7776977,
+     39.803305
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P023",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 486630.0,
+    "y": 4405830.0,
+    "row": 43,
+    "col": 317,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8438182,
+     39.8023316
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P024",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2018-0005",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 480410.0,
+    "y": 4404750.0,
+    "row": 97,
+    "col": 6,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7711918,
+     39.7924802
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P025",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2018-0005",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 480430.0,
+    "y": 4404730.0,
+    "row": 98,
+    "col": 7,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.771426,
+     39.7923005
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P026",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2025-0018",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 480390.0,
+    "y": 4401470.0,
+    "row": 261,
+    "col": 5,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7710562,
+     39.7629267
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P027",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2025-0019",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 480490.0,
+    "y": 4401310.0,
+    "row": 269,
+    "col": 10,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7722284,
+     39.7614874
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P028",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2025-0021",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 483610.0,
+    "y": 4400390.0,
+    "row": 315,
+    "col": 166,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8086759,
+     39.7532638
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P029",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2021-0016",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 484250.0,
+    "y": 4399370.0,
+    "row": 366,
+    "col": 198,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8161712,
+     39.7440855
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P030",
+    "aoi": "golbasi",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "golbasi-bp-2021-0016",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 484190.0,
+    "y": 4399270.0,
+    "row": 371,
+    "col": 195,
+    "tabaka_alan_ha": 92.5,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8154733,
+     39.7431834
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P031",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0002",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 477850.0,
+    "y": 4412190.0,
+    "row": 4,
+    "col": 262,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7410402,
+     39.8594517
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P032",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0005",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 475250.0,
+    "y": 4411390.0,
+    "row": 44,
+    "col": 132,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7106737,
+     39.8521719
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P033",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0016",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 474790.0,
+    "y": 4410770.0,
+    "row": 75,
+    "col": 109,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7053203,
+     39.8465722
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P034",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0016",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 474670.0,
+    "y": 4410670.0,
+    "row": 80,
+    "col": 103,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7039215,
+     39.8456677
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P035",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0016",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 474830.0,
+    "y": 4410670.0,
+    "row": 80,
+    "col": 111,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7057917,
+     39.8456724
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P036",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0036",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 478870.0,
+    "y": 4408630.0,
+    "row": 182,
+    "col": 313,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.75308,
+     39.8274022
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P037",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0039",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 478390.0,
+    "y": 4407570.0,
+    "row": 235,
+    "col": 289,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7475058,
+     39.8178395
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P038",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0039",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 478310.0,
+    "y": 4407510.0,
+    "row": 238,
+    "col": 285,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7465731,
+     39.8172969
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P039",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0014",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 473610.0,
+    "y": 4406130.0,
+    "row": 307,
+    "col": 50,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6917143,
+     39.8047302
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P040",
+    "aoi": "incek",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0072",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 476990.0,
+    "y": 4406030.0,
+    "row": 312,
+    "col": 219,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7312023,
+     39.8039274
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P041",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0002",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482050.0,
+    "y": 4405130.0,
+    "row": 78,
+    "col": 88,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7903363,
+     39.7959402
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P042",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 482130.0,
+    "y": 4403310.0,
+    "row": 169,
+    "col": 92,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7913202,
+     39.7795436
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P043",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 482090.0,
+    "y": 4403130.0,
+    "row": 178,
+    "col": 90,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.790858,
+     39.7779209
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P044",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 482050.0,
+    "y": 4402970.0,
+    "row": 186,
+    "col": 88,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7903953,
+     39.7764785
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P045",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 482030.0,
+    "y": 4402950.0,
+    "row": 187,
+    "col": 87,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7901623,
+     39.7762978
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P046",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481930.0,
+    "y": 4402750.0,
+    "row": 197,
+    "col": 82,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7890001,
+     39.7744937
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P047",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0009",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481790.0,
+    "y": 4402590.0,
+    "row": 205,
+    "col": 75,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7873698,
+     39.7730491
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P048",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482530.0,
+    "y": 4402570.0,
+    "row": 206,
+    "col": 112,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.796011,
+     39.7728844
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P049",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482310.0,
+    "y": 4402410.0,
+    "row": 214,
+    "col": 101,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7934464,
+     39.7714382
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P050",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482570.0,
+    "y": 4402370.0,
+    "row": 216,
+    "col": 114,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7964833,
+     39.7710832
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P051",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482490.0,
+    "y": 4402350.0,
+    "row": 217,
+    "col": 110,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7955498,
+     39.7709014
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P052",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482470.0,
+    "y": 4402330.0,
+    "row": 218,
+    "col": 109,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7953168,
+     39.7707207
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P053",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2019-0008",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 482450.0,
+    "y": 4402310.0,
+    "row": 219,
+    "col": 108,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7950838,
+     39.7705401
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P054",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0011",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481670.0,
+    "y": 4402230.0,
+    "row": 223,
+    "col": 69,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7859787,
+     39.7698029
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P055",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2020-0008",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 483330.0,
+    "y": 4400590.0,
+    "row": 305,
+    "col": 152,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8054024,
+     39.7550604
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P056",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0025",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 483190.0,
+    "y": 4400570.0,
+    "row": 306,
+    "col": 145,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8037686,
+     39.7548775
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P057",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0025",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 483190.0,
+    "y": 4400550.0,
+    "row": 307,
+    "col": 145,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8037691,
+     39.7546973
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P058",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0025",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 483110.0,
+    "y": 4400510.0,
+    "row": 309,
+    "col": 141,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8028363,
+     39.7543353
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P059",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0017",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481830.0,
+    "y": 4400470.0,
+    "row": 311,
+    "col": 77,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7878955,
+     39.7539485
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P060",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0017",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481830.0,
+    "y": 4400350.0,
+    "row": 317,
+    "col": 77,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7878988,
+     39.7528673
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P061",
+    "aoi": "golbasi",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0017",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 481610.0,
+    "y": 4400130.0,
+    "row": 328,
+    "col": 66,
+    "tabaka_alan_ha": 98.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7853369,
+     39.7508804
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P062",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479610.0,
+    "y": 4411950.0,
+    "row": 16,
+    "col": 350,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.761624,
+     39.8573334
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P063",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 478670.0,
+    "y": 4411890.0,
+    "row": 19,
+    "col": 303,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7506366,
+     39.8567697
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P064",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 478030.0,
+    "y": 4411590.0,
+    "row": 34,
+    "col": 271,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7431647,
+     39.8540504
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P065",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 477810.0,
+    "y": 4411190.0,
+    "row": 54,
+    "col": 260,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7406064,
+     39.8504407
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P066",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473370.0,
+    "y": 4410930.0,
+    "row": 67,
+    "col": 38,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6887156,
+     39.8479705
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P067",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480130.0,
+    "y": 4410890.0,
+    "row": 69,
+    "col": 376,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7677353,
+     39.8477952
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P068",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475050.0,
+    "y": 4410850.0,
+    "row": 71,
+    "col": 122,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7083563,
+     39.8473007
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P069",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473150.0,
+    "y": 4410790.0,
+    "row": 74,
+    "col": 27,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6861497,
+     39.8467021
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P070",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473250.0,
+    "y": 4410670.0,
+    "row": 80,
+    "col": 32,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6873235,
+     39.8456241
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P071",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476210.0,
+    "y": 4410650.0,
+    "row": 81,
+    "col": 180,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7219228,
+     39.845532
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P072",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473170.0,
+    "y": 4410530.0,
+    "row": 87,
+    "col": 28,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6863942,
+     39.8443602
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P073",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 472810.0,
+    "y": 4410290.0,
+    "row": 99,
+    "col": 10,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6821963,
+     39.8421864
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P074",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 477110.0,
+    "y": 4410150.0,
+    "row": 106,
+    "col": 225,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7324601,
+     39.8410518
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P075",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474330.0,
+    "y": 4409950.0,
+    "row": 116,
+    "col": 86,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6999755,
+     39.8391703
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P076",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475970.0,
+    "y": 4409890.0,
+    "row": 119,
+    "col": 168,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7191454,
+     39.8386777
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P077",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479690.0,
+    "y": 4409790.0,
+    "row": 124,
+    "col": 354,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7626263,
+     39.8378738
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P078",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 478010.0,
+    "y": 4409630.0,
+    "row": 132,
+    "col": 270,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7429968,
+     39.8363904
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P079",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 472910.0,
+    "y": 4409470.0,
+    "row": 140,
+    "col": 15,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.683399,
+     39.8348014
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P080",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 477930.0,
+    "y": 4409410.0,
+    "row": 143,
+    "col": 266,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7420692,
+     39.8344061
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P081",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479970.0,
+    "y": 4409390.0,
+    "row": 144,
+    "col": 368,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.765911,
+     39.8342765
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P082",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473250.0,
+    "y": 4409330.0,
+    "row": 147,
+    "col": 32,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6873783,
+     39.8335508
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P083",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474870.0,
+    "y": 4409190.0,
+    "row": 154,
+    "col": 113,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.706316,
+     39.8323389
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P084",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479890.0,
+    "y": 4408970.0,
+    "row": 165,
+    "col": 364,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7649889,
+     39.8304904
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P085",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 477530.0,
+    "y": 4408030.0,
+    "row": 212,
+    "col": 246,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7374418,
+     39.8219618
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P086",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476090.0,
+    "y": 4407990.0,
+    "row": 214,
+    "col": 174,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7206173,
+     39.8215621
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P087",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474390.0,
+    "y": 4407950.0,
+    "row": 216,
+    "col": 89,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.700755,
+     39.8211522
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P088",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473730.0,
+    "y": 4407930.0,
+    "row": 217,
+    "col": 56,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.693044,
+     39.8209519
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P089",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475550.0,
+    "y": 4407850.0,
+    "row": 221,
+    "col": 147,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7143128,
+     39.8202854
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P090",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475770.0,
+    "y": 4407790.0,
+    "row": 224,
+    "col": 158,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7168856,
+     39.8197511
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P091",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474750.0,
+    "y": 4407490.0,
+    "row": 239,
+    "col": 107,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7049792,
+     39.8170184
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P092",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475450.0,
+    "y": 4407410.0,
+    "row": 243,
+    "col": 142,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7131609,
+     39.8163181
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P093",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 472910.0,
+    "y": 4407310.0,
+    "row": 248,
+    "col": 15,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6834884,
+     39.81534
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P094",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473530.0,
+    "y": 4407270.0,
+    "row": 250,
+    "col": 46,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6907338,
+     39.8149991
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P095",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 478530.0,
+    "y": 4406950.0,
+    "row": 266,
+    "col": 296,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7491619,
+     39.8122569
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P096",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473950.0,
+    "y": 4406910.0,
+    "row": 268,
+    "col": 67,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6956551,
+     39.8117685
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P097",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476250.0,
+    "y": 4406790.0,
+    "row": 274,
+    "col": 182,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7225303,
+     39.8107547
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P098",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 478450.0,
+    "y": 4406730.0,
+    "row": 277,
+    "col": 292,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7482345,
+     39.8102727
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P099",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 477170.0,
+    "y": 4406650.0,
+    "row": 281,
+    "col": 228,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7332834,
+     39.8095185
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P100",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473150.0,
+    "y": 4406310.0,
+    "row": 298,
+    "col": 27,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6863334,
+     39.8063376
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P101",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476630.0,
+    "y": 4405530.0,
+    "row": 337,
+    "col": 201,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7270147,
+     39.7994126
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P102",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475450.0,
+    "y": 4405490.0,
+    "row": 339,
+    "col": 142,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7132327,
+     39.7990189
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P103",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479470.0,
+    "y": 4405290.0,
+    "row": 349,
+    "col": 343,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.760196,
+     39.7973235
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P104",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 472790.0,
+    "y": 4405130.0,
+    "row": 357,
+    "col": 9,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6821768,
+     39.7956944
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P105",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476250.0,
+    "y": 4405050.0,
+    "row": 361,
+    "col": 182,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7225933,
+     39.7950772
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P106",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476750.0,
+    "y": 4405050.0,
+    "row": 361,
+    "col": 207,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7284334,
+     39.7950911
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P107",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474330.0,
+    "y": 4405010.0,
+    "row": 363,
+    "col": 86,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.700169,
+     39.7946611
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P108",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 479710.0,
+    "y": 4404930.0,
+    "row": 367,
+    "col": 355,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7630104,
+     39.7940856
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P109",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 473470.0,
+    "y": 4404890.0,
+    "row": 369,
+    "col": 43,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.690129,
+     39.7935535
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P110",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 475890.0,
+    "y": 4404810.0,
+    "row": 373,
+    "col": 164,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7183973,
+     39.7929047
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P111",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476650.0,
+    "y": 4404750.0,
+    "row": 376,
+    "col": 202,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7272761,
+     39.7923853
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P112",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 476330.0,
+    "y": 4404650.0,
+    "row": 381,
+    "col": 186,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7235422,
+     39.7914755
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P113",
+    "aoi": "incek",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 474430.0,
+    "y": 4404510.0,
+    "row": 388,
+    "col": 91,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7013565,
+     39.7901591
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P114",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483790.0,
+    "y": 4406650.0,
+    "row": 2,
+    "col": 175,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8106225,
+     39.8096705
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P115",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 482910.0,
+    "y": 4406590.0,
+    "row": 5,
+    "col": 131,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8003433,
+     39.8091126
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P116",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486030.0,
+    "y": 4406570.0,
+    "row": 6,
+    "col": 287,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8367935,
+     39.8089894
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P117",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485350.0,
+    "y": 4406550.0,
+    "row": 7,
+    "col": 253,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8288498,
+     39.8087978
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P118",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483170.0,
+    "y": 4406530.0,
+    "row": 8,
+    "col": 144,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8033824,
+     39.8085772
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P119",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486310.0,
+    "y": 4405810.0,
+    "row": 44,
+    "col": 301,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8400805,
+     39.8021463
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P120",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480650.0,
+    "y": 4405750.0,
+    "row": 47,
+    "col": 18,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7739655,
+     39.8014958
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P121",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483030.0,
+    "y": 4405730.0,
+    "row": 48,
+    "col": 137,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8017675,
+     39.8013664
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P122",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486270.0,
+    "y": 4405370.0,
+    "row": 66,
+    "col": 299,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8396225,
+     39.7981812
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P123",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 481570.0,
+    "y": 4405250.0,
+    "row": 72,
+    "col": 64,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7847263,
+     39.7970112
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P124",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 484690.0,
+    "y": 4405230.0,
+    "row": 73,
+    "col": 220,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8211701,
+     39.7968928
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P125",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485950.0,
+    "y": 4405190.0,
+    "row": 75,
+    "col": 283,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8358885,
+     39.7965542
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P126",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483430.0,
+    "y": 4405130.0,
+    "row": 78,
+    "col": 157,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8064552,
+     39.7959682
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P127",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 487190.0,
+    "y": 4405090.0,
+    "row": 80,
+    "col": 345,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8503742,
+     39.7956728
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P128",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486690.0,
+    "y": 4404770.0,
+    "row": 96,
+    "col": 320,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8445405,
+     39.7927819
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P129",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485350.0,
+    "y": 4404550.0,
+    "row": 107,
+    "col": 253,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8288945,
+     39.7907776
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P130",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485930.0,
+    "y": 4404530.0,
+    "row": 108,
+    "col": 282,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.835669,
+     39.7906072
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P131",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 484990.0,
+    "y": 4404210.0,
+    "row": 124,
+    "col": 235,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8246976,
+     39.7877079
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P132",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486210.0,
+    "y": 4404050.0,
+    "row": 132,
+    "col": 296,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8389493,
+     39.7862869
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P133",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486090.0,
+    "y": 4404010.0,
+    "row": 134,
+    "col": 290,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8375487,
+     39.7859246
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P134",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486490.0,
+    "y": 4403890.0,
+    "row": 140,
+    "col": 310,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8422227,
+     39.7848498
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P135",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 487050.0,
+    "y": 4403790.0,
+    "row": 145,
+    "col": 338,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8487646,
+     39.7839575
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P136",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483250.0,
+    "y": 4403450.0,
+    "row": 162,
+    "col": 148,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8043956,
+     39.7808278
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P137",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485470.0,
+    "y": 4403390.0,
+    "row": 165,
+    "col": 259,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8303217,
+     39.780328
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P138",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486370.0,
+    "y": 4403190.0,
+    "row": 175,
+    "col": 304,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8408358,
+     39.7785408
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P139",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 487530.0,
+    "y": 4403150.0,
+    "row": 177,
+    "col": 362,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8543824,
+     39.7781982
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P140",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486130.0,
+    "y": 4403110.0,
+    "row": 179,
+    "col": 292,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8380349,
+     39.7778161
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P141",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 484370.0,
+    "y": 4402870.0,
+    "row": 191,
+    "col": 204,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8174885,
+     39.7756232
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P142",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480870.0,
+    "y": 4402550.0,
+    "row": 207,
+    "col": 29,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7766286,
+     39.7726685
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P143",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 486810.0,
+    "y": 4402550.0,
+    "row": 207,
+    "col": 326,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8459867,
+     39.7727813
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P144",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480690.0,
+    "y": 4402450.0,
+    "row": 212,
+    "col": 20,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7745298,
+     39.7717634
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P145",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480790.0,
+    "y": 4402230.0,
+    "row": 223,
+    "col": 25,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7757039,
+     39.7697835
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P146",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 481830.0,
+    "y": 4402170.0,
+    "row": 226,
+    "col": 77,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7878485,
+     39.7692657
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P147",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 481430.0,
+    "y": 4402110.0,
+    "row": 229,
+    "col": 57,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7831799,
+     39.7687165
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P148",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 484950.0,
+    "y": 4402090.0,
+    "row": 230,
+    "col": 233,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.824279,
+     39.7686058
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P149",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480330.0,
+    "y": 4402010.0,
+    "row": 234,
+    "col": 2,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7703395,
+     39.7677908
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P150",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 484710.0,
+    "y": 4401810.0,
+    "row": 244,
+    "col": 221,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8214834,
+     39.7660787
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P151",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 481870.0,
+    "y": 4401790.0,
+    "row": 245,
+    "col": 79,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.788326,
+     39.7658427
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P152",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 482030.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 87,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7902132,
+     39.759539
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P153",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485710.0,
+    "y": 4400430.0,
+    "row": 313,
+    "col": 271,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8331887,
+     39.753662
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P154",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 482730.0,
+    "y": 4400330.0,
+    "row": 318,
+    "col": 122,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7984051,
+     39.7527058
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P155",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483530.0,
+    "y": 4400070.0,
+    "row": 331,
+    "col": 162,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8077501,
+     39.750379
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P156",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 482010.0,
+    "y": 4399870.0,
+    "row": 341,
+    "col": 86,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7900131,
+     39.7485463
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P157",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 487290.0,
+    "y": 4399650.0,
+    "row": 352,
+    "col": 350,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8516475,
+     39.7466592
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P158",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483070.0,
+    "y": 4399570.0,
+    "row": 356,
+    "col": 139,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8023935,
+     39.7458649
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P159",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 485310.0,
+    "y": 4399530.0,
+    "row": 358,
+    "col": 251,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8285395,
+     39.7455461
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P160",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 483530.0,
+    "y": 4399410.0,
+    "row": 364,
+    "col": 162,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8077666,
+     39.7444323
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P161",
+    "aoi": "golbasi",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "once_yil": 2017,
+    "sonra_yil": 2025,
+    "x": 480730.0,
+    "y": 4399070.0,
+    "row": 381,
+    "col": 22,
+    "tabaka_alan_ha": 10966.8,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7750959,
+     39.7413102
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P162",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480790.0,
+    "y": 4401130.0,
+    "row": 278,
+    "col": 25,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.775736,
+     39.7598724
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P163",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480810.0,
+    "y": 4401130.0,
+    "row": 278,
+    "col": 26,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7759695,
+     39.7598728
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P164",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480770.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 24,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7755031,
+     39.7596917
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P165",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480790.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 25,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7757366,
+     39.7596922
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P166",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480810.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 26,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7759701,
+     39.7596926
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P167",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480830.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 27,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7762036,
+     39.7596931
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P168",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480850.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 28,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7764371,
+     39.7596935
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P169",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480770.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 24,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7755037,
+     39.7595115
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P170",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480790.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 25,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7757372,
+     39.759512
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P171",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480810.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 26,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7759707,
+     39.7595124
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P172",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480830.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 27,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7762042,
+     39.7595129
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P173",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480850.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 28,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7764377,
+     39.7595133
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P174",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480870.0,
+    "y": 4401090.0,
+    "row": 280,
+    "col": 29,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7766711,
+     39.7595138
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P175",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480790.0,
+    "y": 4401070.0,
+    "row": 281,
+    "col": 25,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7757378,
+     39.7593318
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P176",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480810.0,
+    "y": 4401070.0,
+    "row": 281,
+    "col": 26,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7759713,
+     39.7593322
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P177",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "test",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480830.0,
+    "y": 4401070.0,
+    "row": 281,
+    "col": 27,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7762048,
+     39.7593327
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P178",
+    "aoi": "golbasi",
+    "tabaka": "su_kaybi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 480850.0,
+    "y": 4401070.0,
+    "row": 281,
+    "col": 28,
+    "tabaka_alan_ha": 0.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7764382,
+     39.7593331
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P179",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482730.0,
+    "y": 4404450.0,
+    "row": 112,
+    "col": 122,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7982968,
+     39.7898275
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P180",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482710.0,
+    "y": 4404430.0,
+    "row": 113,
+    "col": 121,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7980637,
+     39.7896468
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P181",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482770.0,
+    "y": 4404430.0,
+    "row": 113,
+    "col": 124,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7987645,
+     39.7896481
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P182",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482790.0,
+    "y": 4404430.0,
+    "row": 113,
+    "col": 125,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7989981,
+     39.7896485
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P183",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482730.0,
+    "y": 4404410.0,
+    "row": 114,
+    "col": 122,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7982979,
+     39.789467
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P184",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482750.0,
+    "y": 4404410.0,
+    "row": 114,
+    "col": 123,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7985314,
+     39.7894675
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P185",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482770.0,
+    "y": 4404410.0,
+    "row": 114,
+    "col": 124,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.798765,
+     39.7894679
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P186",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482790.0,
+    "y": 4404410.0,
+    "row": 114,
+    "col": 125,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7989986,
+     39.7894683
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P187",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482710.0,
+    "y": 4404390.0,
+    "row": 115,
+    "col": 121,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7980648,
+     39.7892864
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P188",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482730.0,
+    "y": 4404390.0,
+    "row": 115,
+    "col": 122,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7982984,
+     39.7892868
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P189",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482750.0,
+    "y": 4404390.0,
+    "row": 115,
+    "col": 123,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.798532,
+     39.7892873
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P190",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482790.0,
+    "y": 4404390.0,
+    "row": 115,
+    "col": 125,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7989991,
+     39.7892881
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P191",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482710.0,
+    "y": 4404370.0,
+    "row": 116,
+    "col": 121,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7980653,
+     39.7891062
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P192",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482730.0,
+    "y": 4404370.0,
+    "row": 116,
+    "col": 122,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7982989,
+     39.7891066
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P193",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482750.0,
+    "y": 4404370.0,
+    "row": 116,
+    "col": 123,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7985325,
+     39.7891071
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P194",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482770.0,
+    "y": 4404370.0,
+    "row": 116,
+    "col": 124,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7987661,
+     39.7891075
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P195",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482790.0,
+    "y": 4404370.0,
+    "row": 116,
+    "col": 125,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7989997,
+     39.7891079
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P196",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482730.0,
+    "y": 4404350.0,
+    "row": 117,
+    "col": 122,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7982994,
+     39.7889264
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P197",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482750.0,
+    "y": 4404350.0,
+    "row": 117,
+    "col": 123,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.798533,
+     39.7889268
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P198",
+    "aoi": "golbasi",
+    "tabaka": "su_kazanimi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 482770.0,
+    "y": 4404350.0,
+    "row": 117,
+    "col": 124,
+    "tabaka_alan_ha": 1.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7987666,
+     39.7889273
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P199",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0001",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474990.0,
+    "y": 4412130.0,
+    "row": 7,
+    "col": 119,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.707606,
+     39.8588316
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P200",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0002",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 474690.0,
+    "y": 4411930.0,
+    "row": 17,
+    "col": 104,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7041065,
+     39.8570207
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P201",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0003",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 472670.0,
+    "y": 4411850.0,
+    "row": 21,
+    "col": 3,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6804948,
+     39.8562373
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P202",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2021-0004",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 475070.0,
+    "y": 4411690.0,
+    "row": 29,
+    "col": 123,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7085581,
+     39.8548696
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P203",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0005",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 478270.0,
+    "y": 4411550.0,
+    "row": 36,
+    "col": 283,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7459717,
+     39.8536962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P204",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0004",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476630.0,
+    "y": 4411510.0,
+    "row": 38,
+    "col": 201,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7268014,
+     39.8532922
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P205",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0004",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476890.0,
+    "y": 4411490.0,
+    "row": 39,
+    "col": 214,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7298415,
+     39.8531191
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P206",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0004",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476930.0,
+    "y": 4411490.0,
+    "row": 39,
+    "col": 216,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7303091,
+     39.8531202
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P207",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0004",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476570.0,
+    "y": 4411330.0,
+    "row": 47,
+    "col": 198,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7261064,
+     39.8516688
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P208",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0008",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 476650.0,
+    "y": 4411310.0,
+    "row": 48,
+    "col": 202,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7270423,
+     39.8514908
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P209",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0002",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 480030.0,
+    "y": 4411250.0,
+    "row": 51,
+    "col": 371,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7665554,
+     39.8510364
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P210",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0007",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476830.0,
+    "y": 4411230.0,
+    "row": 52,
+    "col": 211,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7291493,
+     39.8507749
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P211",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2019-0003",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 479570.0,
+    "y": 4411210.0,
+    "row": 53,
+    "col": 348,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7611794,
+     39.8506651
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P212",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474590.0,
+    "y": 4411190.0,
+    "row": 54,
+    "col": 99,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7029662,
+     39.8503504
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P213",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474330.0,
+    "y": 4411070.0,
+    "row": 60,
+    "col": 86,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6999316,
+     39.8492614
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P214",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0012",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 476130.0,
+    "y": 4411070.0,
+    "row": 60,
+    "col": 176,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7209724,
+     39.8493139
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P215",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0007",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 474290.0,
+    "y": 4411050.0,
+    "row": 61,
+    "col": 84,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6994648,
+     39.84908
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P216",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0012",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 476670.0,
+    "y": 4411030.0,
+    "row": 62,
+    "col": 203,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7272861,
+     39.8489685
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P217",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2019-0007",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 479650.0,
+    "y": 4410750.0,
+    "row": 76,
+    "col": 352,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7621289,
+     39.8465224
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P218",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2019,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2019-0006",
+    "once_yil": 2018,
+    "sonra_yil": 2019,
+    "x": 473490.0,
+    "y": 4410730.0,
+    "row": 77,
+    "col": 44,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6901264,
+     39.8461722
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P219",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0017",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 478710.0,
+    "y": 4410510.0,
+    "row": 88,
+    "col": 305,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7511492,
+     39.844337
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P220",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0017",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 476610.0,
+    "y": 4410410.0,
+    "row": 93,
+    "col": 200,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7266069,
+     39.8433807
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P221",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0024",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 474990.0,
+    "y": 4410110.0,
+    "row": 108,
+    "col": 119,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7076833,
+     39.8406316
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P222",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2021-0010",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 478710.0,
+    "y": 4409610.0,
+    "row": 133,
+    "col": 305,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7511784,
+     39.836228
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P223",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0032",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 474410.0,
+    "y": 4408890.0,
+    "row": 169,
+    "col": 90,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.700952,
+     39.8296222
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P224",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0039",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 479090.0,
+    "y": 4408610.0,
+    "row": 183,
+    "col": 324,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7556515,
+     39.8272275
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P225",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0034",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 473910.0,
+    "y": 4408490.0,
+    "row": 189,
+    "col": 65,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6951249,
+     39.826003
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P226",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0038",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 479130.0,
+    "y": 4408450.0,
+    "row": 191,
+    "col": 326,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.756124,
+     39.8257868
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P227",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0040",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474610.0,
+    "y": 4408390.0,
+    "row": 194,
+    "col": 100,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7033086,
+     39.8251232
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P228",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0041",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 476950.0,
+    "y": 4408230.0,
+    "row": 202,
+    "col": 217,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7306576,
+     39.8237483
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P229",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0045",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 479530.0,
+    "y": 4408130.0,
+    "row": 207,
+    "col": 346,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7608081,
+     39.8229134
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P230",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0045",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 479650.0,
+    "y": 4408030.0,
+    "row": 212,
+    "col": 352,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7622134,
+     39.8220153
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P231",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0049",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 473270.0,
+    "y": 4407850.0,
+    "row": 221,
+    "col": 33,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6876724,
+     39.8202167
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P232",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0050",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 478010.0,
+    "y": 4407850.0,
+    "row": 221,
+    "col": 270,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7430565,
+     39.8203526
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P233",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0038",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 473810.0,
+    "y": 4407830.0,
+    "row": 222,
+    "col": 60,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6939828,
+     39.8200533
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P234",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0048",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 476490.0,
+    "y": 4407830.0,
+    "row": 222,
+    "col": 194,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7252969,
+     39.8201317
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P235",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0051",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 480010.0,
+    "y": 4407790.0,
+    "row": 224,
+    "col": 370,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7664273,
+     39.8198614
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P236",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0050",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 477910.0,
+    "y": 4407770.0,
+    "row": 225,
+    "col": 265,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7418908,
+     39.8196292
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P237",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0009",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 474130.0,
+    "y": 4407570.0,
+    "row": 235,
+    "col": 76,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.697732,
+     39.8177206
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P238",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0022",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 473930.0,
+    "y": 4407450.0,
+    "row": 241,
+    "col": 66,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6954,
+     39.8166333
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P239",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0010",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 473890.0,
+    "y": 4407370.0,
+    "row": 245,
+    "col": 64,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6949358,
+     39.8159112
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P240",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2020-0012",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 479670.0,
+    "y": 4407270.0,
+    "row": 250,
+    "col": 353,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7624707,
+     39.8151681
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P241",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0053",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 475870.0,
+    "y": 4407110.0,
+    "row": 258,
+    "col": 163,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7180791,
+     39.8136271
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P242",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0047",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 479390.0,
+    "y": 4407090.0,
+    "row": 259,
+    "col": 339,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.759205,
+     39.8135396
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P243",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0053",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 475930.0,
+    "y": 4407050.0,
+    "row": 261,
+    "col": 166,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7187823,
+     39.8130883
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P244",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0049",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 473430.0,
+    "y": 4406890.0,
+    "row": 269,
+    "col": 41,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6895808,
+     39.8115722
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P245",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0056",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 473870.0,
+    "y": 4406790.0,
+    "row": 274,
+    "col": 63,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6947253,
+     39.8106848
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P246",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0056",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 473650.0,
+    "y": 4406770.0,
+    "row": 275,
+    "col": 52,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6921559,
+     39.8104978
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P247",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0057",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474330.0,
+    "y": 4406750.0,
+    "row": 276,
+    "col": 86,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7001009,
+     39.8103384
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P248",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2022-0044",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 474270.0,
+    "y": 4406690.0,
+    "row": 279,
+    "col": 83,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6994023,
+     39.809796
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P249",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2023-0057",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 474390.0,
+    "y": 4406670.0,
+    "row": 280,
+    "col": 89,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.700805,
+     39.8096195
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P250",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0059",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 478430.0,
+    "y": 4406530.0,
+    "row": 287,
+    "col": 291,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7480074,
+     39.8084702
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P251",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0068",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 473430.0,
+    "y": 4406250.0,
+    "row": 301,
+    "col": 41,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6896068,
+     39.8058058
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P252",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0069",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 477310.0,
+    "y": 4406070.0,
+    "row": 310,
+    "col": 235,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.734939,
+     39.8042964
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P253",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2018-0027",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 475650.0,
+    "y": 4405130.0,
+    "row": 357,
+    "col": 152,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7155823,
+     39.7957811
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P254",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2021-0018",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 475210.0,
+    "y": 4405110.0,
+    "row": 358,
+    "col": 130,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7104437,
+     39.7955882
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P255",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0060",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 472870.0,
+    "y": 4405070.0,
+    "row": 360,
+    "col": 13,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6831137,
+     39.7951564
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P256",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "incek-bp-2025-0075",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 474370.0,
+    "y": 4404970.0,
+    "row": 365,
+    "col": 88,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7006378,
+     39.7943019
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P257",
+    "aoi": "incek",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "incek-bp-2024-0063",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 476270.0,
+    "y": 4404830.0,
+    "row": 372,
+    "col": 183,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7228349,
+     39.7930956
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P258",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "golbasi-bp-2025-0002",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 487550.0,
+    "y": 4406270.0,
+    "row": 21,
+    "col": 363,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8545568,
+     39.80631
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P259",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "golbasi-bp-2025-0001",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 487210.0,
+    "y": 4406250.0,
+    "row": 22,
+    "col": 346,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8505852,
+     39.8061248
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P260",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0001",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 487410.0,
+    "y": 4406230.0,
+    "row": 23,
+    "col": 356,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.852922,
+     39.8059475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P261",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "golbasi-bp-2025-0004",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 483190.0,
+    "y": 4405970.0,
+    "row": 36,
+    "col": 145,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8036304,
+     39.803532
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P262",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0005",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 485270.0,
+    "y": 4405890.0,
+    "row": 40,
+    "col": 249,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.82793,
+     39.8028497
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P263",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0005",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 485290.0,
+    "y": 4405810.0,
+    "row": 44,
+    "col": 250,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8281654,
+     39.8021293
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P264",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0008",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 487210.0,
+    "y": 4405770.0,
+    "row": 46,
+    "col": 346,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8505946,
+     39.8017999
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P265",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0008",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 487230.0,
+    "y": 4405770.0,
+    "row": 46,
+    "col": 347,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8508282,
+     39.8018002
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P266",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2023-0005",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 486850.0,
+    "y": 4405650.0,
+    "row": 52,
+    "col": 328,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8463917,
+     39.8007132
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P267",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2023-0010",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 482310.0,
+    "y": 4404410.0,
+    "row": 114,
+    "col": 101,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7933926,
+     39.7894584
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P268",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2020-0005",
+    "once_yil": 2019,
+    "sonra_yil": 2020,
+    "x": 481970.0,
+    "y": 4404390.0,
+    "row": 115,
+    "col": 84,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7894222,
+     39.7892711
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P269",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2021-0007",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 485590.0,
+    "y": 4404230.0,
+    "row": 123,
+    "col": 265,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8317046,
+     39.7878985
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P270",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2022-0013",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 481450.0,
+    "y": 4403510.0,
+    "row": 159,
+    "col": 58,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7833738,
+     39.781331
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P271",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2022-0014",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 486170.0,
+    "y": 4403330.0,
+    "row": 168,
+    "col": 294,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8384974,
+     39.779799
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P272",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2024-0020",
+    "once_yil": 2023,
+    "sonra_yil": 2024,
+    "x": 485910.0,
+    "y": 4402930.0,
+    "row": 188,
+    "col": 281,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8354698,
+     39.7761907
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P273",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0008",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 484670.0,
+    "y": 4402770.0,
+    "row": 196,
+    "col": 219,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.820994,
+     39.7747277
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P274",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2018-0008",
+    "once_yil": 2017,
+    "sonra_yil": 2018,
+    "x": 484630.0,
+    "y": 4402690.0,
+    "row": 200,
+    "col": 217,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8205288,
+     39.7740061
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P275",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2023-0021",
+    "once_yil": 2022,
+    "sonra_yil": 2023,
+    "x": 484870.0,
+    "y": 4401510.0,
+    "row": 259,
+    "col": 229,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8233583,
+     39.7633785
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P276",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2022-0017",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 481570.0,
+    "y": 4401390.0,
+    "row": 265,
+    "col": 64,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7848347,
+     39.7622322
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P277",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2022-0017",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 481490.0,
+    "y": 4401170.0,
+    "row": 276,
+    "col": 60,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7839069,
+     39.7602483
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P278",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "kalibrasyon",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2022-0017",
+    "once_yil": 2021,
+    "sonra_yil": 2022,
+    "x": 481410.0,
+    "y": 4401130.0,
+    "row": 278,
+    "col": 56,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7829741,
+     39.7598861
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P279",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "golbasi-bp-2025-0020",
+    "once_yil": 2024,
+    "sonra_yil": 2025,
+    "x": 487150.0,
+    "y": 4401110.0,
+    "row": 279,
+    "col": 343,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8499849,
+     39.7598119
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "P280",
+    "aoi": "golbasi",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "golbasi-bp-2021-0017",
+    "once_yil": 2020,
+    "sonra_yil": 2021,
+    "x": 483730.0,
+    "y": 4398990.0,
+    "row": 385,
+    "col": 172,
+    "tabaka_alan_ha": 562.1,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8101113,
+     39.7406519
+    ]
+   }
+  }
+ ]
+}
