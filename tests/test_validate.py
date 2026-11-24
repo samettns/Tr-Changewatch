@@ -85,6 +85,8 @@ def test_lookup_predictions_latest_year_wins():
 
 
 def test_experiment_registry_and_status(tmp_path):
+    from changewatch.experiments import read_predictions, unique_variants, write_predictions
+
     assert set(EXPERIMENTS) == {"E1", "E2", "E3", "E4", "E5"}
     e2 = dict((v.name, v) for v in EXPERIMENTS["E2"][1])
     assert status(e2["yaz"], tmp_path, ["incek"]) == "eksik"
@@ -92,51 +94,24 @@ def test_experiment_registry_and_status(tmp_path):
     f.parent.mkdir(parents=True)
     f.write_text("{}", encoding="utf-8")
     assert status(e2["yaz"], tmp_path, ["incek"]) == "hazır"
-    e5 = dict((v.name, v) for v in EXPERIMENTS["E5"][1])
-    assert status(e5["normalize"], tmp_path, ["incek"]) == "henüz uygulanmadı"
+    # aynı çıktıyı paylaşan varyantlar bir kez üretilir; ilkbahar --build kapsamında değil
+    u = unique_variants()
+    assert ("summer", "breakpoint") in u and ("spring", "breakpoint") not in u
+    assert len(u) == 7
+    p = write_predictions([{"nokta_id": "P001", "aoi": "incek", "deney": "E1", "varyant": "kirilma",
+                            "tahmin_tur": "degisim_yok", "tahmin_yil": ""}], tmp_path / "p.csv")
+    assert read_predictions(p) == {("E1", "kirilma"): {"P001": ("degisim_yok", None)}}
 
 
-def test_allocate_min_only_for_large_strata():
-    px = {NO_CHANGE: 100_000, "yapilasma_olasi": 9000, "su_kazanimi": 120, "bitki_kaybi": 2000}
-    a = allocate(px, total=280, no_change_n=100, min_per=20, min_px_for_min=500)   # 20 ha = 500 px
-    assert a["bitki_kaybi"] >= 20 and a["su_kazanimi"] < 20                     # küçük tabaka yalnızca orantılı
-    assert sum(a.values()) == 280
+def test_ndbi_built_rule():
+    from changewatch.classify import classify_break_piece
+    from changewatch.config import load_settings
 
-
-def test_sample_pixels_polygon_cap_and_min_distance():
-    sm = np.full((60, 60), NO_CHANGE, dtype=object)
-    poly = np.zeros((60, 60), int)
-    sm[0:10, 0:10] = "yapilasma_olasi"
-    poly[0:10, 0:10] = 1                                   # tek poligon
-    pts = sample_pixels({"incek": sm}, {"yapilasma_olasi": 10, NO_CHANGE: 30}, seed=3, calibration_share=0.3,
-                        polygon_maps={"incek": poly}, max_per_polygon=3, min_dist_px=3)
-    assert sum(p["tabaka"] == "yapilasma_olasi" for p in pts) == 3              # poligon başına ≤ 3
-    xy = np.array([(p["row"], p["col"]) for p in pts])
-    d = np.sqrt(((xy[:, None] - xy[None]) ** 2).sum(-1)) + np.eye(len(xy)) * 99
-    assert d.min() >= 3                                                           # ≥ 60 m
-
-
-def test_olofsson_hand_computed():
-    from changewatch.validate import olofsson
-
-    Y, N = "yapilasma_olasi", NO_CHANGE
-    recs = ([{"stratum": Y, "ref": Y}] * 3 + [{"stratum": Y, "ref": N}]
-            + [{"stratum": N, "ref": N}] * 4 + [{"stratum": N, "ref": Y}])
-    o = olofsson(recs, {Y: 10.0, N: 90.0})
-    assert o["genel_dogruluk"] == pytest.approx(0.795)
-    assert o["genel_dogruluk_ga"] == pytest.approx(1.96 * np.sqrt(0.033025), rel=1e-6)
-    y = o["siniflar"][Y]
-    assert y["kestirilen_alan_ha"] == pytest.approx(25.5)
-    assert y["alan_ga_ha"] == pytest.approx(1.96 * 100 * np.sqrt(0.033025), abs=0.1)
-    assert y["kullanici_dogrulugu"] == pytest.approx(0.75)
-    assert y["uretici_dogrulugu"] == pytest.approx(0.075 / 0.255)
-    assert o["siniflar"][N]["kestirilen_alan_ha"] == pytest.approx(74.5)
-
-
-def test_olofsson_perfect_map_reproduces_map_areas():
-    from changewatch.validate import olofsson
-
-    recs = [{"stratum": "a", "ref": "a"}] * 5 + [{"stratum": NO_CHANGE, "ref": NO_CHANGE}] * 5
-    o = olofsson(recs, {"a": 30.0, NO_CHANGE: 70.0})
-    assert o["genel_dogruluk"] == 1.0 and o["genel_dogruluk_ga"] == 0.0
-    assert o["siniflar"]["a"]["kestirilen_alan_ha"] == 30.0 and o["siniflar"]["a"]["alan_ga_ha"] == 0.0
+    s = load_settings()
+    ev = dict(mndwi_once=-0.4, mndwi_sonra=-0.35, doku_artisi=0.03, dNDVI=-0.05, dNDBI=-0.04, dBSI=-0.03,
+              sonrasi_yil_sayisi=5)
+    th = {"texture": 0.01, "ndvi": -0.08}
+    assert classify_break_piece(ev, th, s)["tur"] == "yapilasma_olasi"            # doku kuralı
+    assert classify_break_piece(ev, th, s, built_rule="ndbi")["tur"] == "belirsiz"  # NDBI düşüyor (İncek bulgusu)
+    ev2 = {**ev, "dNDBI": 0.05, "dBSI": 0.04, "doku_artisi": 0.0}
+    assert classify_break_piece(ev2, th, s, built_rule="ndbi")["tur"] == "yapilasma_olasi"

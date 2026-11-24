@@ -7,6 +7,7 @@ paths:
   aois: config/aois.geojson
   validation_points: validation/points.geojson
   validation_labels: validation/labels.csv
+  experiment_predictions: validation/experiment_predictions.csv
 
 aoi_checks:
   max_aoi_km2: 100.0

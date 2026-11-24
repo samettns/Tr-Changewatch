@@ -161,12 +161,20 @@ def break_piece_evidence(sel: np.ndarray, layers: dict[str, np.ndarray], thresho
 
 
 def classify_break_piece(ev: dict[str, Any], thresholds: dict[str, float],
-                         settings: dict[str, Any]) -> dict[str, str]:
-    """Kırılma parçası: tür (parça medyanlarıyla) + kırılma sonrası yıl sayısına göre güven/durum."""
+                         settings: dict[str, Any], built_rule: str = "doku") -> dict[str, str]:
+    """Kırılma parçası: tür (parça medyanlarıyla) + kırılma sonrası yıl sayısına göre güven/durum.
+
+    built_rule "doku": dondurulmuş kural (doku basamağı anlamlı pozitif). "ndbi": E4 karşılaştırması için eski
+    yön koşulu (dNDBI > 0, dBSI > 0, dNDVI < 0; doku gerekmez).
+    """
     w = float(settings["classify"]["water_mndwi_threshold"])
     bp = settings["breakpoint"]
     before, after = ev["mndwi_once"], ev["mndwi_sonra"]
-    tex_up = ev["doku_artisi"] is not None and ev["doku_artisi"] > thresholds["texture"]
+    if built_rule == "ndbi":
+        tex_up = all(ev[k] is not None for k in ("dNDBI", "dBSI", "dNDVI")) and (
+            ev["dNDBI"] > 0 and ev["dBSI"] > 0 and ev["dNDVI"] < 0)
+    else:
+        tex_up = ev["doku_artisi"] is not None and ev["doku_artisi"] > thresholds["texture"]
     ndvi_down = ev["dNDVI"] is not None and ev["dNDVI"] < thresholds["ndvi"]
     if after is not None and before is not None and after > w >= before:
         tur = "belirsiz"  # su geçişi su katmanında (water.py) sınıflanır; burada yapılaşma/bitki sayılmaz

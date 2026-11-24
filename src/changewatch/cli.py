@@ -197,7 +197,8 @@ def cmd_composite(args: argparse.Namespace) -> int:
             raw = cache.read_dataset(f)
             if aoi_mask is None:
                 aoi_mask = aoi_raster_mask(geom, raw, crs)
-            masked_all.append(apply_mask(harmonize_scene(raw, settings), settings))
+            src = raw if args.no_harmonize else harmonize_scene(raw, settings)
+            masked_all.append(apply_mask(src, settings))
         # Aynı çekimin farklı MGRS kareleri (kare örtüşmesi) tek sahneye birleştirilir
         fused = fuse_acquisitions(masked_all)
         if len(fused) < len(masked_all):
@@ -215,7 +216,13 @@ def cmd_composite(args: argparse.Namespace) -> int:
         log.info("%d: %d/%d çekim kompozite alındı", year, len(kept), len(fused))
         if not kept:
             continue
-        comp = median_composite(kept, settings)
+        csettings = settings
+        if args.single_scene:  # E1: kompozit yerine AOI geçerli piksel oranı en yüksek tek çekim
+            best = max(kept, key=lambda m: valid_fraction(m["valid"].values, aoi_mask))
+            kept, kept_keys = [best], {acquisition_key(best)}
+            csettings = {**settings, "composite": {**settings["composite"], "min_valid_obs": 1}}
+            log.info("%d: tek sahne: %s", year, best.attrs["item_id"])
+        comp = median_composite(kept, csettings)
         comp.attrs.update(aoi=args.aoi, year=year, season=season)
 
         tif = cache.composite_dir(cache_root, args.aoi, season) / f"{year}.tif"
@@ -232,7 +239,8 @@ def cmd_composite(args: argparse.Namespace) -> int:
 
         # Doku: her sahnede ayrı (maskeli 10 m B08 → yerel std → 20 m), sonra sahnelerin medyanı.
         # 20 m'de kompozite alınan sahnelerin aynısı kullanılır.
-        m10_all = [apply_mask(harmonize_scene(cache.read_dataset(f), settings), settings)
+        m10_all = [apply_mask(cache.read_dataset(f) if args.no_harmonize
+                              else harmonize_scene(cache.read_dataset(f), settings), settings)
                    for f in sorted(cache.raw10_dir(cache_root, args.aoi, year).glob("*.tif"))]
         fused10 = [m for m in fuse_acquisitions(m10_all) if acquisition_key(m) in kept_keys]
         if len(fused10) != len(kept_keys):
@@ -248,7 +256,7 @@ def cmd_composite(args: argparse.Namespace) -> int:
                 tex_scenes.append(xr.Dataset({"TEXTURE": (("y", "x"), tex),
                                               "valid": (("y", "x"), ~np.isnan(tex))},
                                              coords={"y": comp["y"], "x": comp["x"]}))
-            tcomp = median_composite(tex_scenes, settings)
+            tcomp = median_composite(tex_scenes, csettings)
             tcomp.attrs.update(aoi=args.aoi, year=year, season=season, method="per-scene std, median")
             ttif = cache.composite_dir(cache_root, args.aoi, season) / f"{year}_texture.tif"
             cache.write_dataset(tcomp.astype("float32"), ttif, crs, nodata=np.nan)
@@ -333,8 +341,11 @@ def _detect_pairs(args: argparse.Namespace) -> int:
     first = comp[years[0]]
     region = aoi_raster_mask(geom, first, crs)
     transform = grid_transform(first["x"].values, first["y"].values)
-    ddir = cache.change_dir(cache_root, args.aoi, season) / "pairs"
-    prev = cache.preview_dir(cache_root, args.aoi) / "change" / "pairs"
+    out_name = args.out_name or "pairs"
+    ddir = cache.change_dir(cache_root, args.aoi, season) / out_name
+    prev = cache.preview_dir(cache_root, args.aoi) / "change" / out_name
+    if args.no_persistence:  # E1: kalıcı olmayan parçalar da çıktıda (durum "gecici")
+        settings = {**settings, "classify": {**settings["classify"], "drop_non_persistent": False}}
 
     features: list = []
     rows: list[dict] = []
@@ -581,6 +592,17 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
         "TEXTURE": np.stack([cache.read_dataset(cdir / f"{y}_texture.tif")["TEXTURE"].values for y in years]),
         **{k: np.stack([idx[y][k].values for y in years]) for k in ("NDVI", "NDBI", "BSI", "MNDWI")},
     }
+    if args.texture_norm:  # E5: her yılın dokusu, o yılın kırılmasız piksellerinin doku medyanına bölünür
+        base = cache.change_dir(cache_root, args.aoi, season) / "breakpoint" / "breaks.tif"
+        if not base.exists():
+            raise FileNotFoundError(f"{base} yok; önce normalizasyonsuz `changewatch detect --aoi {args.aoi}`.")
+        bds = cache.read_dataset(base)
+        changed = sum((bds[v].values > 0) for v in ("candidate_raw", "monitor", "water_change") if v in bds)
+        nonbreak = aoi_raster_mask(geom, comp[years[0]], crs) & ~(changed > 0)
+        meds = [float(np.nanmedian(series["TEXTURE"][i][nonbreak])) for i in range(len(years))]
+        series["TEXTURE"] = series["TEXTURE"] / np.array(meds, dtype="float32")[:, None, None]
+        log.info("  doku normalizasyonu (kırılmasız piksel medyanları): %s",
+                 ", ".join(f"{y}={m:.4f}" for y, m in zip(years, meds)))
     n_spec = len(bp["bands"])
     var_names = list(bp["bands"]) + (["TEXTURE"] if bp["include_texture"] else [])
     stack = np.stack([np.stack([comp[y][b].values / scale for b in bp["bands"]]
@@ -590,8 +612,9 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
     first = comp[years[0]]
     region = aoi_raster_mask(geom, first, crs)
     transform = grid_transform(first["x"].values, first["y"].values)
-    ddir = cache.change_dir(cache_root, args.aoi, season) / "breakpoint"
-    prev = cache.preview_dir(cache_root, args.aoi) / "change" / "breakpoint"
+    out_name = args.out_name or "breakpoint"
+    ddir = cache.change_dir(cache_root, args.aoi, season) / out_name
+    prev = cache.preview_dir(cache_root, args.aoi) / "change" / out_name
     type_codes = {"yapilasma_olasi": 1, "bitki_kaybi": 2, "su_degisimi": 3, "belirsiz": 4,
                   "su_kazanimi": 5, "su_kaybi": 6, "sulak_alan_belirsiz": 7}
     type_map = np.zeros(region.shape, "uint8")
@@ -635,7 +658,7 @@ def _detect_breakpoint(args: argparse.Namespace) -> int:
             for k in range(1, n + 1):
                 sel = labels == k
                 ev = break_piece_evidence(sel, layers, th, settings)
-                cls = classify_break_piece(ev, th, settings)
+                cls = classify_break_piece(ev, th, settings, built_rule=args.built_rule)
                 props = {"id": f"{args.aoi}-bp-{b}-{k:04d}", "aoi": args.aoi, "yontem": "kirilma",
                          "katman": label, "degisim_yili": b, "onceki_yil": b - 1, **cls,
                          "alan_ha": round(ev.pop("piksel") * px_ha, 2), **ev}
@@ -1094,9 +1117,10 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_experiments(args: argparse.Namespace) -> int:
-    """E1–E5: etiket varsa hazır varyantları test noktalarında değerlendirir; yoksa/--dry-run ise durum tablosu."""
+    """E1–E5: --build varyantları üretip nokta tahminlerini yazar; etiket varsa test noktalarında değerlendirir."""
     from changewatch.evaluate import load_features
-    from changewatch.experiments import EXPERIMENTS, status
+    from changewatch.experiments import (EXPERIMENTS, NOT_BUILT_BY_DEFAULT, read_predictions, status,
+                                         unique_variants, write_predictions)
     from changewatch.validate import (filled_labels, load_points, lookup_predictions, metrics, read_labels,
                                       reference_class)
 
@@ -1104,37 +1128,68 @@ def cmd_experiments(args: argparse.Namespace) -> int:
     cache_root = require_cache_dir(settings)
     setup_logging(settings)
     aois = args.aois or list(settings["validation"]["aois"])
+    pred_path = resolve_path(settings, settings["paths"]["experiment_predictions"])
+
+    if args.build:
+        for (season, mdir), v in unique_variants().items():
+            for aoi in aois:
+                pth = v.path(cache_root, aoi)
+                if pth.exists() and not args.rebuild:
+                    continue
+                for step in v.steps:
+                    argv = [a.format(aoi=aoi) for a in step]
+                    log.info("varyant %s/%s (%s): changewatch %s", season, mdir, aoi, " ".join(argv))
+                    rc = main(argv)
+                    if rc:
+                        raise RuntimeError(f"adım başarısız ({rc}): {' '.join(argv)}")
+        pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
+        pts = [p for p in pts if p["aoi"] in aois]
+        rows = []
+        for code, (_, variants) in EXPERIMENTS.items():
+            for v in variants:
+                if status(v, cache_root, aois) != "hazır":
+                    continue
+                feats = {a: load_features(v.path(cache_root, a), settings["grid"]["crs"]) for a in aois}
+                for p, (tur, yil) in zip(pts, lookup_predictions(pts, feats)):
+                    rows.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "deney": code, "varyant": v.name,
+                                 "tahmin_tur": tur, "tahmin_yil": "" if yil is None else yil})
+        write_predictions(rows, pred_path)
+        log.info("nokta tahminleri: %s (%d satır)", pred_path, len(rows))
+
     labels = filled_labels(read_labels(resolve_path(settings, settings["paths"]["validation_labels"])))
+    preds = read_predictions(pred_path)
     dry = args.dry_run or not labels
     if dry:
         print("Kuru çalıştırma" + ("" if args.dry_run else " (etiket yok)") +
-              f": AOI'ler {', '.join(aois)}. Etiketler gelince her 'hazır' varyantın haritası TEST noktalarında "
-              "değerlendirilir (genel doğruluk, yanlış alarm, yapılaşma F1, yıl isabeti).\n")
-    print("| deney | varyant | durum | üretim |")
-    print("|---|---|---|---|")
+              f": AOI'ler {', '.join(aois)}. Etiketler gelince her varyantın nokta tahmini "
+              f"({settings['paths']['experiment_predictions']}) TEST noktalarında değerlendirilir: genel doğruluk, "
+              "yanlış alarm, yapılaşma F1, kırılma yılı isabeti.\n")
+    print("| deney | varyant | çıktı | nokta tahmini | not |")
+    print("|---|---|---|---|---|")
     for code, (desc, variants) in EXPERIMENTS.items():
         for v in variants:
             st = status(v, cache_root, aois)
-            prod = v.produce.format(aoi="<aoi>") if st != "hazır" else "-"
-            print(f"| {code} | {v.name} | {st} | {prod} |")
+            n_pred = len(preds.get((code, v.name), {}))
+            note = v.note + (" — `--build` üretmez" if (code, v.name) in NOT_BUILT_BY_DEFAULT else "")
+            print(f"| {code} | {v.name} | {st} ({v.season}/{v.method_dir}) | {n_pred or '-'} | {note} |")
     if dry:
         return 0
 
-    pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
-    rows = {r["nokta_id"]: r for r in labels}
-    test = [p for p in pts if p["rol"] == "test" and p["nokta_id"] in rows and p["aoi"] in aois]
+    pts = {p["nokta_id"]: p for p in load_points(resolve_path(settings, settings["paths"]["validation_points"]))}
+    rows_l = {r["nokta_id"]: r for r in labels}
+    test_ids = [i for i, p in pts.items() if p["rol"] == "test" and i in rows_l and p["aoi"] in aois]
     pct = lambda x: "-" if x is None else f"%{100 * x:.0f}"  # noqa: E731
-    print(f"\n## Test noktalarında sonuçlar (n = {len(test)})\n")
+    print(f"\n## Test noktalarında sonuçlar (n = {len(test_ids)})\n")
     print("| deney | varyant | genel doğruluk | yanlış alarm | yapılaşma F1 | yıl tam isabet |")
     print("|---|---|---|---|---|---|")
     for code, (desc, variants) in EXPERIMENTS.items():
         for v in variants:
-            if status(v, cache_root, aois) != "hazır":
+            pr = preds.get((code, v.name))
+            if not pr:
+                print(f"| {code} | {v.name} | tahmin yok (`changewatch experiments --build`) | | | |")
                 continue
-            feats = {a: load_features(v.path(cache_root, a), settings["grid"]["crs"]) for a in aois}
-            preds = lookup_predictions(test, feats)
-            recs = [{"ref": reference_class(rows[p["nokta_id"]]), "pred": pr, "pred_year": py,
-                     "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None} for p, (pr, py) in zip(test, preds)]
+            recs = [{"ref": reference_class(rows_l[i]), "pred": pr[i][0], "pred_year": pr[i][1],
+                     "ref_year": rows_l[i].get("gercek_yil") or None} for i in test_ids if i in pr]
             m = metrics(recs)
             f1 = m["sinif_metrikleri"].get("yapilasma_olasi", {}).get("f1")
             print(f"| {code} | {v.name} | {pct(m['genel_dogruluk'])} | {pct(m['yanlis_alarm_orani'])} | "
@@ -1174,6 +1229,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     k = sub.add_parser("composite", help="Harmonizasyon + SCL maskesi + medyan kompozit ve önizleme PNG'leri")
     aoi_years(k)
+    k.add_argument("--no-harmonize", action="store_true",
+                   help="E3: baseline offset düzeltmesi kapalı (çıktıyı ayrı --season adına yazın)")
+    k.add_argument("--single-scene", action="store_true",
+                   help="E1: yıl başına geçerli piksel oranı en yüksek tek çekim (ayrı --season adına yazın)")
     k.set_defaults(func=cmd_composite)
 
     i = sub.add_parser("indices", help="NDVI, NDBI, MNDWI, BSI ve doku (GeoTIFF + PNG)")
@@ -1185,6 +1244,11 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("--method", choices=["breakpoint", "pairs"],
                    help="breakpoint: piksel serisinde kırılma; pairs: ardışık yıl çiftleri "
                         "(varsayılan: settings.yaml change_method)")
+    d.add_argument("--out-name", help="çıktı klasörü adı (varsayılan: yöntem adı); deney varyantları için")
+    d.add_argument("--no-persistence", action="store_true", help="pairs: kalıcı olmayan parçaları da yaz (E1)")
+    d.add_argument("--texture-norm", action="store_true", help="breakpoint: yıllık doku normalizasyonu (E5)")
+    d.add_argument("--built-rule", choices=["doku", "ndbi"], default="doku",
+                   help="breakpoint yapılaşma kuralı: doku (dondurulmuş) | ndbi (E4: NDBI↑, BSI↑, NDVI↓)")
     d.add_argument("--panel-years", nargs=2, type=int, metavar=("ÖNCE", "SONRA"),
                    help="yapılaşma sınır paneli için iki yıl (varsayılan: ilk yıl ve 2024)")
     d.set_defaults(func=cmd_detect)
@@ -1212,6 +1276,9 @@ def build_parser() -> argparse.ArgumentParser:
     ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")
     ex.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings validation.aois)")
     ex.add_argument("--dry-run", action="store_true", help="yalnızca varyant durumlarını göster")
+    ex.add_argument("--build", action="store_true",
+                    help="eksik varyantları üret ve örnekleme noktalarındaki tahminlerini yaz")
+    ex.add_argument("--rebuild", action="store_true", help="--build ile birlikte: hazır varyantları da yeniden üret")
     ex.set_defaults(func=cmd_experiments)
 
     e = sub.add_parser("evaluate", help="Yöntem karşılaştırması: tür × yıl, yöntemler arası, tutarlılık")
