@@ -25,6 +25,11 @@ def indices_dir(cache: Path, aoi: str, season: str) -> Path:
     return cache / aoi / "indices" / season
 
 
+def change_dir(cache: Path, aoi: str, season: str) -> Path:
+    """Değişim çıktıları: <cache>/<aoi>/change/<mevsim>/."""
+    return cache / aoi / "change" / season
+
+
 def composite_dir(cache: Path, aoi: str, season: str) -> Path:
     """Kompozitlerin klasörü: <cache>/<aoi>/composite/<mevsim>/."""
     return cache / aoi / "composite" / season

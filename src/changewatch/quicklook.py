@@ -77,3 +77,43 @@ def save_index_png(arr: np.ndarray, name: str, path: Path, settings: dict[str, A
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
     return path
+
+
+def overlay_array(ds: xr.Dataset, mask: np.ndarray, settings: dict[str, Any]) -> np.ndarray:
+    """Doğal renk görüntü üzerine yarı saydam maske (RGB, 0–1)."""
+    q = settings["quicklook"]
+    rgba = rgb_array(ds, settings)
+    rgb = rgba[..., :3] * rgba[..., 3:4]
+    color = np.array(q["overlay_color"], dtype=float)
+    a = float(q["overlay_alpha"])
+    rgb[mask] = (1 - a) * rgb[mask] + a * color
+    k = int(q["overlay_upscale"])
+    return np.repeat(np.repeat(rgb, k, axis=0), k, axis=1) if k > 1 else rgb
+
+
+def save_overlay_png(ds: xr.Dataset, mask: np.ndarray, path: Path, settings: dict[str, Any]) -> Path:
+    """Aday maskesini doğal renk görüntünün üzerine yarı saydam çizip PNG'ye yazar."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    plt.imsave(path, np.clip(overlay_array(ds, mask, settings), 0, 1))
+    return path
+
+
+def save_change_panel_png(before: xr.Dataset, after: xr.Dataset, mask: np.ndarray, path: Path,
+                          settings: dict[str, Any], labels: tuple[str, str], title: str = "") -> Path:
+    """Önce | sonra | sonra + aday maskesi yan yana."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    h, w = mask.shape
+    dpi = int(settings["quicklook"]["dpi"])
+    fig, ax = plt.subplots(1, 3, figsize=(3 * w / dpi * 1.6, h / dpi * 1.6 + 0.6), dpi=dpi)
+    ax[0].imshow(rgb_array(before, settings), interpolation="nearest")
+    ax[1].imshow(rgb_array(after, settings), interpolation="nearest")
+    s2 = {**settings, "quicklook": {**settings["quicklook"], "overlay_upscale": 1}}
+    ax[2].imshow(np.clip(overlay_array(after, mask, s2), 0, 1), interpolation="nearest")
+    for a, lab in zip(ax, (labels[0], labels[1], f"{labels[1]} + aday")):
+        a.set_title(lab, fontsize=9)
+        a.set_axis_off()
+    fig.suptitle(title, fontsize=10)
+    fig.tight_layout()
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path

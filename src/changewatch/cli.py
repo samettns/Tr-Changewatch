@@ -289,6 +289,71 @@ def cmd_indices(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_detect(args: argparse.Namespace) -> int:
+    """İki yıl arasında değişim adayları: CVA + doku farkı (Otsu) → açma/kapama → MMU."""
+    import numpy as np
+    import xarray as xr
+
+    from changewatch import cache
+    from changewatch.change import change_candidates
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.morphology import apply_mmu, mmu_pixels, open_close
+    from changewatch.quicklook import save_change_panel_png, save_overlay_png
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    geom = get_aoi(settings, args.aoi)
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    ya, yb = args.from_year, args.to_year
+    cdir = cache.composite_dir(cache_root, args.aoi, season)
+    files = [cdir / f"{ya}.tif", cdir / f"{yb}.tif", cdir / f"{ya}_texture.tif", cdir / f"{yb}_texture.tif"]
+    missing = [str(f) for f in files if not f.exists()]
+    if missing:
+        raise FileNotFoundError("Kompozit eksik; önce `changewatch composite` çalıştırın: " + ", ".join(missing))
+    comp_a, comp_b, ta, tb = (cache.read_dataset(f) for f in files)
+    region = aoi_raster_mask(geom, comp_a, crs)
+
+    c = change_candidates(comp_a, comp_b, ta["TEXTURE"].values, tb["TEXTURE"].values, settings, region)
+    morph = open_close(c.mask, settings) & region
+    final = apply_mmu(morph, settings)
+
+    n = int(region.sum())
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    from scipy.ndimage import label
+
+    conn = np.ones((3, 3)) if int(settings["morphology"]["connectivity"]) == 2 else None
+    n_obj = label(final, structure=conn)[1]
+    log.info("%s %d→%d | Otsu eşikleri: CVA %.4f, |Δdoku| %.4f (birleştirme: %s)", args.aoi, ya, yb,
+             c.cva_threshold, c.texture_threshold, settings["change"]["combine"])
+    for name, m in (("CVA > eşik", c.cva_flag & region), ("|Δdoku| > eşik", c.texture_flag & region),
+                    ("ham aday", c.mask), ("açma/kapama sonrası", morph),
+                    (f"MMU ({mmu_pixels(settings)} px) sonrası", final)):
+        log.info("  %-22s %6d px  %%%5.2f  %8.1f ha", name, int(m.sum()), 100 * m.sum() / n, m.sum() * px_ha)
+    log.info("  bağlı nesne sayısı: %d", n_obj)
+
+    out = xr.Dataset({
+        "cva": (("y", "x"), c.cva), "dtexture": (("y", "x"), c.dtexture),
+        "cva_flag": (("y", "x"), c.cva_flag.astype("float32")),
+        "texture_flag": (("y", "x"), c.texture_flag.astype("float32")),
+        "candidate_raw": (("y", "x"), c.mask.astype("float32")),
+        "candidate": (("y", "x"), final.astype("float32")),
+    }, coords={"y": comp_a["y"], "x": comp_a["x"]})
+    out.attrs.update(aoi=args.aoi, from_year=ya, to_year=yb, season=season,
+                     cva_threshold=c.cva_threshold, texture_threshold=c.texture_threshold)
+    ddir = cache.change_dir(cache_root, args.aoi, season)
+    tif = cache.write_dataset(out, ddir / f"{ya}_{yb}_candidates.tif", crs, nodata=np.nan)
+    prev = cache.preview_dir(cache_root, args.aoi) / "change"
+    ov = save_overlay_png(comp_b, final, prev / f"{ya}_{yb}_{season}_candidates_on_{yb}.png", settings)
+    panel = save_change_panel_png(comp_a, comp_b, final, prev / f"{ya}_{yb}_{season}_panel.png", settings,
+                                  (str(ya), str(yb)),
+                                  f"{args.aoi} {ya}→{yb} aday: {final.sum() * px_ha:.0f} ha, {n_obj} nesne")
+    for p in (tif, ov, panel):
+        log.info("  çıktı: %s (%s)", p, _human(p.stat().st_size))
+    return 0
+
+
 # ---------------------------------------------------------------- ayrıştırıcı
 
 def build_parser() -> argparse.ArgumentParser:
@@ -326,6 +391,13 @@ def build_parser() -> argparse.ArgumentParser:
     i = sub.add_parser("indices", help="NDVI, NDBI, MNDWI, BSI ve doku (GeoTIFF + PNG)")
     aoi_years(i)
     i.set_defaults(func=cmd_indices)
+
+    d = sub.add_parser("detect", help="İki yıl arası değişim adayları (CVA + doku, Otsu, morfoloji, MMU)")
+    d.add_argument("--aoi", required=True, help="AOI adı (aois.geojson'daki name)")
+    d.add_argument("--from-year", type=int, required=True, help="önceki yıl (ör. 2017)")
+    d.add_argument("--to-year", type=int, required=True, help="sonraki yıl (ör. 2024)")
+    d.add_argument("--season", help="settings.yaml'daki pencere adı (varsayılan: composite.season)")
+    d.set_defaults(func=cmd_detect)
     return p
 
 

@@ -65,8 +65,19 @@ texture:
   # 1.0: içinde tek bir maskeli piksel bulunan pencere o sahnede dışlanır.
   min_window_valid: 1.0
 
+change:
+  # CVA: iki yılın yansıtım vektörleri arasındaki Öklid uzaklığı (yansıtım birimi)
+  cva_bands: [B02, B03, B04, B08, B11, B12]
+  # Doku farkı: |TEXTURE_b - TEXTURE_a|
+  # Her iki büyüklük için eşik AOI içindeki dağılımdan Otsu ile otomatik seçilir
+  otsu_bins: 256
+  combine: or                # aday = CVA > eşik VEYA doku farkı > eşik ("and" da seçilebilir)
+
 morphology:
-  mmu_ha: 0.5
+  open_radius_px: 1          # açma: tekil/ince gürültüyü atar (disk yarıçapı, piksel)
+  close_radius_px: 1         # kapama: küçük boşlukları doldurur
+  connectivity: 2            # 8-komşuluk
+  mmu_ha: 0.5                # 0,5 ha = 13 piksel (20 m)
 
 quicklook:
   # Doğal renk: sabit yansıtım aralığı (yıllar arası karşılaştırılabilir olsun diye yüzdelik germe yok)
@@ -75,6 +86,10 @@ quicklook:
   rgb_max: 0.30
   gamma: 1.0
   dpi: 100
+  # Aday maskesi bindirmesi
+  overlay_color: [1.0, 0.0, 0.0]
+  overlay_alpha: 0.45
+  overlay_upscale: 2         # PNG'yi gözle kontrol için en yakın komşuyla büyüt
   # İndeks PNG'leri: yıllar arası karşılaştırma için sabit renk aralıkları
   indices:
     NDVI:  {vmin: -0.2, vmax: 0.8,  cmap: RdYlGn}
