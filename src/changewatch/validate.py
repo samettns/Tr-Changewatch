@@ -167,8 +167,21 @@ def class_metrics(classes: list[str], m: np.ndarray) -> dict[str, dict[str, floa
     return out
 
 
+def parse_year(v: Any) -> int | None:
+    """'2021' → 2021; boş/'bilinmiyor' → None."""
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def metrics(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
-    """records: {ref, pred, pred_year, ref_year}. Genel, sınıf bazlı ve yıl bazlı metrikler."""
+    """records: {ref, pred, pred_year, ref_year}. Genel, sınıf bazlı ve yıl bazlı metrikler.
+
+    ref_year 'bilinmiyor' ise yıl isabetine katılmaz.
+    """
+    records = [{**r, "ref_year": parse_year(r.get("ref_year")), "pred_year": parse_year(r.get("pred_year"))}
+               for r in records]
     ref = [r["ref"] for r in records]
     pred = [r["pred"] for r in records]
     classes, m = confusion(ref, pred)

@@ -50,7 +50,7 @@ EXPERIMENTS: dict[str, tuple[str, list[Variant]]] = {
             ("fetch", "--aoi", "{aoi}", "--season", "spring"),
             ("composite", "--aoi", "{aoi}", "--season", "spring"),
             ("detect", "--aoi", "{aoi}", "--season", "spring")),
-            "ayrı indirme gerektirir (~AOI başına 0,5 GB); --build kapsamında değil"),
+            "v2'ye ertelendi (ayrı indirme gerektirir); --build kapsamında değil"),
     ]),
     "E3": ("Harmonizasyon açık ↔ kapalı", [
         Variant("acik", "summer", "breakpoint", BASE.steps),

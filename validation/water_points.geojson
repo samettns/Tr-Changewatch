@@ -1,0 +1,309 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2018-0001",
+    "katman": "kalici",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2018,
+    "alan_ha": 0.2,
+    "nokta_id": "S01"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7972315,
+     39.7548665
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2018-0002",
+    "katman": "kalici",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2018,
+    "alan_ha": 0.28,
+    "nokta_id": "S02"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7953647,
+     39.7545025
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2019-0001",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2019,
+    "alan_ha": 0.48,
+    "nokta_id": "S03"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7870195,
+     39.7729595
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0001",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.56,
+    "nokta_id": "S04"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7968914,
+     39.791086
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0002",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 1.12,
+    "nokta_id": "S05"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7984154,
+     39.789287
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0003",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.24,
+    "nokta_id": "S06"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8016887,
+     39.7881225
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0004",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.24,
+    "nokta_id": "S07"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.792347,
+     39.7876545
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0005",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.2,
+    "nokta_id": "S08"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8033285,
+     39.786412
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0006",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.28,
+    "nokta_id": "S09"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.785853,
+     39.772596
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0007",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.2,
+    "nokta_id": "S10"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7855114,
+     39.769982
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0008",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.28,
+    "nokta_id": "S11"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7833943,
+     39.7561925
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0009",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.2,
+    "nokta_id": "S12"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7791551,
+     39.749427
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0010",
+    "katman": "kalici",
+    "tahmin_tur": "sulak_alan_belirsiz",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.2,
+    "nokta_id": "S13"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.777641,
+     39.748343
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2021-0011",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2021,
+    "alan_ha": 0.28,
+    "nokta_id": "S14"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7770637,
+     39.7463595
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2024-0001",
+    "katman": "kalici",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2024,
+    "alan_ha": 0.28,
+    "nokta_id": "S15"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7977103,
+     39.790728
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "aoi": "golbasi",
+    "kaynak_id": "golbasi-su-2026-0001",
+    "katman": "izleme",
+    "tahmin_tur": "su_kaybi",
+    "tahmin_yil": 2026,
+    "alan_ha": 0.2,
+    "nokta_id": "S16"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.7796316,
+     39.7463645
+    ]
+   }
+  }
+ ]
+}

@@ -287,3 +287,39 @@ def save_chip_png(before: xr.Dataset, after: xr.Dataset, row: int, col: int, pat
     fig.savefig(path)
     plt.close(fig)
     return path
+
+
+def save_timeseries_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col: int, path: Path,
+                             settings: dict[str, Any], ncols: int = 5) -> Path:
+    """Kör etiketleme çipi: noktanın çevresinde her yılın doğal renk karesi (2 × 5), nokta ortada işaretli,
+    her karenin altında yalnızca yıl. Tahmin, tabaka, AOI ya da kimlik yazılmaz."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    v = settings["validation"]
+    half = int(v["chip_px"]) // 2
+    k = int(v["series_chip_upscale"])
+    n = len(composites)
+    nrows = int(np.ceil(n / ncols))
+    size = (2 * half + 1) * k
+    fig, axes = plt.subplots(nrows, ncols, figsize=(ncols * size / 100 + 0.2, nrows * (size / 100 + 0.25)), dpi=100)
+    axes = np.atleast_2d(axes)
+    for a in axes.ravel():
+        a.set_axis_off()
+    for idx, (year, ds) in enumerate(composites):
+        rgba = rgb_array(ds, settings)
+        rgb = rgba[..., :3] * rgba[..., 3:4]
+        h, w = rgb.shape[:2]
+        pad = np.zeros((h + 2 * half, w + 2 * half, 3))
+        pad[half:half + h, half:half + w] = rgb
+        crop = pad[row:row + 2 * half + 1, col:col + 2 * half + 1]
+        img = np.repeat(np.repeat(crop, k, axis=0), k, axis=1)
+        a = axes.ravel()[idx]
+        a.imshow(np.clip(img, 0, 1), interpolation="nearest")
+        a.add_patch(matplotlib.patches.Rectangle((half * k - 0.5, half * k - 0.5), k, k, fill=False,
+                                                 ec="yellow", lw=1.0))
+        c = half * k + k / 2 - 0.5
+        a.add_patch(matplotlib.patches.Circle((c, c), 3 * k, fill=False, ec="yellow", lw=0.7, ls="--"))
+        a.text(0.5, -0.02, str(year), transform=a.transAxes, ha="center", va="top", fontsize=9)
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.04, wspace=0.04, hspace=0.12)
+    fig.savefig(path)
+    plt.close(fig)
+    return path

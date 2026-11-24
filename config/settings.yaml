@@ -8,6 +8,8 @@ paths:
   validation_points: validation/points.geojson
   validation_labels: validation/labels.csv
   experiment_predictions: validation/experiment_predictions.csv
+  water_validation_points: validation/water_points.geojson
+  water_validation_labels: validation/water_labels.csv
 
 aoi_checks:
   max_aoi_km2: 100.0
@@ -131,6 +133,10 @@ validation:
   calibration_share: 0.3       # tabaka içinde rastgele %30 kalibrasyon, %70 test
   chip_px: 41                  # çip kenarı (piksel; 41 × 20 m = 820 m)
   chip_upscale: 5
+  series_chip_upscale: 3       # kör zaman serisi çipi (2 × 5 yıl)
+  label_seed: 7                # etiketleme arayüzünde karışık sıra
+  chip_salt: tr-changewatch-kor  # çip dosya adı belirteci (tahmin/tabaka/kimlik içermez)
+  water_aois: [golbasi]        # su doğrulama seti (tüm su poligonları)
 
 # Kalıcılık + tür/güven (ilk sürüm; eşikler Faz 3'te kalibrasyon noktalarıyla ayarlanacak)
 classify:

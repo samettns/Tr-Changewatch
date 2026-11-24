@@ -27,8 +27,10 @@ changewatch detect      --aoi incek --method pairs      # ardışık yıl çiftl
 changewatch water       --aoi golbasi                   # yıllık su maskesi, su alanı serisi ve grafiği
 changewatch evaluate    --aoi incek --direct-years 2017 2024  # tür × yıl, yöntemler arası, tutarlılık
 changewatch sample                                      # Faz 3: tabakalı örnekleme, labels.csv şablonu, çipler, QGIS yükleyici
-changewatch validate                                    # etiketlerden karışıklık matrisi, tür ve yıl bazlı metrikler
-changewatch experiments                                 # E1–E5 (etiket yoksa kuru çalıştırma)
+changewatch label-prep                                  # kör etiketleme çipleri + Gölbaşı su doğrulama seti
+changewatch label [--set su]                            # kör etiketleme arayüzü (talimat: validation/ETIKETLEME.md)
+changewatch validate                                    # etiketlerden karışıklık matrisi, tür/yıl bazlı ve Olofsson alan ağırlıklı metrikler
+changewatch experiments [--build]                       # E1, E3–E5 varyantları ve nokta tahminleri (E2 v2'de)
 ```
 
 ## Geliştirme ve test AOI'leri
@@ -88,4 +90,5 @@ Grafik `changewatch water --aoi golbasi` ile üretilir (eski seri kesikli). 2021
 - **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir); etkisi deney E5'te ölçülecek.
 - **Tek değişkenli su kırılması gürültüye duyarlı.** MNDWI serisinde kırılma adayı tek başına AOI'nin büyük bir kısmını işaretler (Gölbaşı'nda ~2 000 ha); su katmanında özgüllüğü su kütlesi durumu değişimi ve kıyı şeridi koşulları sağlar (→ ~5 ha).
 - **Su değişimleri doğrulama örneklemesinde neredeyse yok.** Su türleri Gölbaşı'nda toplam ~5 ha; tabaka alt sınırı yalnızca ≥ 20 ha tabakalara uygulandığı için su tabakaları 0–1 nokta aldı. Su kuralının doğruluğu bu örneklemeyle ölçülemez.
+- **Su kütlelerinin iç delikleri doldurulur.** Göl içinde MNDWI'yi düşüren renk/bulanıklık değişimi su kazanımı/kaybı üretmesin diye ≥ 5 ha su kütlelerinin içindeki boşluklar su sayılır. Yan etkisi: göl içindeki gerçek adalar da su olarak haritalanır (Mogan'da belirgin ada yok).
 - Sahne düzeyindeki bulut oranı (`eo:cloud_cover`) 100×100 km MGRS karesine aittir, AOI'ye değil. Asıl temizlik piksel düzeyinde SCL maskesiyle yapılır.

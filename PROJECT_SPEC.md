@@ -146,10 +146,12 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
   - Etiketleme: QGIS'te, Sentinel-2 kompozitleri ve Google Earth Pro geçmiş görüntülerine bakarak. Google Earth görüntüleri repoya **konmaz**; yalnızca etiketler (`validation/labels.csv`) paylaşılır.
 - **Örnekleme uygulaması (`changewatch sample`):** tabakalar kırılma yönteminin kalıcı katmanındaki her tür + `degisim_yok` (hiçbir kalıcı/izleme poligonu dışındaki AOI pikselleri). İzleme katmanı (son yıl) örneklenmez ve `degisim_yok`'tan da dışlanır. Dağıtım: `degisim_yok` 100 nokta; kalan 180 nokta değişim tabakalarına alanla orantılı; tabaka başına en az 20 kuralı yalnızca alanı ≥ 20 ha olan tabakalara uygulanır. Poligon başına en fazla 3 nokta, aynı AOI'de noktalar arası en az 60 m. Tabaka içinde eşit olasılıklı piksel seçimi, sabit seed (43; su kuralı değişince yeniden örneklendi); tabaka içinde rastgele %30 kalibrasyon. Geliştirme AOI'leri (incek, golbasi) örneklenir.
   - Çıktılar: `validation/points.geojson` (tahmin, tabaka, rol, önce/sonra yılı), `validation/labels.csv` şablonu (`nokta_id, aoi, gercek_degisim [evet/hayir], gercek_tur, gercek_yil, not`; dolu etiketlerin üzerine `--force` olmadan yazılmaz), etiketleme çipleri ve QGIS katman yükleyicisi (`<cache_dir>/validation/`; makineye özgü yollar repoya girmez).
+  - **Kör etiketleme** (`changewatch label-prep`, `changewatch label`): her nokta için 2017–2026 arası 10 doğal renk kare (2 × 5, yalnızca yıl yazılı); çip dosya adları rastgele belirteç, arayüz tahmin/tabaka/AOI/kimlik göstermez, noktalar sabit seed'li karışık sırada gelir. Etiket türleri: `yapilasma_olasi`, `bitki_kaybi`, `su_kazanimi`, `su_kaybi`, `diger`; yıl 2018–2026 ya da `bilinmiyor`. Talimat: `validation/ETIKETLEME.md`.
+  - **Su doğrulama seti:** su tabakaları ana örneklemede 0–1 nokta aldığından golbasi'deki tüm su poligonları (kalıcı + izleme; `su_kazanimi`, `su_kaybi`, `sulak_alan_belirsiz`) birer iç noktayla ayrı etiketlenir: `validation/water_points.geojson`, `validation/water_labels.csv`. Bu set bir sayım (census) olup alan ağırlıklı kestirime katılmaz.
   - `changewatch validate`: etiket yoksa uyarır; varsa test (varsayılan) / kalibrasyon / tüm noktalarda karışıklık matrisi, kullanıcı/üretici doğruluğu, F1, yanlış alarm oranı, tahmin yılına göre doğruluk ve kırılma yılı isabeti (tam, ±1). Nokta bazlı metriklere ek olarak Olofsson vd. (2014) alan ağırlıklı genel/kullanıcı/üretici doğruluğu ve sınıf alanı kestirimi (± %95 güven aralığı) raporlanır; tabaka = örnekleme anındaki harita sınıfı.
   - `changewatch experiments`: E1–E5 varyantlarının durumunu gösterir. `--build` eksik varyantları üretir ve her varyantın örnekleme noktalarındaki tahminini `validation/experiment_predictions.csv`'ye yazar; etiketler varken hepsini test noktalarında tek seferde değerlendirir. Varyantlar:
     - E1: tek sahne (yıl başına AOI geçerli piksel oranı en yüksek çekim; ardışık çift, kalıcılık yok) ↔ medyan kompozit (ardışık çift, kalıcılık yok) ↔ kompozit + kalıcılık (ardışık çift) ↔ kırılma.
-    - E2: yaz ↔ ilkbahar (ilkbahar ayrı indirme gerektirir; `--build` kapsamında değil).
+    - E2: yaz ↔ ilkbahar — **v2'ye ertelendi**; `experiments` çıktısında "v2" olarak görünür.
     - E3: harmonizasyon açık ↔ kapalı (`composite --no-harmonize`, 2017–2026 tümü).
     - E4: doku kuralı ↔ eski NDBI kuralı (yapılaşma = dNDBI > 0, dBSI > 0, dNDVI < 0; doku gerekmez; diğer türler aynı).
     - E5: ham ↔ normalize doku (her yılın dokusu, o yılın kırılmasız — temel kırılma çalıştırmasında aday/izleme/su değişimi olmayan — piksellerinin doku medyanına bölünür).
@@ -167,7 +169,7 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 | Kod | Deney | Soru |
 |---|---|---|
 | E1 | Tek sahne ↔ medyan kompozit ↔ kompozit + kalıcılık (ardışık çift) ↔ kırılma noktası | Yanlış alarm ne kadar azalıyor? **(ana sonuç)** |
-| E2 | Mevsim penceresi: Mayıs–Haziran ↔ Temmuz–Eylül | Ankara'da hangi pencere daha az yanlış alarm veriyor? |
+| E2 | Mevsim penceresi: Mayıs–Haziran ↔ Temmuz–Eylül | Ankara'da hangi pencere daha az yanlış alarm veriyor? **v2'ye ertelendi** (ilkbahar penceresi ayrı indirme gerektirir). |
 | E3 | Harmonizasyon açık ↔ kapalı (2021→2023) | Offset düzeltmesi yapılmazsa ne kadar sahte değişim çıkıyor? |
 | E4 | Eski NDBI/BSI artışı tabanlı yapılaşma kuralı ↔ doku + kalıcılık tabanlı kural | Doğrulama noktalarında hangisi yapılaşmayı daha iyi yakalıyor, yanlış alarm ne kadar? |
 | E5 | Doku ham ↔ yıllık normalize doku (her yılın dokusu, o yılın kırılmasız piksellerinin doku medyanına bölünür) | İncek'te doku 2017→2026 kademeli yükseliyor (AOI medyanı 0,021 → 0,030; değişmeyen piksellerde ~%15). Normalizasyonla 2024–2025 yapılaşması değişiyor mu; doğrulama metrikleri (özellikle yıl bazlı) iyileşiyor mu? |
@@ -226,7 +228,7 @@ tr-changewatch/
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
-│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | water | sample | validate | experiments | publish | monitor
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect [--method breakpoint|pairs] | evaluate | water | sample | label-prep | label | validate | experiments | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/
@@ -255,7 +257,7 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 | 0 | 1 gün | Repo, ortam, AOI'leri çiz | `changewatch --help` çalışıyor, AOI'ler QGIS'te doğru yerde |
 | 1 | 3–4 gün | Adım 1–5: STAC, pencereli okuma, harmonizasyon, maske, kompozit | İncek 2017 ve 2024 kompozit PNG'leri bulutsuz ve renkleri doğal; harmonizasyon testi geçiyor |
 | 2 | 4–5 gün | Adım 6–11: indeksler, CVA, morfoloji, kurallar, GeoJSON | GeoJSON QGIS'te açılıyor; İncek'teki bilinen yeni yapılaşma alanları yakalanmış |
-| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E5 | Metrik tabloları ve 5 deney görseli hazır |
+| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1, E3–E5 (E2 v2'de) | Metrik tabloları ve 4 deney görseli hazır |
 | 4 | 3 gün | Leaflet haritası, GitHub Pages | Canlı linkte AOI ve yıl seçilebiliyor, popup'lar çalışıyor |
 | 5 | 2 gün | Actions (tests + monthly), README, demo GIF | Elle tetiklenen monthly işi başarılı commit atıyor |
 

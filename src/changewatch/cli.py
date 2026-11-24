@@ -898,9 +898,7 @@ def cmd_sample(args: argparse.Namespace) -> int:
     from pyproj import Transformer
     from rasterio.features import rasterize
 
-    from changewatch import cache
     from changewatch.mask import aoi_raster_mask
-    from changewatch.quicklook import save_chip_png
     from changewatch.validate import NO_CHANGE, allocate, sample_pixels, summary_counts, write_label_template
     from changewatch.vectorize import grid_transform
 
@@ -973,23 +971,7 @@ def cmd_sample(args: argparse.Namespace) -> int:
                                resolve_path(settings, settings["paths"]["validation_labels"]), force=args.force)
     log.info("çıktı: %s (%d nokta), %s", out, len(features), lab)
 
-    chip_dir = cache_root / "validation" / "chips"
-    if chip_dir.exists():  # eski örneklemenin çipleri karışmasın
-        import shutil
-
-        shutil.rmtree(chip_dir)
-    comps: dict[tuple[str, int], Any] = {}
-    for f in features:
-        p = f["properties"]
-        for yy in (p["once_yil"], p["sonra_yil"]):
-            if (p["aoi"], yy) not in comps:
-                comps[(p["aoi"], yy)] = cache.read_dataset(cache.composite_dir(cache_root, p["aoi"], season)
-                                                           / f"{yy}.tif")
-        title = (f"{p['nokta_id']} · {p['aoi']} · tahmin: {p['tahmin_tur']}"
-                 + (f" ({p['tahmin_yil']})" if p["tahmin_yil"] else "") + f" · {p['rol']}")
-        save_chip_png(comps[(p["aoi"], p["once_yil"])], comps[(p["aoi"], p["sonra_yil"])], p["row"], p["col"],
-                      chip_dir / f"{p['nokta_id']}.png", settings, (str(p["once_yil"]), str(p["sonra_yil"])), title)
-    log.info("çipler: %s (%d)", chip_dir, len(features))
+    _prepare_label_sets(settings, cache_root, season, years)
     loader = _write_qgis_loader(settings, cache_root, aois, season, out, years)
     log.info("QGIS: %s", loader)
 
@@ -1170,7 +1152,9 @@ def cmd_experiments(args: argparse.Namespace) -> int:
         for v in variants:
             st = status(v, cache_root, aois)
             n_pred = len(preds.get((code, v.name), {}))
-            note = v.note + (" — `--build` üretmez" if (code, v.name) in NOT_BUILT_BY_DEFAULT else "")
+            note = v.note
+            if (code, v.name) in NOT_BUILT_BY_DEFAULT:
+                st = "v2"
             print(f"| {code} | {v.name} | {st} ({v.season}/{v.method_dir}) | {n_pred or '-'} | {note} |")
     if dry:
         return 0
@@ -1194,6 +1178,117 @@ def cmd_experiments(args: argparse.Namespace) -> int:
             f1 = m["sinif_metrikleri"].get("yapilasma_olasi", {}).get("f1")
             print(f"| {code} | {v.name} | {pct(m['genel_dogruluk'])} | {pct(m['yanlis_alarm_orani'])} | "
                   f"{pct(f1)} | {pct(m['yil']['tam_isabet'])} |")
+    return 0
+
+
+def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str, years: list[int]) -> list[Path]:
+    """İki etiketleme seti hazırlar: ana örnekleme noktaları ve su doğrulama seti.
+
+    Her set için kör zaman serisi çipleri (<cache_dir>/validation/kor_cipler/<set>/<belirteç>.png) ve arayüzün
+    okuduğu dizin (<cache_dir>/validation/label_<set>.json). Eski çipler silinir.
+    """
+    import json
+    import shutil
+
+    import numpy as np
+    from pyproj import Transformer
+
+    from changewatch import cache
+    from changewatch.evaluate import load_features
+    from changewatch.labeling import chip_token, water_validation_points
+    from changewatch.quicklook import save_timeseries_chip_png
+    from changewatch.validate import load_points, write_label_template
+
+    v = settings["validation"]
+    crs = settings["grid"]["crs"]
+    vdir = cache_root / "validation"
+    old = vdir / "chips"
+    if old.exists():
+        shutil.rmtree(old)                          # tahminli eski çipler (kör değil)
+    to_crs = Transformer.from_crs("EPSG:4326", crs, always_xy=True).transform
+
+    # su doğrulama seti (poligon merkezleri); etiketler girildiyse yeniden üretilmez
+    wpath = resolve_path(settings, settings["paths"]["water_validation_points"])
+    wlab = resolve_path(settings, settings["paths"]["water_validation_labels"])
+    wpts = []
+    for aoi in v["water_aois"]:
+        ddir = cache.change_dir(cache_root, aoi, season) / v["method"]
+        layers = {"kalici": load_features(ddir / "changes.geojson", "EPSG:4326")}
+        if (ddir / "izleme.geojson").exists():
+            layers["izleme"] = load_features(ddir / "izleme.geojson", "EPSG:4326")
+        wpts += water_validation_points(layers, aoi)
+    for k, r in enumerate(wpts, start=1):   # birden çok AOI'de kimlikler tekil kalsın
+        r["nokta_id"] = f"S{k:02d}"
+    wpath.parent.mkdir(parents=True, exist_ok=True)
+    wpath.write_text(json.dumps({"type": "FeatureCollection", "features": [
+        {"type": "Feature", "properties": {k: val for k, val in r.items() if k not in ("lon", "lat")},
+         "geometry": {"type": "Point", "coordinates": [round(r["lon"], 7), round(r["lat"], 7)]}} for r in wpts]},
+        ensure_ascii=False, indent=1), encoding="utf-8")
+    try:
+        write_label_template(wpts, wlab)
+    except FileExistsError:
+        log.info("su etiketleri dolu; şablon yeniden yazılmadı: %s", wlab)
+
+    main_pts = []
+    for p in load_points(resolve_path(settings, settings["paths"]["validation_points"])):
+        main_pts.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "x": p["x"], "y": p["y"]})
+    for r in wpts:
+        x, y = to_crs(r["lon"], r["lat"])
+        r.update(x=x, y=y)
+
+    to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
+    comps: dict[tuple[str, int], Any] = {}
+    out = []
+    for name, pts, labels in (("ana", main_pts, settings["paths"]["validation_labels"]),
+                              ("su", wpts, settings["paths"]["water_validation_labels"])):
+        cdir = vdir / "kor_cipler" / name
+        if cdir.exists():
+            shutil.rmtree(cdir)
+        entries = []
+        for p in pts:
+            seq = []
+            for yy in years:
+                if (p["aoi"], yy) not in comps:
+                    comps[(p["aoi"], yy)] = cache.read_dataset(cache.composite_dir(cache_root, p["aoi"], season)
+                                                               / f"{yy}.tif")
+                seq.append((yy, comps[(p["aoi"], yy)]))
+            g = seq[0][1]
+            col = int(np.argmin(np.abs(g["x"].values - p["x"])))
+            row = int(np.argmin(np.abs(g["y"].values - p["y"])))
+            chip = cdir / f"{chip_token(str(v['chip_salt']) + name, p['nokta_id'])}.png"
+            save_timeseries_chip_png(seq, row, col, chip, settings)
+            lon, lat = to_wgs(float(g["x"].values[col]), float(g["y"].values[row]))
+            entries.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "lat": lat, "lon": lon, "chip": str(chip)})
+        idx = vdir / f"label_{name}.json"
+        idx.write_text(json.dumps({"name": name, "labels": str(resolve_path(settings, labels)),
+                                   "seed": int(v["label_seed"]), "years": years, "points": entries},
+                                  ensure_ascii=False, indent=1), encoding="utf-8")
+        log.info("etiketleme seti '%s': %d nokta, çipler %s", name, len(entries), cdir)
+        out.append(idx)
+    return out
+
+
+def cmd_label_prep(args: argparse.Namespace) -> int:
+    """Kör etiketleme setlerini (çipler + su doğrulama seti) hazırlar."""
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    _prepare_label_sets(settings, cache_root, args.season or settings["composite"]["season"],
+                        parse_years(None, settings))
+    return 0
+
+
+def cmd_label(args: argparse.Namespace) -> int:
+    """Kör etiketleme arayüzünü açar (gerekirse önce setleri hazırlar)."""
+    from changewatch.labeling import run_app
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    idx = cache_root / "validation" / f"label_{args.set}.json"
+    if not idx.exists():
+        _prepare_label_sets(settings, cache_root, settings["composite"]["season"], parse_years(None, settings))
+    run_app(idx)
     return 0
 
 
@@ -1272,6 +1367,15 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stored: örnekleme anındaki tahmin; current: güncel changes.geojson'dan okunur")
     va.add_argument("--season", help="--map current için pencere adı")
     va.set_defaults(func=cmd_validate)
+
+    lp = sub.add_parser("label-prep", help="Kör etiketleme: zaman serisi çipleri ve su doğrulama seti")
+    lp.add_argument("--season", help="settings.yaml'daki pencere adı (varsayılan: composite.season)")
+    lp.set_defaults(func=cmd_label_prep)
+
+    lb = sub.add_parser("label", help="Kör etiketleme arayüzü (tkinter)")
+    lb.add_argument("--set", choices=["ana", "su"], default="ana",
+                    help="ana: örnekleme noktaları (labels.csv); su: golbasi su poligonları (water_labels.csv)")
+    lb.set_defaults(func=cmd_label)
 
     ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")
     ex.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings validation.aois)")
