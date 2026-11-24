@@ -125,13 +125,16 @@ def cmd_scenes(args: argparse.Namespace) -> int:
 def cmd_fetch(args: argparse.Namespace) -> int:
     """AOI penceresini okuyup ham sahneleri cache_dir'e GeoTIFF olarak kaydeder (önbellekte varsa atlar)."""
     from changewatch import cache
-    from changewatch.stac import aoi_geobox, dedupe_items, load_item, search_items, season_dates
+    from changewatch.stac import (aoi_geobox, dedupe_items, fine_geobox, load_item, search_items,
+                                  season_dates)
 
     settings = load_settings(args.config)
     cache_root = require_cache_dir(settings)
     setup_logging(settings)
     geom = get_aoi(settings, args.aoi)
     gbox = aoi_geobox(geom, settings)
+    gbox10 = fine_geobox(gbox, float(settings["texture"]["resolution_m"]))
+    cfg = settings["stac"]
     max_cloud = float(settings["stac"]["max_cloud_cover"])
     log.info("AOI %s ızgarası: %s px, %s m, %s", args.aoi, gbox.shape, settings["grid"]["resolution_m"],
              settings["grid"]["crs"])
@@ -143,19 +146,23 @@ def cmd_fetch(args: argparse.Namespace) -> int:
         items = dedupe_items(found)
         log.info("%d: %d öğe (bulut < %%%g), kopya ayıklama sonrası %d", year, len(found), max_cloud,
                  len(items))
-        out_dir = cache.raw_dir(cache_root, args.aoi, year)
-        new = 0
-        for it in items:
-            path = out_dir / f"{it.id}.tif"
-            if path.exists():
-                continue
-            ds = load_item(it, gbox, settings)
-            cache.write_dataset(ds, path, settings["grid"]["crs"], nodata=settings["stac"]["nodata"])
-            new += path.stat().st_size
-            log.info("  indirildi: %s (%s)", it.id, _human(path.stat().st_size))
-        size = sum(p.stat().st_size for p in out_dir.glob("*.tif")) if out_dir.exists() else 0
-        log.info("%d: yeni %s, klasör toplamı %s (%s)", year, _human(new), _human(size), out_dir)
-        total_new += new
+        layers = [  # (klasör, ızgara, bantlar, örnekleme)
+            (cache.raw_dir(cache_root, args.aoi, year), gbox, cfg["bands"], cfg["resampling"]),
+            (cache.raw10_dir(cache_root, args.aoi, year), gbox10, cfg["bands_10m"], cfg["resampling_10m"]),
+        ]
+        for out_dir, gb, bands, resampling in layers:
+            new = 0
+            for it in items:
+                path = out_dir / f"{it.id}.tif"
+                if path.exists():
+                    continue
+                ds = load_item(it, gb, settings, bands=bands, resampling=resampling)
+                cache.write_dataset(ds, path, settings["grid"]["crs"], nodata=cfg["nodata"])
+                new += path.stat().st_size
+                log.info("  indirildi: %s (%s)", path.relative_to(cache_root), _human(path.stat().st_size))
+            size = sum(p.stat().st_size for p in out_dir.glob("*.tif")) if out_dir.exists() else 0
+            log.info("%d: yeni %s, klasör toplamı %s (%s)", year, _human(new), _human(size), out_dir)
+            total_new += new
     log.info("Toplam yeni veri: %s", _human(total_new))
     return 0
 
@@ -163,10 +170,12 @@ def cmd_fetch(args: argparse.Namespace) -> int:
 def cmd_composite(args: argparse.Namespace) -> int:
     """Önbellekteki sahneleri harmonize + maskeler, düşük geçerlilikli sahneleri eler, medyan kompozit üretir."""
     import numpy as np
+    import xarray as xr
 
     from changewatch import cache
     from changewatch.composite import median_composite
     from changewatch.harmonize import harmonize_scene
+    from changewatch.indices import texture
     from changewatch.mask import aoi_raster_mask, apply_mask, valid_fraction
     from changewatch.quicklook import save_rgb_png, save_valid_obs_png
 
@@ -183,7 +192,7 @@ def cmd_composite(args: argparse.Namespace) -> int:
         if not files:
             log.warning("%d: önbellekte sahne yok; önce `changewatch fetch` çalıştırın.", year)
             continue
-        kept, aoi_mask = [], None
+        kept, kept_ids, aoi_mask = [], set(), None
         for f in files:
             raw = cache.read_dataset(f)
             if aoi_mask is None:
@@ -195,6 +204,7 @@ def cmd_composite(args: argparse.Namespace) -> int:
                             year, raw.attrs["item_id"], 100 * frac, 100 * min_frac)
                 continue
             kept.append(masked)
+            kept_ids.add(f.name)
         log.info("%d: %d/%d sahne kompozite alındı", year, len(kept), len(files))
         if not kept:
             continue
@@ -211,8 +221,71 @@ def cmd_composite(args: argparse.Namespace) -> int:
         log.info("%d: geçerli gözlem (AOI içi) min %d / medyan %d / maks %d; <%d olan piksel %%%.2f",
                  year, cnt.min(), int(np.median(cnt)), cnt.max(), settings["composite"]["min_valid_obs"],
                  100 * float((cnt < settings["composite"]["min_valid_obs"]).mean()))
-        for p in (tif, rgb, obs):
+        outputs = [tif, rgb, obs]
+
+        # Doku: her sahnede ayrı (maskeli 10 m B08 → yerel std → 20 m), sonra sahnelerin medyanı.
+        # 20 m'de kompozite alınan sahnelerin aynısı kullanılır.
+        files10 = [f for f in sorted(cache.raw10_dir(cache_root, args.aoi, year).glob("*.tif"))
+                   if f.name in kept_ids]
+        if len(files10) != len(kept_ids):
+            log.warning("%d: 10 m katmanında %d/%d sahne var; `changewatch fetch` ile tamamlayın.",
+                        year, len(files10), len(kept_ids))
+        if files10:
+            tband = settings["texture"]["band"]
+            scale = float(settings["stac"]["reflectance_scale"])
+            work_res = float(settings["grid"]["resolution_m"])
+            tex_scenes = []
+            for f in files10:
+                m10 = apply_mask(harmonize_scene(cache.read_dataset(f), settings), settings)
+                tex = texture(m10[tband].values / scale, settings, work_res)
+                tex_scenes.append(xr.Dataset({"TEXTURE": (("y", "x"), tex),
+                                              "valid": (("y", "x"), ~np.isnan(tex))},
+                                             coords={"y": comp["y"], "x": comp["x"]}))
+            tcomp = median_composite(tex_scenes, settings)
+            tcomp.attrs.update(aoi=args.aoi, year=year, season=season, method="per-scene std, median")
+            ttif = cache.composite_dir(cache_root, args.aoi, season) / f"{year}_texture.tif"
+            cache.write_dataset(tcomp.astype("float32"), ttif, crs, nodata=np.nan)
+            outputs.append(ttif)
+        for p in outputs:
             log.info("  çıktı: %s (%s)", p, _human(p.stat().st_size))
+    return 0
+
+
+def cmd_indices(args: argparse.Namespace) -> int:
+    """Kompozitlerden NDVI, NDBI, MNDWI, BSI ve 10 m B08 dokusunu hesaplar; GeoTIFF + PNG yazar."""
+    import numpy as np
+
+    from changewatch import cache
+    from changewatch.indices import spectral_indices
+    from changewatch.quicklook import save_index_png
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    get_aoi(settings, args.aoi)
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    cdir = cache.composite_dir(cache_root, args.aoi, season)
+
+    for year in parse_years(args.years, settings):
+        f20, ftex = cdir / f"{year}.tif", cdir / f"{year}_texture.tif"
+        if not (f20.exists() and ftex.exists()):
+            log.warning("%d: kompozit eksik (%s, %s); önce fetch + composite çalıştırın.", year,
+                        f20.exists(), ftex.exists())
+            continue
+        ix = spectral_indices(cache.read_dataset(f20))
+        ix["TEXTURE"] = (("y", "x"), cache.read_dataset(ftex)["TEXTURE"].values)
+        ix.attrs.update(aoi=args.aoi, year=year, season=season)
+        out = cache.indices_dir(cache_root, args.aoi, season) / f"{year}.tif"
+        cache.write_dataset(ix, out, crs, nodata=np.nan)
+        log.info("%d: indeksler → %s (%s)", year, out, _human(out.stat().st_size))
+        prev = cache.preview_dir(cache_root, args.aoi) / "indices"
+        for name in ix.data_vars:
+            arr = ix[name].values
+            p = save_index_png(arr, name, prev / f"{year}_{season}_{name}.png", settings,
+                               f"{args.aoi} {year} ({season}) – {name}")
+            log.info("  %-7s medyan %.3f  p5 %.3f  p95 %.3f  → %s", name, np.nanmedian(arr),
+                     np.nanpercentile(arr, 5), np.nanpercentile(arr, 95), p.name)
     return 0
 
 
@@ -249,6 +322,10 @@ def build_parser() -> argparse.ArgumentParser:
     k = sub.add_parser("composite", help="Harmonizasyon + SCL maskesi + medyan kompozit ve önizleme PNG'leri")
     aoi_years(k)
     k.set_defaults(func=cmd_composite)
+
+    i = sub.add_parser("indices", help="NDVI, NDBI, MNDWI, BSI ve doku (GeoTIFF + PNG)")
+    aoi_years(i)
+    i.set_defaults(func=cmd_indices)
     return p
 
 

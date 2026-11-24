@@ -31,6 +31,10 @@ stac:
   scl_band: SCL
   resampling: {"*": average, SCL: nearest}   # 10 m bantlar 20 m'ye ortalanır; SCL sınıf olduğu için en yakın komşu
   nodata: 0
+  # Doku için 10 m katman: B08 doğal çözünürlükte, SCL (20 m) en yakın komşuyla 10 m'ye
+  bands_10m: [B08, SCL]
+  resampling_10m: {"*": nearest}
+  reflectance_scale: 10000   # DN → yansıtım
 
 scenes:
   report_cloud_threshold: 30   # `changewatch scenes` tablosundaki "bulut < %X" sütunu
@@ -53,17 +57,31 @@ composite:
     summer: {start: "07-01", end: "09-15"}
     spring: {start: "05-01", end: "06-30"}
 
+texture:
+  band: B08
+  resolution_m: 10           # çalışma ızgarasının (20 m) tam böleni olmalı
+  window_px: 5               # 10 m'de 5x5 = 50 m pencerede yerel std
+  # Doku her sahnede ayrı hesaplanır, sonra sahnelerin medyanı alınır.
+  # 1.0: içinde tek bir maskeli piksel bulunan pencere o sahnede dışlanır.
+  min_window_valid: 1.0
+
 morphology:
   mmu_ha: 0.5
 
 quicklook:
   # Doğal renk: sabit yansıtım aralığı (yıllar arası karşılaştırılabilir olsun diye yüzdelik germe yok)
   rgb_bands: [B04, B03, B02]
-  reflectance_scale: 10000
   rgb_min: 0.0
   rgb_max: 0.30
   gamma: 1.0
   dpi: 100
+  # İndeks PNG'leri: yıllar arası karşılaştırma için sabit renk aralıkları
+  indices:
+    NDVI:  {vmin: -0.2, vmax: 0.8,  cmap: RdYlGn}
+    NDBI:  {vmin: -0.4, vmax: 0.4,  cmap: RdBu_r}
+    MNDWI: {vmin: -0.8, vmax: 0.4,  cmap: BrBG}
+    BSI:   {vmin: -0.3, vmax: 0.4,  cmap: PuOr_r}
+    TEXTURE: {vmin: 0.0, vmax: 0.08, cmap: magma}
 
 # Faz 2+ eşikleri (indeks farkları, güven kuralları), Faz 5 izleme kapsama eşiği
 # ilgili fazlarda buraya eklenecek.

@@ -40,8 +40,8 @@ config/aois.geojson + settings.yaml
   → [3] Radyometrik harmonizasyon (processing baseline ≥ 04.00 → offset düzeltmesi)
   → [4] SCL maskesi (bulut, gölge, sirrus, kar, no-data)
   → [5] Mevsimsel medyan kompozit (her yıl aynı tarih penceresi)
-  → [6] İndeksler: NDVI, NDBI, MNDWI, BSI + 10 m bantlardan doku (yerel std)
-  → [7] Değişim adayları: CVA büyüklüğü + Otsu eşiği
+  → [6] İndeksler: NDVI, NDBI, MNDWI, BSI + 10 m B08'den doku (sahne bazında yerel std → medyan)
+  → [7] Değişim adayları: CVA büyüklüğü + doku farkı, her biri için Otsu eşiği
   → [8] Morfoloji: açma/kapama, minimum haritalama birimi (MMU)
   → [9] Kalıcılık kuralı (değişim sonraki yıl(lar)da da sürüyor mu?)
   → [10] Tür + güven: yapılaşma (olası) / bitki örtüsü kaybı / su değişimi / belirsiz
@@ -55,7 +55,7 @@ config/aois.geojson + settings.yaml
 |---|---|---|
 | Koordinat sistemi | EPSG:32636 (UTM 36N) | Ankara bu dilimde; alan hesabı metre cinsinden doğru olur |
 | Çalışma ızgarası | 20 m | B11/B12 (SWIR) 20 m; 10 m'ye örneklemek gerçek çözünürlük kazandırmaz |
-| Doku | B08 (10 m) üzerinde yerel std → 20 m'ye ortalama | Yapılaşma dokusu, sürülmüş tarlaya göre daha heterojendir |
+| Doku | Her sahnede ayrı: maskeli B08 (10 m) üzerinde yerel std (maskeli piksel içeren pencereler dışlanır) → 20 m'ye blok ortalaması; sonra sahnelerin piksel bazında medyanı | Yapılaşma dokusu, sürülmüş tarlaya göre daha heterojendir. Std'yi kompozit üzerinde almak, komşu piksellerin farklı sahne kümelerinden medyanlanmasıyla (özellikle 04.00 öncesi SCL sorunu olan yıllarda) yapay kenar/kare desen üretiyordu |
 | Bantlar | B02, B03, B04, B08, B11, B12, SCL | İndeksler + CVA için yeterli |
 | Harmonizasyon | Processing baseline ≥ 04.00 sahnelerde −1000 DN offset düzeltmesi. Karar sahnenin `s2:processing_baseline` alanına göre verilir (ESA'nın yeniden işlediği eski sahneler de PB ≥ 04.00 olabilir). Alan yoksa tarihe göre karar verilir (25.01.2022 ve sonrası → düzelt) ve log'a uyarı yazılır. İki durumun da unit testi olur (Faz 1). | Yapılmazsa 2021→2022 arası her yerde sahte değişim çıkar |
 | Veri önbelleği | Ham veri ve ara çıktılar `settings.yaml` içindeki `cache_dir`'de (harici SSD: `D:\tr-changewatch-data`). Klasör yoksa program anlaşılır bir hata verir. Sanal ortam (`.venv`) proje klasöründe, yerel diskte kalır. | Büyük veriler sistem diskini doldurmaz |
@@ -68,25 +68,37 @@ config/aois.geojson + settings.yaml
 
 ### Ankara'ya özgü tuzaklar (kural motoru bunlara göre tasarlanır)
 
-1. **Çıplak toprak ≈ beton:** Bozkırda sürülmüş tarla ile yeni yapılaşma spektral olarak benzer görünür. Tek başına NDBI artışı yapılaşma sayılmaz.
+1. **Çıplak toprak ≈ beton ve NDBI'nin ters çalışması:** Bozkırda sürülmüş tarla ile yeni yapılaşma spektral olarak benzer görünür. Dahası İncek'te bozkır/tarla NDBI ve BSI'de yerleşimden **daha yüksek** çıkıyor (bahçe, ağaç, kiremit çatı); bozkırdan konuta dönüşüm NDBI ve BSI'yi **düşürüyor**. Faz 2 keşif ölçümü (İncek, 2017→2024 yaz kompozitleri; doğrulama noktası kullanılmadı, eşik ayarlanmadı):
+
+   | 2024 mutlak değerler (medyan) | NDVI | NDBI | BSI |
+   |---|---|---|---|
+   | Yerleşim (doku > 0,05) | 0,160 | 0,014 | 0,078 |
+   | Bozkır/tarla (doku < 0,01) | 0,205 | 0,121 | 0,174 |
+
+   | 2017→2024 farkları (medyan) | dNDVI | dNDBI | dBSI | dMNDWI |
+   |---|---|---|---|---|
+   | Doku düşük → yüksek (2017 < 0,02, Δ > +0,03; AOI'nin %5,4'ü) | −0,071 | −0,040 (%64'ü düşüş) | −0,038 (%69'u düşüş) | +0,111 |
+   | Doku hep düşük (iki yılda da < 0,015) | +0,013 | −0,005 | −0,002 | −0,005 |
+
+   Bu yüzden NDBI/BSI yön koşulu olarak kullanılmaz; yalnızca kanıt alanı olarak tutulur (E4 ile ölçülür).
 2. **Nadas münavebesi:** İç Anadolu'da tarlalar bir yıl ekilip bir yıl boş bırakılabilir. Bu durum yıllar arasında "değişim, geri dönüş, değişim" deseni üretir.
-3. **Çözüm:** "Olası yapılaşma" için birlikte sağlanması gerekenler:
-   - NDBI ve BSI artışı
-   - NDVI düşüşü
-   - doku artışı
-   - MNDWI'ye göre su olmaması
+3. **Çözüm:** "Olası yapılaşma" için birincil kanıt:
+   - **doku artışı**
    - **kalıcılık:** değişim sonraki yıl(lar)da geri dönmüyor
+   - su olmaması (sonraki yılda MNDWI ≤ su eşiği)
+
+   NDVI, NDBI ve BSI farkları yön koşulu değildir; işaretli değerleriyle kanıt alanı olarak tutulur.
 
    Son yılın değişimleri doğrulanamaz; `durum: "izlemede"` olarak işaretlenir.
 
 ### Tür ve güven kuralları (ilk sürüm, eşikler `settings.yaml` içinde)
 
-- `yapilasma_olasi`: yukarıdaki koşulların tamamı + kalıcılık → güven: yüksek. Koşulların bir kısmı sağlanıyorsa → orta.
-- `bitki_kaybi`: kalıcı NDVI düşüşü, NDBI ve doku artışı yok.
-- `su_degisimi`: MNDWI işareti değişmiş.
+- `yapilasma_olasi`: doku artışı + kalıcılık + su değil → güven: yüksek. Doku artışı + su değil ama kalıcılık doğrulanamıyor (son yıl) → güven: orta, `durum: "izlemede"`.
+- `bitki_kaybi`: kalıcı NDVI düşüşü, doku artışı yok.
+- `su_degisimi`: sonraki yılda MNDWI > su eşiği (`settings.yaml`, varsayılan 0) ve bu durum kalıcı.
 - `belirsiz`: aday ama yukarıdakilerin hiçbirine yeterince uymuyor. Gizlenmez, haritada ayrı renkte gösterilir.
 - Her poligonda kanıt alanları tutulur: `dNDVI`, `dNDBI`, `dBSI`, `dMNDWI`, `doku_artisi`, `kalici_mi`, `gecerli_gozlem_sayisi`, `dusuk_gozlem`.
-- `dusuk_gozlem`: poligonun önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve geçerli gözlemi < `min_valid_obs` (3) olan piksel oranı. Neden: 02.12 baseline'ında (2017–2020) parlak yüzeyler (şantiye, yol, parlak çatı) bulutsuz sahnelerde de SCL 8/9 (bulut) sınıflandırılabiliyor; bu pikseller önceki yılda seyrek gözlemlenir. Maske değiştirilmez, durum kanıt olarak raporlanır.
+- `dusuk_gozlem`: poligonun önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve geçerli gözlemi < `min_valid_obs` (3) olan piksel oranı. Neden: 04.00 öncesi baseline'larda (02.12 ve 03.00; 2017–2021) parlak yüzeyler (şantiye, yol, parlak çatı) bulutsuz sahnelerde de SCL 8/9 (bulut) sınıflandırılabiliyor; bu pikseller önceki yılda seyrek gözlemlenir. Maske değiştirilmez, durum kanıt olarak raporlanır.
 
 ## 5. Doğrulama (projenin asıl farkı)
 
@@ -103,6 +115,7 @@ config/aois.geojson + settings.yaml
 | E1 | Tek sahne ↔ medyan kompozit ↔ kompozit + kalıcılık | Yanlış alarm ne kadar azalıyor? **(ana sonuç)** |
 | E2 | Mevsim penceresi: Mayıs–Haziran ↔ Temmuz–Eylül | Ankara'da hangi pencere daha az yanlış alarm veriyor? |
 | E3 | Harmonizasyon açık ↔ kapalı (2021→2023) | Offset düzeltmesi yapılmazsa ne kadar sahte değişim çıkıyor? |
+| E4 | Eski NDBI/BSI artışı tabanlı yapılaşma kuralı ↔ doku + kalıcılık tabanlı kural | Doğrulama noktalarında hangisi yapılaşmayı daha iyi yakalıyor, yanlış alarm ne kadar? |
 
 ## 6. Web arayüzü
 
@@ -154,7 +167,7 @@ tr-changewatch/
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma
-│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | detect | validate | publish | monitor
+│   └── cli.py                 # changewatch check-aois | scenes | fetch | composite | indices | detect | validate | publish | monitor
 ├── tests/
 │   └── fixtures/
 ├── validation/
@@ -183,7 +196,7 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 | 0 | 1 gün | Repo, ortam, AOI'leri çiz | `changewatch --help` çalışıyor, AOI'ler QGIS'te doğru yerde |
 | 1 | 3–4 gün | Adım 1–5: STAC, pencereli okuma, harmonizasyon, maske, kompozit | İncek 2017 ve 2024 kompozit PNG'leri bulutsuz ve renkleri doğal; harmonizasyon testi geçiyor |
 | 2 | 4–5 gün | Adım 6–11: indeksler, CVA, morfoloji, kurallar, GeoJSON | GeoJSON QGIS'te açılıyor; İncek'teki bilinen yeni yapılaşma alanları yakalanmış |
-| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E3 | Metrik tabloları ve 3 deney görseli hazır |
+| 3 | 3–4 gün | Doğrulama noktaları, etiketleme, E1–E4 | Metrik tabloları ve 4 deney görseli hazır |
 | 4 | 3 gün | Leaflet haritası, GitHub Pages | Canlı linkte AOI ve yıl seçilebiliyor, popup'lar çalışıyor |
 | 5 | 2 gün | Actions (tests + monthly), README, demo GIF | Elle tetiklenen monthly işi başarılı commit atıyor |
 

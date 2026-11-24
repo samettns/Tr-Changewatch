@@ -17,7 +17,8 @@ from matplotlib.colors import BoundaryNorm, ListedColormap  # noqa: E402
 def rgb_array(ds: xr.Dataset, settings: dict[str, Any]) -> np.ndarray:
     """Doğal renk (y, x, 4) RGBA dizisi; sabit yansıtım aralığı, NaN saydam."""
     q = settings["quicklook"]
-    rgb = np.stack([ds[b].values for b in q["rgb_bands"]], axis=-1) / float(q["reflectance_scale"])
+    scale = float(settings["stac"]["reflectance_scale"])
+    rgb = np.stack([ds[b].values for b in q["rgb_bands"]], axis=-1) / scale
     lo, hi = float(q["rgb_min"]), float(q["rgb_max"])
     rgb = np.clip((rgb - lo) / (hi - lo), 0, 1) ** (1.0 / float(q["gamma"]))
     nan = np.isnan(rgb).any(axis=-1)
@@ -53,6 +54,26 @@ def save_valid_obs_png(ds: xr.Dataset, path: Path, settings: dict[str, Any], tit
                  f"maks {count.max()} | <{min_obs}: %{pct_low:.2f}", fontsize=9)
     cb = fig.colorbar(im, ax=ax, ticks=range(0, vmax + 1, max(1, (vmax + 1) // 10)), shrink=0.8)
     cb.set_label("geçerli gözlem sayısı (kırmızı: kompozit dışı)")
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
+def save_index_png(arr: np.ndarray, name: str, path: Path, settings: dict[str, Any], title: str = "") -> Path:
+    """Tek bir indeksi settings'teki sabit renk aralığıyla (yıllar arası karşılaştırılabilir) PNG'ye yazar."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    d = settings["quicklook"]["indices"][name]
+    cmap = plt.get_cmap(d["cmap"]).copy()
+    cmap.set_bad((0.6, 0.6, 0.6, 1.0))  # NaN: gri
+    h, w = arr.shape
+    dpi = int(settings["quicklook"]["dpi"])
+    fig, ax = plt.subplots(figsize=(w / dpi * 1.5 + 1.5, h / dpi * 1.5 + 0.6), dpi=dpi)
+    im = ax.imshow(np.ma.masked_invalid(arr), cmap=cmap, vmin=d["vmin"], vmax=d["vmax"],
+                   interpolation="nearest")
+    ax.set_axis_off()
+    med = float(np.nanmedian(arr)) if np.isfinite(arr).any() else float("nan")
+    ax.set_title(f"{title}\nmedyan {med:.3f} | NaN %{100 * float(np.isnan(arr).mean()):.2f}", fontsize=9)
+    fig.colorbar(im, ax=ax, shrink=0.8).set_label(name)
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
     return path

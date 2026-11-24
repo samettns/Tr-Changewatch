@@ -106,3 +106,19 @@ def test_aoi_geobox_grid_aligned():
     assert (t.a, -t.e) == (20, 20)
     assert t.c % 20 == 0 and t.f % 20 == 0  # yıllar arasında aynı piksel ızgarası
     assert 350 < gb.shape[0] < 450 and 350 < gb.shape[1] < 450  # ~7.8 km / 20 m
+
+
+def test_fine_geobox_nests_in_work_grid():
+    from shapely.geometry import box
+
+    from changewatch.stac import fine_geobox
+
+    gb = aoi_geobox(box(32.68, 39.79, 32.77, 39.86), load_settings())
+    fb = fine_geobox(gb, 10)
+    assert fb.shape == (gb.shape[0] * 2, gb.shape[1] * 2)
+    assert (fb.transform.c, fb.transform.f) == (gb.transform.c, gb.transform.f)
+    assert fb.transform.a == 10
+    import pytest
+
+    with pytest.raises(ValueError):
+        fine_geobox(gb, 15)

@@ -88,7 +88,27 @@ def aoi_geobox(geometry_wgs84: Any, settings: dict[str, Any]):
     return GeoBox.from_bbox(tuple(bounds), crs=g["crs"], resolution=g["resolution_m"])
 
 
-def load_item(item: pystac.Item, geobox: Any, settings: dict[str, Any]):
+def fine_geobox(geobox: Any, resolution_m: float):
+    """Çalışma ızgarasıyla aynı kapsamda, tam bölen çözünürlükte (ör. 20 → 10 m) iç içe ızgara."""
+    from affine import Affine
+    from odc.geo.geobox import GeoBox
+
+    res = abs(geobox.transform.a)
+    factor = res / resolution_m
+    if factor < 1 or abs(factor - round(factor)) > 1e-9:
+        raise ValueError(f"{resolution_m} m, {res} m ızgaranın tam böleni değil.")
+    k = int(round(factor))
+    h, w = geobox.shape
+    return GeoBox((h * k, w * k), geobox.transform @ Affine.scale(1 / k), geobox.crs)
+
+
+def load_item(
+    item: pystac.Item,
+    geobox: Any,
+    settings: dict[str, Any],
+    bands: Sequence[str] | None = None,
+    resampling: dict[str, str] | None = None,
+):
     """Tek bir öğenin yalnızca AOI penceresini okur (COG pencereli okuma); (y, x) Dataset döndürür."""
     import odc.stac
     import planetary_computer
@@ -96,9 +116,9 @@ def load_item(item: pystac.Item, geobox: Any, settings: dict[str, Any]):
     cfg = settings["stac"]
     ds = odc.stac.load(
         [item],
-        bands=cfg["bands"],
+        bands=list(bands or cfg["bands"]),
         geobox=geobox,
-        resampling=dict(cfg["resampling"]),
+        resampling=dict(resampling or cfg["resampling"]),
         groupby="id",
         patch_url=planetary_computer.sign,
     )

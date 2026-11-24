@@ -15,6 +15,16 @@ def raw_dir(cache: Path, aoi: str, year: int) -> Path:
     return cache / aoi / "raw" / str(year)
 
 
+def raw10_dir(cache: Path, aoi: str, year: int) -> Path:
+    """Doku için 10 m ham sahneler (B08 + SCL): <cache>/<aoi>/raw10m/<yıl>/."""
+    return cache / aoi / "raw10m" / str(year)
+
+
+def indices_dir(cache: Path, aoi: str, season: str) -> Path:
+    """İndeks GeoTIFF'leri: <cache>/<aoi>/indices/<mevsim>/."""
+    return cache / aoi / "indices" / season
+
+
 def composite_dir(cache: Path, aoi: str, season: str) -> Path:
     """Kompozitlerin klasörü: <cache>/<aoi>/composite/<mevsim>/."""
     return cache / aoi / "composite" / season
