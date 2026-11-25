@@ -174,6 +174,10 @@ Notlar:
 
 **Okuma:** Değişim/değişim yok ayrımı görülmemiş bölgelerde geliştirme setine yakın (kesinlik %61, duyarlılık %81). Yapılaşma türünde ise düşüş var: kesinlik %71 → %51, F1 %72 → %50. Pursaklar'da yapılaşma tahminlerinin 14'ünün 7'si referansta değişim yok. Alan ağırlıklı kestirime göre iki test AOI'sinde gerçek yapılaşmanın yalnızca ~%7'si haritada (geliştirme setinde ~%18); haritadaki 414 ha'ya karşı kestirim 2 960 ± 1 447 ha. Hata paneli: `docs/img/hata_paneli_test_aoi.png`.
 
+**Yorum:** Değişim tespiti görülmemiş bölgelere genelleşiyor; yapılaşma türü ise genelleşmiyor (F1 %72 → %50). Etiketlemede görülen neden bir **alan kayması**: geliştirme AOI'lerinde (İncek, Gölbaşı) yapılaşma çoğunlukla açık araziye kurulan yeni sitelerden ve yollardan oluşuyordu; test AOI'lerinde ise çoğunlukla mevcut sık yerleşimin içindeki küçük eklerden (tek bina, ek yapı, boş parsel doldurma) oluşuyor. Bunlar 20 m pikselde ve 0,5 ha MMU'da ya hiç kırılma vermiyor (kaçırma) ya da zayıf doku sinyaliyle "belirsiz" sınıfına düşüyor (tür hatası). Dondurulmuş yöntemde düzeltme yapılmadı; çözüm yönleri (daha yüksek çözünürlüklü veri, derin öğrenme tabanlı değişim tespiti) v2 listesinde.
+
+**Bulgu: Pursaklar'da su kazanımı doğru çıktı.** Pursaklar'daki su kazanımı tabakasının 8 test noktasının 7'si referansta da su kazanımı (kesinlik %88; kaçırılan su kazanımı yok; 2022'de oluşan yeni bir su kütlesi, su alanı serisinde 0 → ~50–59 ha). Gölbaşı su setinde ise 16 poligonun 0'ı doğruydu. Fark, değişimin niteliğinden geliyor: Pursaklar'da kuru araziden açık suya net ve kalıcı bir geçiş var; Gölbaşı'nda ise mevcut gölün kıyısındaki alg/renk değişimi ve sazlık salınımı su kazanımı/kaybı olarak işaretleniyordu. Su katmanı yeni oluşan su kütlelerini yakalayabiliyor, ama mevcut göllerin kıyısındaki yanlış alarmları ayıramıyor. Su değişim poligonlarını yayınlamama kararı (v1 yayın kararları) test sonuçlarından önce verildi ve değişmedi; v1'de su poligonları yayınlanmıyor, yalnızca su alanı serisi grafiği yayınlanıyor.
+
 ## v1 yayın kararları
 
 Faz 3 doğrulamasından sonra alındı; yöntem ve eşikler değişmedi, yalnızca neyin nasıl gösterileceği belirlendi.
