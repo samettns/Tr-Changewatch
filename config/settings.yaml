@@ -195,8 +195,20 @@ quicklook:
     BSI:   {vmin: -0.3, vmax: 0.4,  cmap: PuOr_r}
     TEXTURE: {vmin: 0.0, vmax: 0.08, cmap: magma}
 
-# Faz 2+ eşikleri (indeks farkları, güven kuralları), Faz 5 izleme kapsama eşiği
-# ilgili fazlarda buraya eklenecek.
+# Faz 5: aylık izleme (`changewatch monitor`, monthly.yml). Son `months` tam ay ↔ önceki yılın aynı ayları.
+# Sonuçlar "ön uyarı"dır: kalibre edilmedi, doğrulanmadı; yıllık kalıcı katmandan ayrı gösterilir.
+monitor:
+  months: 3
+  aois: [incek, golbasi, baglica, pursaklar]
+  bands: [B02, B03, B04, B08, B11, B12]
+  min_valid_obs: 2            # dönem kompozitinde piksel başına en az geçerli gözlem (3 ay; yaz penceresinden kısa)
+  min_coverage: 0.6           # AOI'nin iki dönemde de geçerli piksel oranı bunun altındaysa analiz atlanır (kış/kar)
+  z_k: 3.0                    # CVA büyüklüğünün AOI içi sağlam z-skoru > z_k (kırılma yöntemindeki k ile aynı)
+  texture_z_k: 3.0            # VE 10 m doku artışının sağlam z-skoru > bu (yapılaşma kanıtı; tarlalar doku kazanmaz)
+  max_ndvi_gain: 0.1          # ΔNDVI > bu olan pikseller (yeşillenme) ön uyarı sayılmaz
+  retry_tries: 6              # Planetary Computer 429/5xx: üstel bekleme ile deneme sayısı
+  retry_base_s: 10            # ilk bekleme (s); 10, 20, 40, 80, 160
+  max_file_kb: 1024           # monthly.yml yalnızca bundan küçük GeoJSON/JSON dosyalarını commit'ler
 
 # Faz 4: web haritası çıktıları (`changewatch publish`). Yöntem/eşik değil; yalnızca neyin nasıl yayınlandığı.
 publish:

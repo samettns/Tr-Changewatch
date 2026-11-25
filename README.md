@@ -47,6 +47,16 @@ python -m http.server 8000 --directory docs  # sonra tarayıcıda: http://localh
 
 ![Web haritası: Pursaklar, 2017 ↔ 2025 önce/sonra kaydırıcı ve yapılaşma poligonları](docs/img/harita.png)
 
+## Aylık izleme
+
+`changewatch monitor` (ve `.github/workflows/monthly.yml`, her ayın 5'inde + elle tetikleme) son 3 tam ayı önceki yılın aynı 3 ayıyla karşılaştırır (mevsimsel hizalı). İki dönemin medyan kompozitleri arasında **spektral değişim** (CVA büyüklüğü, AOI içi sağlam z > 3) **ve 10 m doku artışı** (sağlam z > 3) olan, yeşillenme olmayan ve 0,5 ha'dan büyük alanlar "ön uyarı" olarak `docs/data/<aoi>/monitor.geojson`'a yazılır; haritada yıllık katmandan ayrı, "doğrulanmadı" etiketiyle gösterilir. Doku koşulu olmadan tarla sürümü/hasat farkları ön uyarıların neredeyse tamamını oluşturuyordu (Pursaklar, Ağu–Eki 2026: 135 poligon / 568 ha → doku koşuluyla 7 poligon / 6,4 ha). Ön uyarı kuralı etiketli noktalarla kalibre edilmedi ve doğruluğu ölçülmedi.
+
+- **Kapsama:** AOI'nin iki dönemde de geçerli (bulutsuz, karsız) piksel oranı `stats.json` → `aylik_izleme.kapsama` alanına yazılır; %60'ın altındaysa (kış) analiz atlanır ve nedeni yazılır.
+- **Planetary Computer 429/5xx:** STAC araması ve her sahne okuması üstel beklemeyle (10, 20, 40, 80, 160 s) yeniden denenir. İsteğe bağlı `PC_SDK_SUBSCRIPTION_KEY` secret'ı tanımlanabilir.
+- **Commit:** iş yalnızca `docs/data/*/monitor.geojson` ve `docs/data/*/stats.json` dosyalarını, 1 MB sınırı kontrolünden sonra commit'ler; GeoTIFF ve önbellek CI'da hiç diske yazılmaz.
+- **Süre:** yerelde (ev bağlantısı) AOI başına ~2–2,5 dk (iki dönem × ~20 çekim × 20 m + 10 m pencereli okuma). GitHub runner'da bağımlılık kurulumu (rasterio, geopandas, odc-stac, scikit-image tekerlekleri) ~2–4 dk; 4 AOI ile bir çalıştırma **tahminen 10–20 dk**, 429 beklemeleriyle 30 dk'ya çıkabilir (iş zaman aşımı 90 dk).
+- **60 gün kuralı:** GitHub, public repolarda 60 gün boyunca depoda etkinlik olmazsa zamanlanmış iş akışlarını otomatik olarak devre dışı bırakır. Bu durumda gelen uyarı e-postasından sonra **Actions → monthly → "Enable workflow"** ile yeniden etkinleştirin; elle tetikleme (`Run workflow`) her zaman çalışır.
+
 ## Geliştirme ve test AOI'leri
 
 Yöntem tasarımı ve eşik denemeleri yalnızca **geliştirme AOI'lerinde** yapılır: `incek` (yapılaşma, bitki kaybı) ve `golbasi` (su kuralı, Mogan Gölü). **Test AOI'leri** `baglica` ve `pursaklar`, yöntem dondurulana kadar hiç çalıştırılmaz (indirme dahil); dondurulduktan sonra hiçbir ayar değiştirilmeden çalıştırılır. Böylece test AOI'lerindeki sonuçlar, yöntemin o bölgelere göre ayarlanmamış olduğunu gösterir.

@@ -1,0 +1,71 @@
+name: monthly
+
+# Aylık izleme (PROJECT_SPEC §7): son 3 tam ay ↔ önceki yılın aynı 3 ayı → docs/data/<aoi>/monitor.geojson
+# ve stats.json içindeki "aylik_izleme". Yalnızca bu küçük JSON/GeoJSON dosyaları commit'lenir; GeoTIFF asla.
+# Not: public repolarda 60 gün aktivite olmazsa zamanlanmış iş GitHub tarafından devre dışı bırakılır
+# (README → "Aylık izleme"). Elle tetikleme her zaman çalışır.
+
+on:
+  schedule:
+    - cron: "17 4 5 * *"      # her ayın 5'i, 04:17 UTC (07:17 TSİ)
+  workflow_dispatch:
+    inputs:
+      today:
+        description: "Çalışma tarihi (YYYY-AA-GG; boş = bugün)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monthly
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Bağımlılıklar
+        run: python -m pip install -e .
+      - name: Aylık izleme
+        id: run
+        env:
+          MPLBACKEND: Agg
+          # İsteğe bağlı: Planetary Computer abonelik anahtarı (Settings → Secrets). Yoksa anonim imza kullanılır.
+          PC_SDK_SUBSCRIPTION_KEY: ${{ secrets.PC_SDK_SUBSCRIPTION_KEY }}
+        run: |
+          set +e
+          if [ -n "${{ inputs.today }}" ]; then changewatch monitor --today "${{ inputs.today }}"; else changewatch monitor; fi
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+      - name: Boyut ve tür kontrolü
+        run: |
+          max_kb=$(python -c "import yaml;print(yaml.safe_load(open('config/settings.yaml',encoding='utf-8'))['monitor']['max_file_kb'])")
+          big=$(find docs/data -type f \( -name monitor.geojson -o -name stats.json \) -size +"${max_kb}"k)
+          if [ -n "$big" ]; then echo "Sınırı (${max_kb} KB) aşan dosya: $big"; exit 1; fi
+          if git status --porcelain | grep -Ei '\.(tif|tiff|nc)$'; then echo "Raster dosyası commit'lenemez"; exit 1; fi
+      - name: Commit
+        env:
+          # Commit yazarı repo değişkenlerinden (Settings → Variables): COMMIT_NAME, COMMIT_EMAIL.
+          # Tanımlı değilse repo sahibinin adı ve GitHub noreply adresi kullanılır.
+          NAME: ${{ vars.COMMIT_NAME || github.repository_owner }}
+          EMAIL: ${{ vars.COMMIT_EMAIL || format('{0}@users.noreply.github.com', github.repository_owner) }}
+        run: |
+          git config user.name "$NAME"
+          git config user.email "$EMAIL"
+          git add docs/data/*/monitor.geojson docs/data/*/stats.json
+          if git diff --cached --quiet; then echo "Değişiklik yok"; exit 0; fi
+          git commit -m "izleme: aylık ön uyarı ($(date -u +%Y-%m))"
+          git push
+      - name: Sonuç
+        if: steps.run.outputs.status != '0'
+        run: |
+          echo "En az bir AOI başarısız oldu (yukarıdaki log); başarılı AOI'ler commit'lendi."
+          exit 1

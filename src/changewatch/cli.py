@@ -1661,6 +1661,40 @@ def cmd_publish(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_monitor(args: argparse.Namespace) -> int:
+    """Aylık izleme: docs/data/<aoi>/monitor.geojson + stats.json 'aylik_izleme'. cache_dir gerektirmez."""
+    import json
+    from datetime import date
+
+    from changewatch.monitor import run_aoi
+    from changewatch.vectorize import write_geojson
+
+    settings = load_settings(args.config)
+    setup_logging(settings)
+    today = date.fromisoformat(args.today) if args.today else date.today()
+    out_root = resolve_path(settings, settings["publish"]["out_dir"])
+    failed = []
+    for aoi in args.aois or list(settings["monitor"]["aois"]):
+        try:
+            feats, summ = run_aoi(aoi, get_aoi(settings, aoi), settings, today)
+        except Exception as e:                       # noqa: BLE001 — bir AOI'nin hatası diğerlerini durdurmasın
+            log.error("%s: aylık izleme başarısız: %s", aoi, e)
+            failed.append(aoi)
+            continue
+        write_geojson(feats, out_root / aoi / "monitor.geojson")
+        st_path = out_root / aoi / "stats.json"
+        stats = json.loads(st_path.read_text(encoding="utf-8")) if st_path.exists() else {"aoi": aoi}
+        stats["aylik_izleme"] = summ
+        st_path.write_text(json.dumps(stats, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(f"{aoi}: {summ['durum']} | dönem {summ['donem'][0]}–{summ['donem'][1]} ↔ "
+              f"{summ['karsilastirma'][0]}–{summ['karsilastirma'][1]} | kapsama %{100 * summ.get('kapsama', 0):.0f} | "
+              f"{summ.get('poligon', 0)} poligon, {summ.get('alan_ha', 0)} ha")
+    if failed:
+        print("HATA: başarısız AOI'ler: " + ", ".join(failed))
+        return 1
+    return 0
+
+
 # ---------------------------------------------------------------- ayrıştırıcı
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1757,6 +1791,11 @@ def build_parser() -> argparse.ArgumentParser:
     pu.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings publish.aois)")
     pu.add_argument("--no-quicklooks", action="store_true", help="önizleme PNG'lerini yeniden üretme")
     pu.set_defaults(func=cmd_publish)
+
+    mo = sub.add_parser("monitor", help="Aylık izleme: son 3 ay ↔ önceki yılın aynı 3 ayı (ön uyarı)")
+    mo.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings monitor.aois)")
+    mo.add_argument("--today", help="çalışma tarihi (YYYY-AA-GG; varsayılan: bugün)")
+    mo.set_defaults(func=cmd_monitor)
 
     ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")
     ex.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings validation.aois)")

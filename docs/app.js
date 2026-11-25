@@ -78,6 +78,21 @@ function popupHtml(p) {
     <p class="hint">Güven, kuralın kendi tahminidir; doğruluk için "Yöntem ve doğruluk" paneline bakın.</p></div>`;
 }
 
+function monitorPopup(p) {
+  const d = (x) => x.split("-").reverse().join(".");
+  const k = p.kanit || {};
+  return `<div class="pop"><h4><span class="swatch" style="background:${UYARI.renk}"></span>${UYARI.ad} <span class="badge">doğrulanmadı</span></h4>
+    <table>
+      <tr><td>Dönem</td><td>${d(p.donem[0])} – ${d(p.donem[1])}</td></tr>
+      <tr><td>Karşılaştırma</td><td>${d(p.karsilastirma[0])} – ${d(p.karsilastirma[1])}</td></tr>
+      <tr><td>Alan</td><td>${fmt(p.alan_ha, 2)} ha</td></tr>
+      <tr><td>Spektral değişim (z)</td><td>${fmt(k.cva_z, 1)}</td></tr>
+      <tr><td>Doku artışı (z)</td><td>${fmt(k.doku_z, 1)}</td></tr>
+      <tr><td>ΔNDVI</td><td>${sgn(k.dNDVI)}</td></tr>
+    </table>
+    <p class="hint">Son 3 ay ile önceki yılın aynı 3 ayı karşılaştırıldı. Kalibre edilmemiş bir ön uyarıdır; yıllık analizde doğrulanana kadar değişim sayılmaz.</p></div>`;
+}
+
 function rebuildPolys() {
   Object.values(layers).forEach((l) => map.removeLayer(l));
   const feats = state.changes.features;
@@ -91,7 +106,7 @@ function rebuildPolys() {
     style: styleFor, onEachFeature: (f, l) => l.bindPopup(() => popupHtml(f.properties), { maxWidth: 320 }) }).addTo(map);
   if (state.monitor && state.uyari) {
     layers.uyari = L.geoJSON(state.monitor, { style: () => ({ pane: "polys", color: UYARI.renk, weight: 2, dashArray: "2 4", fillOpacity: 0.15, fillColor: UYARI.renk }),
-      onEachFeature: (f, l) => l.bindPopup(() => popupHtml({ ...f.properties, durum: "on_uyari" })) }).addTo(map);
+      onEachFeature: (f, l) => l.bindPopup(() => monitorPopup(f.properties), { maxWidth: 320 }) }).addTo(map);
   }
   renderLegend();
 }
@@ -210,8 +225,13 @@ function renderLayersList() {
   }
   add(`<label class="check"><input type="checkbox" id="izleme" ${state.izleme ? "checked" : ""}>
     <span class="swatch dashed" style="border-color:#555"></span>${state.stats.izleme_yili} değişimleri (izlemede)</label>`);
+  const ai = state.stats.aylik_izleme;
   if (state.monitor) add(`<label class="check"><input type="checkbox" id="uyari" ${state.uyari ? "checked" : ""}>
-    <span class="swatch dashed" style="border-color:${UYARI.renk}"></span>${UYARI.ad}</label>`);
+    <span class="swatch dashed" style="border-color:${UYARI.renk}"></span>${UYARI.ad} <span class="badge">doğrulanmadı</span></label>
+    <span class="hint" style="margin-left:auto">${state.monitor.features.length}</span>`);
+  if (ai) add(`<span class="hint">Aylık izleme (${ai.calisma_tarihi}): ${ai.durum === "tamam"
+    ? `${ai.donem[0].slice(0, 7)} – ${ai.donem[1].slice(0, 7)} ↔ bir yıl önce, kapsama ${pct(ai.kapsama)}`
+    : `atlandı (${ai.neden})`}</span>`);
   ul.querySelectorAll("input[data-t]").forEach((c) => c.addEventListener("change", () => { state.on[c.dataset.t] = c.checked; rebuildPolys(); }));
   $("#izleme").addEventListener("change", (e) => { state.izleme = e.target.checked; rebuildPolys(); });
   const u = $("#uyari"); if (u) u.addEventListener("change", (e) => { state.uyari = e.target.checked; rebuildPolys(); });
