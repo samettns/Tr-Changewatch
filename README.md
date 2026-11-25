@@ -32,7 +32,20 @@ changewatch sample --set test_aoi                       # test AOI'leri (baglica
 changewatch label [--set su|test_aoi]                   # kör etiketleme arayüzü (talimat: validation/ETIKETLEME.md)
 changewatch validate [--aoi incek]                      # AOI'ler ayrı ve birlikte: karışıklık matrisleri, Olofsson, su seti, hata paneli
 changewatch experiments [--build]                       # E1, E3–E5 varyantları ve nokta tahminleri (E2 v2'de)
+changewatch validate --set test_aoi [--aoi baglica]     # görülmemiş bölge testi
+changewatch publish                                     # web haritası verisi: docs/data (< 50 MB, PNG ≤ 500 KB)
 ```
+
+## Web haritası
+
+Statik Leaflet sayfası `docs/` altında (GitHub Pages). Yerelde denemek için (sayfa `fetch` kullandığı için dosyayı doğrudan açmak yerine yerel sunucu gerekir):
+
+```bash
+changewatch publish                          # docs/data'yı önbellekten yeniden üretir (yalnızca veri değiştiyse)
+python -m http.server 8000 --directory docs  # sonra tarayıcıda: http://localhost:8000/#incek
+```
+
+![Web haritası: Pursaklar, 2017 ↔ 2025 önce/sonra kaydırıcı ve yapılaşma poligonları](docs/img/harita.png)
 
 ## Geliştirme ve test AOI'leri
 
