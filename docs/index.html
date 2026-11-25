@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TR-ChangeWatch — Ankara değişim haritası</title>
+<meta name="description" content="Sentinel-2 ile Ankara'da 2017–2026 yapılaşma ve arazi örtüsü değişimi: kanıtlı, güven düzeyli, doğrulanmış tahmin haritası.">
+<!-- Depo bağlantısı (GitHub'a yüklendikten sonra doldurun; boşsa bağlantı gizlenir) -->
+<meta name="repo-url" content="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <aside id="panel" aria-label="Kontroller">
+    <header class="panel-head">
+      <h1>TR-ChangeWatch</h1>
+      <p class="sub">Ankara · Sentinel-2 · 2017–2026</p>
+      <button id="panel-close" class="icon-btn mobile-only" aria-label="Paneli kapat">×</button>
+    </header>
+
+    <p class="note">Bu harita bir <strong>tahmindir</strong>; doğruluğu ölçülmüştür ama hatasız değildir.
+      <button class="link-btn" data-open="method">Yöntem ve doğruluk →</button></p>
+
+    <section>
+      <label class="field">Bölge
+        <select id="aoi"></select>
+      </label>
+      <p id="aoi-tag" class="tag-line"></p>
+    </section>
+
+    <section>
+      <h2>Değişim yılı</h2>
+      <div class="row">
+        <label class="field">başlangıç <select id="y0"></select></label>
+        <label class="field">bitiş <select id="y1"></select></label>
+      </div>
+      <p class="hint">Kalıcı katman: 2018–2025 (kırılmadan sonra en az 2 yıl gözlenmiş değişimler).</p>
+    </section>
+
+    <section>
+      <h2>Katmanlar</h2>
+      <ul id="layers" class="layers"></ul>
+    </section>
+
+    <section>
+      <h2>Önce / sonra</h2>
+      <label class="check"><input type="checkbox" id="compare" checked> Kompozit önizlemeleri göster</label>
+      <p class="hint" id="compare-years"></p>
+    </section>
+
+    <section>
+      <h2 id="chart-title">Yıllara göre yapılaşma (ha)</h2>
+      <div id="chart-built" class="chart"></div>
+      <p class="hint">Haritadaki <code>yapılaşma (olası)</code> poligonlarının alanı. 2026 kırılmaları henüz doğrulanmadı (izlemede).</p>
+    </section>
+
+    <section id="water-section" hidden>
+      <h2>Su alanı serisi (ha)</h2>
+      <div id="chart-water" class="chart"></div>
+      <p class="hint">Yaz kompozitinde ≥ 5 ha su kütleleri (MNDWI &gt; 0). Su değişim poligonları v1'de yayınlanmıyor.</p>
+    </section>
+
+    <footer class="panel-foot">
+      <p>Veri: Copernicus Sentinel-2 (ESA), Microsoft Planetary Computer üzerinden. <span id="generated"></span></p>
+      <p id="repo-line" hidden><a id="repo-link" href="#" rel="noopener">Kaynak kod ve yöntem</a></p>
+    </footer>
+  </aside>
+
+  <main id="map-wrap">
+    <div id="map" role="region" aria-label="Değişim haritası"></div>
+    <div id="swipe" hidden>
+      <span class="swipe-label left" id="swipe-left"></span>
+      <span class="swipe-label right" id="swipe-right"></span>
+      <input type="range" id="swipe-range" min="0" max="1" step="0.001" value="0.5" aria-label="Önce/sonra kaydırıcı">
+    </div>
+    <button id="panel-open" class="fab mobile-only" aria-label="Kontrolleri aç">☰ Kontroller</button>
+    <div id="legend" class="legend"></div>
+  </main>
+</div>
+
+<div id="method" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="method-title">
+  <div class="modal-box">
+    <button class="icon-btn modal-close" data-close aria-label="Kapat">×</button>
+    <h2 id="method-title">Yöntem ve doğruluk</h2>
+    <p class="note strong">Bu harita tahmindir. Poligonlar kural tabanlı bir yöntemin çıktısıdır; tek tek bina tespiti değildir.
+      Güven düzeyi yöntemin kendi tahminidir, gerçek dünyadaki kesinlik değildir.</p>
+    <h3>Nasıl üretildi?</h3>
+    <ol class="steps">
+      <li>Her yıl için yaz penceresi (1 Temmuz–15 Eylül) Sentinel-2 L2A sahneleri; bulut, gölge ve kar SCL ile maskelenir; 2022 sonrası işlem sürümü farkı (−1000 DN) düzeltilir.</li>
+      <li>Piksel bazında medyan kompozit (20 m) ve 10 m yakın kızılötesi banttan (B08) yerel doku.</li>
+      <li>Her piksel için 2017–2026 serisinde tek bir kalıcı basamak (kırılma) aranır; basamağın büyüklüğü kendi gürültüsüne göre ölçülür.</li>
+      <li>Türler: doku artışı → <em>yapılaşma (olası)</em>; kalıcı NDVI düşüşü → <em>bitki kaybı</em>; ikisi de değil → <em>belirsiz</em>. En küçük birim 0,5 ha.</li>
+      <li>Kırılmadan sonra en az 2 yıl gözlenen değişimler <em>kalıcı</em>; yalnızca son yılda (2026) görülenler <em>izlemede</em>.</li>
+    </ol>
+    <h3>Doğruluk</h3>
+    <p>Kör etiketlenmiş tabakalı rastgele test noktaları. Geliştirme bölgeleri yöntem tasarlanırken kullanıldı; test bölgeleri (Bağlıca, Pursaklar) yöntem dondurulduktan sonra, hiçbir ayar değiştirilmeden çalıştırıldı.</p>
+    <div class="table-wrap"><table id="acc-table"></table></div>
+    <p class="hint">Kesinlik: haritanın "değişim" dediği yerlerin gerçekten değişmiş olma oranı. Duyarlılık: gerçek değişimlerin yakalanma oranı. Alan kestirimi Olofsson vd. (2014) yöntemiyle, %95 güven aralığıyla.</p>
+    <h3>Sınırlamalar</h3>
+    <ul>
+      <li><strong>Küçük yapılar kaçırılır.</strong> 20 m pikselde mevcut yerleşim içindeki tek bina ve ek yapılar görünmez; alan ağırlıklı kestirime göre gerçek yapılaşmanın yalnızca ~%7–18'i haritada.</li>
+      <li><strong>Yeni bölgelerde yapılaşma türü zayıflıyor</strong> (F1 %72 → %50); değişimin kendisi daha iyi genelleşiyor.</li>
+      <li><strong>Bitki kaybı ve belirsiz katmanları deneyseldir</strong>: test noktalarında kullanıcı doğrulukları %0'dı.</li>
+      <li><strong>2022 sahte kırılmaları:</strong> eski işlem sürümlü sahnelerde (2017–2021) parlak yüzeyler bulut sayılabiliyor; bazı poligonlarda değişim yılı 2022'ye kayabilir (<code>düşük gözlem</code> kanıtına bakın).</li>
+      <li><strong>Su poligonları yayınlanmıyor:</strong> göl kıyısında alg/sazlık kaynaklı yanlış alarmlar ayrılamıyor.</li>
+    </ul>
+    <p class="hint">Altlıklar: © OpenStreetMap katkıcıları; uydu altlığı © Esri ve sağlayıcıları. Önizlemeler: Copernicus Sentinel-2 verisi (değiştirilmiş).</p>
+  </div>
+</div>
+
+<div id="tooltip" class="tooltip" hidden></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="app.js"></script>
+</body>
+</html>
