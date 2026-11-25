@@ -152,6 +152,28 @@ Tüm test noktalarındaki ayrışmalar: yanlış alarm 55 (tahmin bitki kaybı 2
 
 ![Etiket ↔ tahmin ayrışmaları](docs/img/hata_paneli.png)
 
+## Görülmemiş bölgelerde test
+
+Yöntem geliştirilirken hiç çalıştırılmamış iki AOI'de (Bağlıca, Pursaklar) dondurulmuş v1 ayarlarıyla, **hiçbir ayar değiştirilmeden** test edildi. AOI başına ayrı ~60 noktalık tabakalı örneklem (hepsi test), kör etiketleme; sonuçlara bakılarak düzeltme yapılmadı. `changewatch validate --set test_aoi [--aoi baglica|pursaklar]` ile üretilir (`validation/metrics_test_aoi*.json`).
+
+| | incek | golbasi | **geliştirme birlikte** | baglica | pursaklar | **test birlikte** |
+|---|---|---|---|---|---|---|
+| n (kesin etiket) | 116 | 78 | 194 | 55 | 55 | 110 |
+| "Emin değilim" (metriklere katılmadı) | 1 | 2 | 3 | 5 | 5 | 10 |
+| Değişim kesinliği / duyarlılığı | %70 / %87 | %35 / %77 | %57 / %85 | %74 / %78 | %49 / %85 | %61 / %81 |
+| Yapılaşma kesinliği / duyarlılığı / F1 (nokta bazlı) | %71 / %71 / %71 | %71 / %75 / %73 | %71 / %72 / %72 | %62 / %46 / %53 | %36 / %56 / %43 | %51 / %49 / %50 |
+| Olofsson genel doğruluk (± %95 GA) | %76 ± 12 | %82 ± 13 | %79 ± 9 | %65 ± 19 | %82 ± 15 | %74 ± 12 |
+| Haritadaki yapılaşma (ha) | 418 | 147 | 564 | 242 | 172 | 414 |
+| Kestirilen yapılaşma alanı (ha, ± %95 GA) | 1 340 ± 682 | 861 ± 700 | 2 239 ± 982 | 2 056 ± 1 136 | 903 ± 896 | 2 960 ± 1 447 |
+| Kırılma yılı isabeti: tam / ±1 yıl (n) | %69 / %83 (54) | %56 / %88 (16) | %66 / %84 (70) | %55 / %77 (22) | %50 / %86 (14) | %53 / %81 (36) |
+
+Notlar:
+- "Değişim" satırı haritadaki tüm türleri (bitki kaybı, belirsiz ve su dahil) değişim sayar. Yıl isabeti yalnızca etiketinde yıl girilmiş ve hem etiketin hem haritanın "değişim" dediği noktalarda hesaplanır.
+- Test AOI'leri birbirinden bağımsız örneklendiği için "test birlikte" sütunundaki alan ağırlıklı değerler AOI kestirimlerinin toplamıdır (AOI = üst tabaka; alanlar ve varyanslar toplanır). Geliştirme AOI'leri ortak tabakalarla örneklendiğinden orada ortak tabaka alanları kullanıldı.
+- Test örnekleminde "değişim yok" tabakası AOI başına 21 noktayla ~5 500 ha'yı temsil ediyor (nokta başına ~260 ha); alan kestiriminin güven aralıkları bu yüzden geliştirme setindekinden geniş.
+
+**Okuma:** Değişim/değişim yok ayrımı görülmemiş bölgelerde geliştirme setine yakın (kesinlik %61, duyarlılık %81). Yapılaşma türünde ise düşüş var: kesinlik %71 → %51, F1 %72 → %50. Pursaklar'da yapılaşma tahminlerinin 14'ünün 7'si referansta değişim yok. Alan ağırlıklı kestirime göre iki test AOI'sinde gerçek yapılaşmanın yalnızca ~%7'si haritada (geliştirme setinde ~%18); haritadaki 414 ha'ya karşı kestirim 2 960 ± 1 447 ha. Hata paneli: `docs/img/hata_paneli_test_aoi.png`.
+
 ## v1 yayın kararları
 
 Faz 3 doğrulamasından sonra alındı; yöntem ve eşikler değişmedi, yalnızca neyin nasıl gösterileceği belirlendi.

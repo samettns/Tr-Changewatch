@@ -273,6 +273,50 @@ def olofsson(records: Sequence[dict[str, Any]], stratum_area_ha: dict[str, float
     return out
 
 
+def combine_olofsson(reps: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Bağımsız örneklenmiş AOI'lerin Olofsson sonuçlarını birleştirir (AOI = üst tabaka).
+
+    Alanlar toplanır, varyanslar toplanır; genel doğruluk toplam alana, kullanıcı doğruluğu harita alanına göre
+    ağırlıklı ortalamadır. Üretici doğruluğu nokta kestirimi olarak verilir (GA'sı hesaplanmaz: None).
+    """
+    reps = {k: v for k, v in reps.items() if v}
+    if not reps:
+        return {}
+    A = sum(r["toplam_alan_ha"] for r in reps.values())
+    sq = lambda xs: float(np.sqrt(sum(x ** 2 for x in xs)))  # noqa: E731
+    classes: list[str] = []
+    for r in reps.values():
+        classes += [c for c in r["siniflar"] if c not in classes]
+    classes.sort(key=lambda c: (c == NO_CHANGE, c))
+    out: dict[str, Any] = {
+        "toplam_alan_ha": round(A, 1),
+        "genel_dogruluk": sum(r["toplam_alan_ha"] * r["genel_dogruluk"] for r in reps.values()) / A,
+        "genel_dogruluk_ga": sq(r["toplam_alan_ha"] / A * r["genel_dogruluk_ga"] for r in reps.values()),
+        "varyans_disi_tabakalar": {f"{a}:{s}": n for a, r in reps.items()
+                                   for s, n in r["varyans_disi_tabakalar"].items()},
+        "siniflar": {},
+        "birlesim": "AOI'ler bağımsız üst tabaka; alan ve varyanslar toplandı",
+    }
+    for j in classes:
+        cs = [r["siniflar"].get(j) for r in reps.values()]
+        cs = [c for c in cs if c]
+        M = sum(c["harita_alani_ha"] for c in cs)
+        est = sum(c["kestirilen_alan_ha"] for c in cs)
+        ua_parts = [c for c in cs if c["kullanici_dogrulugu"] is not None and c["harita_alani_ha"] > 0]
+        ua = sum(c["harita_alani_ha"] * c["kullanici_dogrulugu"] for c in ua_parts) / M if ua_parts and M else None
+        ua_ci = sq(c["harita_alani_ha"] / M * (c["kullanici_ga"] or 0.0) for c in ua_parts) if ua is not None else None
+        correct = sum(c["kestirilen_alan_ha"] * c["uretici_dogrulugu"] for c in cs
+                      if c["uretici_dogrulugu"] is not None)
+        out["siniflar"][j] = {
+            "harita_alani_ha": round(M, 1),
+            "kestirilen_alan_ha": round(est, 1),
+            "alan_ga_ha": round(sq(c["alan_ga_ha"] or 0.0 for c in cs), 1),
+            "kullanici_dogrulugu": ua, "kullanici_ga": ua_ci,
+            "uretici_dogrulugu": correct / est if est > 0 and M > 0 else None, "uretici_ga": None,
+        }
+    return out
+
+
 def binary_metrics(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
     """Değişim / değişim yok (2 × 2): tahminde degisim_yok dışındaki her tür 'değişim' sayılır.
 

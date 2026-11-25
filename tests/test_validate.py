@@ -141,6 +141,29 @@ def test_olofsson_single_point_stratum_does_not_crash_and_is_flagged():
     assert o["siniflar"]["yapilasma_olasi"]["kestirilen_alan_ha"] == pytest.approx(495, abs=0.1)
 
 
+def test_combine_olofsson_sums_independent_aoi_estimates():
+    from changewatch.validate import combine_olofsson
+
+    a = [_rec(1, NO_CHANGE, NO_CHANGE, NO_CHANGE, 900), _rec(2, "yapilasma_olasi", NO_CHANGE, NO_CHANGE, 900),
+         _rec(3, "yapilasma_olasi", "yapilasma_olasi", "yapilasma_olasi", 100),
+         _rec(4, "yapilasma_olasi", "yapilasma_olasi", "yapilasma_olasi", 100)]
+    b = [_rec(5, NO_CHANGE, NO_CHANGE, NO_CHANGE, 400, "b"), _rec(6, NO_CHANGE, NO_CHANGE, NO_CHANGE, 400, "b"),
+         _rec(7, NO_CHANGE, "su_kazanimi", "su_kazanimi", 100, "b"),
+         _rec(8, "su_kazanimi", "su_kazanimi", "su_kazanimi", 100, "b")]
+    oa = olofsson(a, {NO_CHANGE: 900, "yapilasma_olasi": 100})
+    ob = olofsson(b, {NO_CHANGE: 400, "su_kazanimi": 100})
+    c = combine_olofsson({"a": oa, "b": ob})
+    assert c["toplam_alan_ha"] == pytest.approx(1500)
+    # genel doğruluk: (1000·0.55 + 500·0.9) / 1500
+    assert c["genel_dogruluk"] == pytest.approx((1000 * oa["genel_dogruluk"] + 500 * ob["genel_dogruluk"]) / 1500)
+    y = c["siniflar"]["yapilasma_olasi"]
+    assert y["kestirilen_alan_ha"] == pytest.approx(550, abs=0.1)        # 900·½ + 100; b'de 0
+    assert y["alan_ga_ha"] == pytest.approx(oa["siniflar"]["yapilasma_olasi"]["alan_ga_ha"], abs=0.1)
+    s = c["siniflar"]["su_kazanimi"]
+    assert s["harita_alani_ha"] == pytest.approx(100) and s["kullanici_dogrulugu"] == pytest.approx(0.5)
+    assert c["siniflar"][NO_CHANGE]["harita_alani_ha"] == pytest.approx(1300)
+
+
 def test_binary_metrics_counts_any_change_type_as_change():
     recs = [{"ref": "yapilasma_olasi", "pred": "belirsiz"}, {"ref": "diger", "pred": NO_CHANGE},
             {"ref": NO_CHANGE, "pred": "bitki_kaybi"}, {"ref": NO_CHANGE, "pred": NO_CHANGE}]

@@ -1140,7 +1140,7 @@ print("yüklendi:", len(LAYERS), "katman")
 
 
 def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cache_root: Path | None,
-                     season: str) -> tuple[list[dict], int, int]:
+                     season: str, aois: list[str] | None = None) -> tuple[list[dict], int, int, int]:
     """Etiketli noktaları (ref, pred, yıllar) kayıtlarına çevirir.
 
     (kayıtlar, toplam nokta, kesin etiket, kümedeki 'emin_degilim' sayısı); emin_degilim kayıtlara girmez.
@@ -1149,10 +1149,15 @@ def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cac
     from changewatch.validate import (filled_labels, load_points, lookup_predictions, read_labels, reference_class,
                                       unsure_labels)
 
-    pts = load_points(resolve_path(settings, settings["paths"]["validation_points"]))
-    all_rows = read_labels(resolve_path(settings, settings["paths"]["validation_labels"]))
+    pk, lk = ("test_aoi_points", "test_aoi_labels") if role == "test_aoi" else ("validation_points",
+                                                                              "validation_labels")
+    pts = load_points(resolve_path(settings, settings["paths"][pk]))
+    all_rows = read_labels(resolve_path(settings, settings["paths"][lk]))
+    if role == "test_aoi":
+        role = "test"       # test AOI noktalarının hepsi test rolünde
     rows = {r["nokta_id"]: r for r in filled_labels(all_rows)}
-    in_role = {p["nokta_id"] for p in pts if role == "hepsi" or p["rol"] == role}
+    in_role = {p["nokta_id"] for p in pts
+               if (role == "hepsi" or p["rol"] == role) and (not aois or p["aoi"] in aois)}
     n_unsure = sum(r["nokta_id"] in in_role for r in unsure_labels(all_rows))
     sel = [p for p in pts if p["nokta_id"] in rows and p["nokta_id"] in in_role]
     if use_current and sel:
@@ -1177,14 +1182,15 @@ def cmd_validate(args: argparse.Namespace) -> int:
     """Etiketlerden nokta bazlı ve alan ağırlıklı metrikler: AOI'ler ayrı ayrı ve birlikte; su seti; hata paneli."""
     import json
 
-    from changewatch.validate import (error_summary, format_olofsson, format_report, metrics, olofsson,
-                                      rank_disagreements)
+    from changewatch.validate import (combine_olofsson, error_summary, format_olofsson, format_report, metrics,
+                                      olofsson, rank_disagreements)
 
     settings = load_settings(args.config)
     setup_logging(settings)
     season = args.season or settings["composite"]["season"]
     cache_root = require_cache_dir(settings) if (args.map == "current" or not args.no_cache) else None
-    recs, n_pts, n_lab, n_unsure = _labeled_records(settings, args.set, args.map == "current", cache_root, season)
+    recs, n_pts, n_lab, n_unsure = _labeled_records(settings, args.set, args.map == "current", cache_root, season,
+                                                  args.aoi)
     if args.aoi:
         recs = [r for r in recs if r["aoi"] in args.aoi]
     print(f"Hariç tutulan: '{args.set}' kümesinde {n_unsure} nokta 'emin değilim' (metriklere katılmadı).\n")
@@ -1206,13 +1212,18 @@ def cmd_validate(args: argparse.Namespace) -> int:
         areas = _stratum_areas_ha(settings, cache_root, aoi, season) if cache_root else None
         groups.append((aoi, [r for r in recs if r["aoi"] == aoi], areas))
     if len(aois) > 1:
-        groups.append((" + ".join(aois), recs, joint))
+        # test_aoi: AOI'ler ayrı ayrı örneklendi → birleşik kestirim AOI kestirimlerinin bağımsız toplamı
+        groups.append((" + ".join(aois), recs, None if args.set == "test_aoi" else joint))
 
     out_rep: dict[str, Any] = {"kume": args.set, "harita": args.map, "etiketli": n_lab, "emin_degilim": n_unsure,
                                "toplam_nokta": n_pts, "gruplar": {}}
     for name, grp, areas in groups:
         rep = metrics(grp)
-        rep["olofsson"] = olofsson(grp, areas) if areas else {}
+        if args.set == "test_aoi" and name not in aois:
+            rep["olofsson"] = combine_olofsson({a: out_rep["gruplar"][a]["olofsson"] for a in aois})
+            areas = rep["olofsson"] or None
+        else:
+            rep["olofsson"] = olofsson(grp, areas) if areas else {}
         out_rep["gruplar"][name] = rep
         print(f"## Doğrulama: {name} ({args.set} noktaları, harita: {args.map})\n")
         print("### Nokta bazlı\n")
@@ -1228,14 +1239,15 @@ def cmd_validate(args: argparse.Namespace) -> int:
     for h, a, b, k in summ:
         print(f"| {h} | {a} | {b} | {k} |")
 
-    wrep = _water_validation(settings)
+    wrep = _water_validation(settings) if args.set != "test_aoi" else None
     if wrep:
         out_rep["su_seti"] = wrep
 
     n_err = int(settings["validation"]["error_panel_n"])
     if n_err and cache_root:
         top = rank_disagreements(recs, n_err)
-        sfx = "" if not args.aoi else "_" + "_".join(sorted(args.aoi))
+        sfx = (("_test_aoi" if args.set == "test_aoi" else "")
+               + ("" if not args.aoi else "_" + "_".join(sorted(args.aoi))))
         png = _error_panel(settings, cache_root, season, top, sfx)
         out_rep["hata_paneli"] = [{k: r[k] for k in ("nokta_id", "aoi", "ref", "pred", "ref_year", "pred_year",
                                                      "hata", "agirlik_ha", "not")} for r in top]
@@ -1617,8 +1629,8 @@ def build_parser() -> argparse.ArgumentParser:
     sm.set_defaults(func=cmd_sample)
 
     va = sub.add_parser("validate", help="Etiketlerden karışıklık matrisi, tür ve yıl bazlı metrikler")
-    va.add_argument("--set", choices=["test", "kalibrasyon", "hepsi"], default="test",
-                    help="hangi noktalar (varsayılan: test)")
+    va.add_argument("--set", choices=["test", "kalibrasyon", "hepsi", "test_aoi"], default="test",
+                    help="hangi noktalar (varsayılan: test); test_aoi: baglica + pursaklar (test_aoi_labels.csv)")
     va.add_argument("--map", choices=["stored", "current"], default="stored",
                     help="stored: örnekleme anındaki tahmin; current: güncel changes.geojson'dan okunur")
     va.add_argument("--season", help="--map current için pencere adı")
