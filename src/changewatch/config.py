@@ -1,7 +1,8 @@
-"""settings.yaml yükleme ve cache_dir kontrolü."""
+"""settings.yaml yükleme ve önbellek klasörü (cache_dir / CHANGEWATCH_CACHE) çözümleme."""
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -32,16 +33,38 @@ def resolve_path(settings: dict[str, Any], value: str) -> Path:
     return p if p.is_absolute() else Path(settings["_root"]) / p
 
 
-def require_cache_dir(settings: dict[str, Any]) -> Path:
-    """cache_dir'i döndürür; klasör yoksa anlaşılır bir hata verir (oluşturmaz)."""
+CACHE_ENV = "CHANGEWATCH_CACHE"
+
+
+def cache_dir_path(settings: dict[str, Any]) -> tuple[Path, bool]:
+    """Önbellek klasörü ve ortam değişkeninden gelip gelmediği.
+
+    Öncelik: CHANGEWATCH_CACHE ortam değişkeni → settings.yaml paths.cache_dir (göreliyse proje köküne göre).
+    """
+    env = os.environ.get(CACHE_ENV, "").strip()
+    if env:
+        return Path(env).expanduser(), True
     raw = settings.get("paths", {}).get("cache_dir")
     if not raw:
-        raise ConfigError("settings.yaml içinde paths.cache_dir tanımlı değil.")
-    cache = Path(raw)
-    if not cache.is_dir():
+        raise ConfigError(f"Önbellek klasörü tanımlı değil: {CACHE_ENV} ya da settings.yaml paths.cache_dir.")
+    p = Path(raw)
+    return (p if p.is_absolute() else Path(settings.get("_root", PROJECT_ROOT)) / p), False
+
+
+def require_cache_dir(settings: dict[str, Any]) -> Path:
+    """Önbellek klasörünü döndürür.
+
+    settings.yaml'daki (varsayılan: proje içi ./data) klasör yoksa oluşturulur. CHANGEWATCH_CACHE ile verilen
+    klasör yoksa oluşturulmaz ve anlaşılır bir hata verilir (harici disk takılı olmayabilir).
+    """
+    cache, from_env = cache_dir_path(settings)
+    if cache.is_dir():
+        return cache
+    if from_env:
         raise ConfigError(
-            f"Önbellek klasörü bulunamadı: {cache}\n"
-            "Harici SSD takılı mı? Takılıysa klasörü oluşturun "
-            f"(ör. mkdir \"{cache}\") veya settings.yaml'daki paths.cache_dir değerini düzeltin."
+            f"Önbellek klasörü bulunamadı: {cache} ({CACHE_ENV} ortam değişkeninden)\n"
+            "Harici disk takılı mı? Takılıysa klasörü oluşturun "
+            f"(ör. mkdir \"{cache}\") veya {CACHE_ENV} değişkenini düzeltin/kaldırın."
         )
+    cache.mkdir(parents=True, exist_ok=True)
     return cache

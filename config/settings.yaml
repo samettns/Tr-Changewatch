@@ -2,8 +2,9 @@
 # Not: Windows yolları TEK tırnakla yazılmalı ("..." içinde \t sekmeye dönüşür).
 
 paths:
-  # Ham veri önbelleği ve ara çıktılar (harici SSD). Klasör yoksa program hata verir.
-  cache_dir: 'D:\tr-changewatch-data'
+  # Ham veri önbelleği ve ara çıktılar. Varsayılan: proje içi ./data (.gitignore'da; yoksa oluşturulur).
+  # CHANGEWATCH_CACHE ortam değişkeni bunu geçersiz kılar (ör. harici SSD); o klasör yoksa program hata verir.
+  cache_dir: ./data
   aois: config/aois.geojson
   validation_points: validation/points.geojson
   validation_labels: validation/labels.csv
