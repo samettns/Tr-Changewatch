@@ -11,7 +11,7 @@ Projenin kapsamı, mimarisi ve fazları `PROJECT_SPEC.md` içindedir. Her oturum
 
 ## Veri kuralları
 - Tam Sentinel-2 sahnesi indirme; yalnızca AOI kutusunu pencereli oku (odc-stac).
-- Ham veri önbelleği ve ara çıktılar `settings.yaml` içindeki `cache_dir`'e (harici SSD, `D:\tr-changewatch-data`) yazılır. Sanal ortam (`.venv`) ve kod proje klasöründe, yerel diskte kalır.
+- Ham veri önbelleği ve ara çıktılar önbellek klasörüne yazılır: varsayılan proje içi `./data` (`settings.yaml` → `cache_dir`); bu makinede `CHANGEWATCH_CACHE` ortam değişkeniyle harici SSD (`D:\tr-changewatch-data`). Sanal ortam (`.venv`) ve kod proje klasöründe, yerel diskte kalır.
 - Baseline ≥ 04.00 sahnelerde offset harmonizasyonunu atlama. Karar `s2:processing_baseline` alanına göre verilir; alan yoksa tarihe göre (25.01.2022 ve sonrası) karar verilir ve log'a uyarı yazılır. İki durumun da unit testi olsun.
 - GeoTIFF ve önbellek dosyalarını asla commit'leme (`data/` .gitignore'da). Repoya yalnızca GeoJSON, JSON, CSV ve küçük PNG girer.
 - Testler ağa çıkmaz; sentetik diziler ve `tests/fixtures/` kullanılır.

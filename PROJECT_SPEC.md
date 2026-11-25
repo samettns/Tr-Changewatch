@@ -60,7 +60,7 @@ config/aois.geojson + settings.yaml
 | Doku | Her sahnede ayrı: maskeli B08 (10 m) üzerinde yerel std (maskeli piksel içeren pencereler dışlanır) → 20 m'ye blok ortalaması; sonra sahnelerin piksel bazında medyanı | Yapılaşma dokusu, sürülmüş tarlaya göre daha heterojendir. Std'yi kompozit üzerinde almak, komşu piksellerin farklı sahne kümelerinden medyanlanmasıyla (özellikle 04.00 öncesi SCL sorunu olan yıllarda) yapay kenar/kare desen üretiyordu |
 | Bantlar | B02, B03, B04, B08, B11, B12, SCL | İndeksler + CVA için yeterli |
 | Harmonizasyon | Processing baseline ≥ 04.00 sahnelerde −1000 DN offset düzeltmesi. Karar sahnenin `s2:processing_baseline` alanına göre verilir (ESA'nın yeniden işlediği eski sahneler de PB ≥ 04.00 olabilir). Alan yoksa tarihe göre karar verilir (25.01.2022 ve sonrası → düzelt) ve log'a uyarı yazılır. İki durumun da unit testi olur (Faz 1). | Yapılmazsa 2021→2022 arası her yerde sahte değişim çıkar |
-| Veri önbelleği | Ham veri ve ara çıktılar `settings.yaml` içindeki `cache_dir`'de (harici SSD: `D:\tr-changewatch-data`). Klasör yoksa program anlaşılır bir hata verir. Sanal ortam (`.venv`) proje klasöründe, yerel diskte kalır. | Büyük veriler sistem diskini doldurmaz |
+| Veri önbelleği | Ham veri ve ara çıktılar önbellek klasöründe: varsayılan proje içi `./data` (`settings.yaml` → `cache_dir`, yoksa oluşturulur); `CHANGEWATCH_CACHE` ortam değişkeni bunu geçersiz kılar (ör. harici SSD). Ortam değişkeniyle verilen klasör yoksa program anlaşılır bir hata verir (oluşturmaz). Sanal ortam (`.venv`) proje klasöründe, yerel diskte kalır. | Büyük veriler sistem diskini doldurmaz |
 | Maskelenen SCL sınıfları | 0, 1, 3, 8, 9, 10, 11 | No-data, doymuş, gölge, bulut (orta/yüksek), sirrus, kar |
 | Sahne seçimi | Bulut ön filtresi çekim bazında: çekimin (uydu + zaman) herhangi bir MGRS karesi `eo:cloud_cover` < %60 ise tüm kareleri alınır (gevşek ön filtre; kare bazında filtre kısmi sahne bırakıyordu). Aynı çekim + MGRS karesinin birden fazla işlenmiş sürümü varsa (ör. 2022–2023'te 04.00/05.09 ve 2024 yeniden işlemesi 05.10) en yüksek baseline'lı öğe tutulur. Aynı çekimin farklı MGRS kareleri (kare örtüşmesi; ör. Gölbaşı 36SVJ + 36TVK) harmonizasyon ve maskeden sonra piksel bazında tek sahnede birleştirilir (ilk geçerli değer), aynı gözlem medyana iki kez girmez. SCL maskesinden sonra AOI içindeki geçerli piksel oranı `min_valid_fraction` (%20) altındaki sahne kompozite alınmaz ve log'a yazılır. | Kopyalar medyanda iki kez sayılmasın; asıl bulut temizliği piksel düzeyinde SCL ile yapılır |
 | Kompozit | Piksel bazlı medyan, en az N geçerli gözlem (varsayılan 3) | Tek sahne gürültüsünü ve kalan bulutları bastırır |
@@ -245,7 +245,7 @@ tr-changewatch/
 │   ├── index.html
 │   ├── app.js
 │   └── data/<aoi>/{changes.geojson, stats.json, monitor.geojson, quicklooks/<yil>.png}
-├── data/                      # yerel/geçici dosyalar, .gitignore'da (asıl önbellek cache_dir'de)
+├── data/                      # yerel/geçici dosyalar, .gitignore'da (varsayılan önbellek; CHANGEWATCH_CACHE ile başka diske alınabilir)
 └── .github/workflows/{tests.yml, monthly.yml}
 ```
 
