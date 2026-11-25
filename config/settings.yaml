@@ -10,7 +10,9 @@ paths:
   experiment_predictions: validation/experiment_predictions.csv
   water_validation_points: validation/water_points.geojson
   water_validation_labels: validation/water_labels.csv
-  error_panel: docs/img/hata_paneli.png       # validate: etiketle tahminin ayrıştığı en önemli noktalar
+  test_aoi_points: validation/test_aoi_points.geojson
+  test_aoi_labels: validation/test_aoi_labels.csv
+  error_panel: docs/img/hata_paneli.png      # validate: etiketle tahminin ayrıştığı en önemli noktalar
   experiment_figure: docs/img/deneyler.png    # experiments: test noktalarında varyant karşılaştırması
 
 aoi_checks:
@@ -144,6 +146,16 @@ validation:
   chip_salt: tr-changewatch-kor  # çip dosya adı belirteci (tahmin/tabaka/kimlik içermez)
   water_aois: [golbasi]        # su doğrulama seti (tüm su poligonları)
   error_panel_n: 10            # validate: hata panelindeki nokta sayısı (0 = panel yok)
+
+# Test AOI'leri (yöntem dondurulduktan sonra; hiçbir ayar değiştirilmeden). Tabakalama `validation` ile aynı
+# (poligon başına üst sınır, nokta aralığı, tabaka alan alt sınırı oradan); sayılar 280 noktalık tasarımın oranları.
+test_validation:
+  aois: [baglica, pursaklar]
+  points_per_aoi: 60           # her AOI ayrı örneklenir
+  no_change_points: 21         # 60 × 100/280
+  min_per_stratum: 4           # 60 × 20/280 (yalnızca alanı ≥ validation.min_stratum_area_ha tabakalarda)
+  seed: 44                     # yeni seed (geliştirme örneklemesi: 43)
+  calibration_share: 0.0       # hepsi test
 
 # Kalıcılık + tür/güven (ilk sürüm; eşikler Faz 3'te kalibrasyon noktalarıyla ayarlanacak)
 classify:

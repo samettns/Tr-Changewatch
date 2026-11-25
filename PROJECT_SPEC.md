@@ -162,7 +162,8 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - **Geliştirme/test AOI ayrımı:**
   - Geliştirme AOI'leri: `incek` (yapılaşma ve bitki kaybı kuralları), `golbasi` (su kuralı; Mogan Gölü). Yöntem tasarımı ve eşik denemeleri yalnızca bunlarda yapılır.
   - Test AOI'leri: `baglica` ve `pursaklar`. Yöntem dondurulana kadar çalıştırılmaz (fetch dahil); dondurulduktan sonra hiçbir ayar değiştirilmeden test edilir.
-  - **Dondurma kaydı:** kırılma yöntemi + yapılaşma ve bitki kaybı kuralları v1 için donduruldu (incek'te eşik denemesi yapılmaz; değişiklik ancak Faz 3 kalibrasyon noktalarıyla). Su kuralı Gölbaşı'nda tasarlanacak.
+  - **Dondurma kaydı:** kırılma yöntemi + yapılaşma ve bitki kaybı kuralları v1 için donduruldu (incek'te eşik denemesi yapılmaz; değişiklik ancak Faz 3 kalibrasyon noktalarıyla). Su kuralı Gölbaşı'nda tasarlandı ve dondurulmuş hatta kaldı. Faz 3 test sonuçlarına bakılarak hiçbir düzeltme yapılmaz; görülen hatalar bilinen sınırlamalara ve v2'ye yazılır.
+  - **Test AOI örneklemesi (`changewatch sample --set test_aoi`):** dondurulmuş ayarlarla üretilen kalıcı katmandan, AOI başına ayrı ~60 nokta. Aynı tabakalama kuralları (kalıcı katman türleri + `degisim_yok`; izleme katmanı dışarıda; poligon başına ≤ 3, aralık ≥ 60 m; `degisim_yok` payı ve tabaka alt sınırı 280 noktalık tasarımla aynı oranda: 100/280 ve 20/280), yeni seed, kalibrasyon payı yok (hepsi test). Çıktılar ayrı dosyalarda: `validation/test_aoi_points.geojson`, `validation/test_aoi_labels.csv`; kör çipler ayrı etiketleme seti (`changewatch label --set test_aoi`). Geliştirme AOI'lerinin noktalarına ve etiketlerine dokunulmaz.
 
 ### Deneyler (README'de tablo + görsel olarak)
 
@@ -182,6 +183,10 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
   - **Yıl aralığı seçici:** başlangıç ve bitiş yılı (ör. 2019 → 2026). Her AOI için tek bir `changes.geojson` tutulur; her poligonda `degisim_yili` alanı bulunur. Seçilen aralıktaki poligonlar tarayıcıda filtrelenir, her yıl çifti için ayrı dosya üretilmez.
   - Önce/sonra kaydırıcı: seçilen iki yılın kompozit önizleme PNG'leri (AOI başına yıl başına bir PNG).
   - Türe göre renkli poligonlar. `izlemede` ve `on_uyari` durumundakiler kesikli çizgiyle gösterilir.
+  - **v1 yayın kararları (Faz 3 doğrulamasından sonra; yöntem dondurulmuş, eşik değişmedi):**
+    - Yalnızca `yapilasma_olasi` katmanı varsayılan açık.
+    - `bitki_kaybi` ve `belirsiz` "deneysel" etiketiyle, varsayılan kapalı (test noktalarında kullanıcı doğrulukları %0; bitki kaybı tahminlerinin 20/25'i, belirsiz tahminlerinin 18/25'i referansta değişim yok).
+    - Su değişim poligonları (`su_kazanimi`, `su_kaybi`, `sulak_alan_belirsiz`) v1'de **yayınlanmaz** (Gölbaşı su setinde 16/16 yanlış alarm). Göl/su alanı serisi grafik olarak yayınlanır. Su katmanı hesaplanmaya ve ana katmandan düşülmeye devam eder (dondurulmuş hat değişmez); yalnızca `docs/data`'ya yazılmaz.
   - Poligona tıklayınca alan, tür, değişim yılı, güven ve kanıt bilgisi.
   - AOI başına özet grafik: yıllara göre yapılaşan hektar.
   - Ayrı "son durum" katmanı: aylık izlemenin ön uyarıları.
@@ -269,3 +274,5 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 - Yeni vakalar: Manavgat yangını (dNBR), Mogan ve Tuz Gölü su alanı.
 - Ankara dışındaki şehirler.
 - Hazır arazi örtüsü ürünleriyle (ESA WorldCover vb.) çapraz kontrol.
+- **04.00 öncesi parlak yüzey maskesi (P073 tipi hata):** 02.12/03.00 baseline'larında parlak yüzeyler (şantiye, beton, parlak çatı) SCL 8/9 (bulut) sayılıp 2017–2021'de maskeleniyor; 2022'de (04.00) ilk kez gözlenince sahte 2022 kırılması çıkıyor. Olası çözümler: s2cloudless/Cloud Score+ ile alternatif bulut maskesi, `dusuk_gozlem` yüksek parçalarda kırılma yılını 2022'ye sabitlememe. Yalnızca geliştirme AOI'lerinin kalibrasyon noktalarıyla tasarlanır.
+- **Su değişim katmanının yeniden tasarımı:** göl içi alg/renk değişimi ve kıyı sazlığının dönüşümlü görünümü su kazanımı/kaybı üretiyor (Gölbaşı su seti 16/16 yanlış alarm). Yeni kural, yeni ve ayrı bir su doğrulama setiyle ölçülür.

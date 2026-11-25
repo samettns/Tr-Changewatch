@@ -928,8 +928,86 @@ def _stratum_areas_ha(settings: dict[str, Any], cache_root: Path, aoi: str, seas
     return {str(k): float(n) * px_ha for k, n in zip(*np.unique(smap[smap != ""], return_counts=True))}
 
 
+def cmd_sample_test_aoi(args: argparse.Namespace) -> int:
+    """Test AOI'leri: AOI başına ayrı tabakalı örnekleme (hepsi test) → ayrı nokta/etiket dosyası + kör çip seti.
+
+    Tabakalama ana örneklemeyle aynıdır (_stratum_map); nokta sayıları ve seed settings `test_validation`'dan.
+    Geliştirme AOI'lerinin points.geojson / labels.csv dosyalarına dokunulmaz.
+    """
+    import json
+
+    import numpy as np
+    from pyproj import Transformer
+
+    from changewatch.validate import NO_CHANGE, allocate, sample_pixels, summary_counts, write_label_template
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    v, tv = settings["validation"], settings["test_validation"]
+    season = args.season or settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    aois = args.aois or list(tv["aois"])
+    years = parse_years(None, settings)
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
+    features, areas = [], {}
+    for aoi in aois:
+        smap, idx, kept, grid = _stratum_map(settings, cache_root, aoi, season)
+        px = Counter()
+        for st, n in zip(*np.unique(smap[smap != ""], return_counts=True)):
+            px[str(st)] += int(n)
+        areas[aoi] = {k: n * px_ha for k, n in px.items()}
+        alloc = allocate(dict(px), int(tv["points_per_aoi"]), int(tv["no_change_points"]),
+                         int(tv["min_per_stratum"]), min_px_for_min=int(round(float(v["min_stratum_area_ha"]) / px_ha)))
+        log.info("%s: tabaka piksel %s; dağıtım %s", aoi, dict(px), alloc)
+        pts = sample_pixels({aoi: smap}, alloc, int(tv["seed"]), float(tv["calibration_share"]),
+                            polygon_maps={aoi: idx}, max_per_polygon=int(v["max_points_per_polygon"]),
+                            min_dist_px=float(v["min_point_distance_m"]) / float(settings["grid"]["resolution_m"]))
+        for st in alloc:
+            got = sum(p["tabaka"] == st for p in pts)
+            if got < alloc[st]:
+                log.warning("%s tabaka %s: %d nokta istendi, kısıtlar yüzünden %d", aoi, st, alloc[st], got)
+        for p in pts:
+            x, y = float(grid["x"].values[p["col"]]), float(grid["y"].values[p["row"]])
+            k = int(idx[p["row"], p["col"]])
+            pr = kept[k - 1][1] if k else None
+            yil = int(pr["degisim_yili"]) if pr else None
+            lon, lat = to_wgs(x, y)
+            props = {"nokta_id": "", "aoi": aoi, "tabaka": p["tabaka"], "rol": p["rol"],
+                     "tahmin_tur": pr["tur"] if pr else NO_CHANGE, "tahmin_yil": yil,
+                     "tahmin_guven": pr["guven"] if pr else None, "kaynak_id": pr["id"] if pr else None,
+                     "x": round(x, 2), "y": round(y, 2), "row": p["row"], "col": p["col"],
+                     "tabaka_alan_ha": round(px[p["tabaka"]] * px_ha, 1), "yontem": v["method"], "mevsim": season}
+            features.append({"type": "Feature", "properties": props,
+                             "geometry": {"type": "Point", "coordinates": [round(lon, 7), round(lat, 7)]}})
+    for k, f in enumerate(features, start=1):
+        f["properties"]["nokta_id"] = f"T{k:03d}"
+    out = resolve_path(settings, settings["paths"]["test_aoi_points"])
+    lab_path = resolve_path(settings, settings["paths"]["test_aoi_labels"])
+    props = [f["properties"] for f in features]
+    write_label_template(props, lab_path, force=args.force)     # dolu etiket varsa önce burada durur
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"type": "FeatureCollection", "features": features}, ensure_ascii=False, indent=1),
+                   encoding="utf-8")
+    log.info("çıktı: %s (%d nokta), %s", out, len(features), lab_path)
+    idx_path = _write_label_set(settings, cache_root, season, years, "test_aoi",
+                                [{"nokta_id": p["nokta_id"], "aoi": p["aoi"], "x": p["x"], "y": p["y"]}
+                                 for p in props], settings["paths"]["test_aoi_labels"], "test AOI noktası")
+    log.info("etiketleme dizini: %s", idx_path)
+
+    print("\n| AOI | tabaka | nokta | tabaka alanı (ha) |\n|---|---|---|---|")
+    for aoi in aois:
+        counts = summary_counts([p for p in props if p["aoi"] == aoi])
+        for st, c in sorted(counts.items(), key=lambda kv: (kv[0] == NO_CHANGE, kv[0])):
+            print(f"| {aoi} | {st} | {c['toplam']} | {areas[aoi].get(st, 0):.0f} |")
+    return 0
+
+
 def cmd_sample(args: argparse.Namespace) -> int:
     """Tabakalı rastgele örnekleme → validation/points.geojson + labels.csv şablonu + çipler + QGIS yükleyicisi."""
+    if getattr(args, "set", "gelistirme") == "test_aoi":
+        return cmd_sample_test_aoi(args)
     import json
 
     import numpy as np
@@ -1338,13 +1416,11 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
     import json
     import shutil
 
-    import numpy as np
     from pyproj import Transformer
 
     from changewatch import cache
     from changewatch.evaluate import load_features
-    from changewatch.labeling import chip_token, water_validation_points
-    from changewatch.quicklook import save_label_chip_png
+    from changewatch.labeling import water_validation_points
     from changewatch.validate import load_points, write_label_template
 
     v = settings["validation"]
@@ -1387,37 +1463,59 @@ def _prepare_label_sets(settings: dict[str, Any], cache_root: Path, season: str,
         x, y = to_crs(r["lon"], r["lat"])
         r.update(x=x, y=y)
 
-    to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True).transform
     comps: dict[tuple[str, int], Any] = {}
-    out = []
-    for name, pts, labels, unit in (("ana", main_pts, settings["paths"]["validation_labels"],
-                                     " / ".join(sorted(roles)) + " noktası"),
-                                    ("su", wpts, settings["paths"]["water_validation_labels"], "su noktası")):
-        cdir = vdir / "kor_cipler" / name
-        if cdir.exists():
-            shutil.rmtree(cdir)
-        entries = []
-        for p in pts:
-            seq = []
-            for yy in years:
-                if (p["aoi"], yy) not in comps:
-                    comps[(p["aoi"], yy)] = cache.read_dataset(cache.composite_dir(cache_root, p["aoi"], season)
-                                                               / f"{yy}.tif")
-                seq.append((yy, comps[(p["aoi"], yy)]))
-            g = seq[0][1]
-            col = int(np.argmin(np.abs(g["x"].values - p["x"])))
-            row = int(np.argmin(np.abs(g["y"].values - p["y"])))
-            chip = cdir / f"{chip_token(str(v['chip_salt']) + name, p['nokta_id'])}.png"
-            save_label_chip_png(seq, row, col, chip, settings)
-            lon, lat = to_wgs(float(g["x"].values[col]), float(g["y"].values[row]))
-            entries.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "lat": lat, "lon": lon, "chip": str(chip)})
-        idx = vdir / f"label_{name}.json"
-        idx.write_text(json.dumps({"name": name, "labels": str(resolve_path(settings, labels)),
-                                   "seed": int(v["label_seed"]), "years": years, "unit": unit, "points": entries},
-                                  ensure_ascii=False, indent=1), encoding="utf-8")
-        log.info("etiketleme seti '%s': %d nokta, çipler %s", name, len(entries), cdir)
-        out.append(idx)
-    return out
+    return [_write_label_set(settings, cache_root, season, years, "ana", main_pts,
+                             settings["paths"]["validation_labels"], " / ".join(sorted(roles)) + " noktası", comps),
+            _write_label_set(settings, cache_root, season, years, "su", wpts,
+                             settings["paths"]["water_validation_labels"], "su noktası", comps)]
+
+
+def _write_label_set(settings: dict[str, Any], cache_root: Path, season: str, years: list[int], name: str,
+                     pts: list[dict], labels_rel: str, unit: str,
+                     comps: dict[tuple[str, int], Any] | None = None) -> Path:
+    """Bir kör etiketleme seti: çipler (<cache_dir>/validation/kor_cipler/<ad>/<belirteç>.png) + dizin JSON'u.
+
+    pts: {nokta_id, aoi, x, y} (proje CRS'i). Eski çipler silinir. Dizin yolunu döndürür.
+    """
+    import json
+    import shutil
+
+    import numpy as np
+    from pyproj import Transformer
+
+    from changewatch import cache
+    from changewatch.labeling import chip_token
+    from changewatch.quicklook import save_label_chip_png
+
+    v = settings["validation"]
+    vdir = cache_root / "validation"
+    comps = {} if comps is None else comps
+    to_wgs = Transformer.from_crs(settings["grid"]["crs"], "EPSG:4326", always_xy=True).transform
+    cdir = vdir / "kor_cipler" / name
+    if cdir.exists():
+        shutil.rmtree(cdir)
+    entries = []
+    for p in pts:
+        seq = []
+        for yy in years:
+            if (p["aoi"], yy) not in comps:
+                comps[(p["aoi"], yy)] = cache.read_dataset(cache.composite_dir(cache_root, p["aoi"], season)
+                                                           / f"{yy}.tif")
+            seq.append((yy, comps[(p["aoi"], yy)]))
+        g = seq[0][1]
+        col = int(np.argmin(np.abs(g["x"].values - p["x"])))
+        row = int(np.argmin(np.abs(g["y"].values - p["y"])))
+        chip = cdir / f"{chip_token(str(v['chip_salt']) + name, p['nokta_id'])}.png"
+        save_label_chip_png(seq, row, col, chip, settings)
+        lon, lat = to_wgs(float(g["x"].values[col]), float(g["y"].values[row]))
+        entries.append({"nokta_id": p["nokta_id"], "aoi": p["aoi"], "lat": lat, "lon": lon, "chip": str(chip)})
+    vdir.mkdir(parents=True, exist_ok=True)
+    idx = vdir / f"label_{name}.json"
+    idx.write_text(json.dumps({"name": name, "labels": str(resolve_path(settings, labels_rel)),
+                               "seed": int(v["label_seed"]), "years": years, "unit": unit, "points": entries},
+                              ensure_ascii=False, indent=1), encoding="utf-8")
+    log.info("etiketleme seti '%s': %d nokta, çipler %s", name, len(entries), cdir)
+    return idx
 
 
 def cmd_label_prep(args: argparse.Namespace) -> int:
@@ -1438,6 +1536,9 @@ def cmd_label(args: argparse.Namespace) -> int:
     cache_root = require_cache_dir(settings)
     setup_logging(settings)
     idx = cache_root / "validation" / f"label_{args.set}.json"
+    if not idx.exists() and args.set == "test_aoi":
+        print("HATA: test AOI etiketleme seti yok; önce `changewatch sample --set test_aoi` çalıştırın.")
+        return 1
     if not idx.exists():
         _prepare_label_sets(settings, cache_root, settings["composite"]["season"], parse_years(None, settings))
     run_app(idx)
@@ -1510,6 +1611,9 @@ def build_parser() -> argparse.ArgumentParser:
     sm.add_argument("--aois", nargs="+", help="örneklenecek AOI'ler (varsayılan: settings validation.aois)")
     sm.add_argument("--season", help="settings.yaml'daki pencere adı (varsayılan: composite.season)")
     sm.add_argument("--force", action="store_true", help="dolu labels.csv'nin üzerine yaz")
+    sm.add_argument("--set", choices=["gelistirme", "test_aoi"], default="gelistirme",
+                    help="gelistirme: incek+golbasi (points.geojson); test_aoi: baglica+pursaklar, AOI başına ayrı, "
+                         "hepsi test (test_aoi_points.geojson)")
     sm.set_defaults(func=cmd_sample)
 
     va = sub.add_parser("validate", help="Etiketlerden karışıklık matrisi, tür ve yıl bazlı metrikler")
@@ -1528,8 +1632,9 @@ def build_parser() -> argparse.ArgumentParser:
     lp.set_defaults(func=cmd_label_prep)
 
     lb = sub.add_parser("label", help="Kör etiketleme arayüzü (tkinter)")
-    lb.add_argument("--set", choices=["ana", "su"], default="ana",
-                    help="ana: örnekleme noktaları (labels.csv); su: golbasi su poligonları (water_labels.csv)")
+    lb.add_argument("--set", choices=["ana", "su", "test_aoi"], default="ana",
+                    help="ana: örnekleme noktaları (labels.csv); su: golbasi su poligonları (water_labels.csv); "
+                         "test_aoi: baglica + pursaklar (test_aoi_labels.csv)")
     lb.set_defaults(func=cmd_label)
 
     ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")

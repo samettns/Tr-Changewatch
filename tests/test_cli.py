@@ -54,3 +54,19 @@ def test_unknown_aoi_gives_clear_error(capsys):
     assert main(["scenes", "--aoi", "yok"]) == 2
     err = capsys.readouterr().err
     assert "AOI bulunamadı" in err and "incek" in err
+
+
+def test_test_aoi_sets_are_separate_and_all_test():
+    """Test AOI örneklemesi ayrı dosyalara yazar, kalibrasyon payı yok; etiketleme setleri ayrışık."""
+    from changewatch.cli import build_parser
+    from changewatch.config import load_settings
+
+    s = load_settings()
+    tv, p = s["test_validation"], s["paths"]
+    assert tv["calibration_share"] == 0
+    assert tv["seed"] != s["validation"]["seed"]
+    assert set(tv["aois"]).isdisjoint(s["validation"]["aois"])
+    assert p["test_aoi_points"] != p["validation_points"] and p["test_aoi_labels"] != p["validation_labels"]
+    a = build_parser().parse_args(["sample", "--set", "test_aoi"])
+    assert a.set == "test_aoi"
+    assert build_parser().parse_args(["label", "--set", "test_aoi"]).set == "test_aoi"

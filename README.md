@@ -28,7 +28,8 @@ changewatch water       --aoi golbasi                   # yıllık su maskesi, s
 changewatch evaluate    --aoi incek --direct-years 2017 2024  # tür × yıl, yöntemler arası, tutarlılık
 changewatch sample                                      # Faz 3: tabakalı örnekleme, labels.csv şablonu, çipler, QGIS yükleyici
 changewatch label-prep                                  # kör etiketleme çipleri + Gölbaşı su doğrulama seti
-changewatch label [--set su]                            # kör etiketleme arayüzü (talimat: validation/ETIKETLEME.md)
+changewatch sample --set test_aoi                       # test AOI'leri (baglica, pursaklar): AOI başına ~60 nokta, hepsi test, ayrı dosyalar + kör çipler
+changewatch label [--set su|test_aoi]                   # kör etiketleme arayüzü (talimat: validation/ETIKETLEME.md)
 changewatch validate [--aoi incek]                      # AOI'ler ayrı ve birlikte: karışıklık matrisleri, Olofsson, su seti, hata paneli
 changewatch experiments [--build]                       # E1, E3–E5 varyantları ve nokta tahminleri (E2 v2'de)
 ```
@@ -101,7 +102,12 @@ Kör etiketlenmiş **test** noktaları (kalibrasyon noktaları kullanılmadı, e
 
 Yıl isabeti yalnızca etiketinde yıl girilmiş ve hem etiketin hem haritanın "değişim" dediği noktalarda hesaplanır (parantez içinde n).
 
-**Okuma:** Haritanın yapılaşma dediği yerlerin ~%71'i gerçekten yapılaşma; ama alan ağırlıklı kestirime göre gerçek yapılaşmanın yalnızca ~%18'i haritada. Bunun nedeni, "değişim yok" tabakasındaki 11 kaçırılmış yapılaşma noktasının her birinin ~164 ha temsil etmesi: küçük bir kaçırma oranı, çok geniş bir tabakada büyük bir alana karşılık geliyor. Güven aralıkları geniş (yapılaşma alanı ± 982 ha); "değişim yok" tabakasında daha fazla nokta etiketlenmeden alan kestirimi daraltılamaz.
+**Okuma:** Haritanın yapılaşma dediği yerlerin ~%71'i gerçekten yapılaşma; ama alan ağırlıklı kestirime göre gerçek yapılaşmanın yalnızca ~%18'i haritada.
+
+**Alan kestiriminin güven aralığı geniş ve bunu açıkça söylüyoruz:** iki AOI'de yapılaşma alanı **2 239 ± 982 ha** (%95 GA), yani kabaca 1 250–3 200 ha; haritadaki yapılaşma ise 564 ha. Neden:
+- **"Değişim yok" tabakasındaki kaçırmalar.** Bu tabaka 10 963 ha ve yalnızca 70 test noktası var; her nokta ~164 ha temsil ediyor. Etiketlemede bu noktaların 11'i yapılaşma çıktı. Kestirilen yapılaşma alanının çoğu, haritanın görmediği bu kaçırmalardan geliyor; aralığın genişliği de 70 noktada 11 kaçırmanın binom belirsizliği (bir nokta fazla ya da eksik ≈ ±164 ha).
+- **Alt-piksel yapılar.** Kaçırmaların bir kısmı mevcut yerleşim içindeki küçük, dağınık yapılar (tek bina, ek yapı, dar yol): 20 m pikselde (400 m²) ve 0,5 ha MMU'da kırılma olarak görünmüyorlar. Çalışma ızgarası gereği bunlar yöntemin kapsamı dışında (bkz. "iddia etmiyoruz: tek tek bina tespiti"), ama etiketleyici onları "yeni yapı" olarak görüyor.
+- Güven aralığı ancak "değişim yok" tabakasında daha çok nokta etiketlenerek daraltılabilir; yöntem değiştirilerek değil (yöntem dondurulmuş).
 
 ### Su doğrulama seti
 
@@ -113,7 +119,11 @@ Gölbaşı'ndaki tüm su poligonları (16 poligon, 5,2 ha; kalıcı + izleme) bi
 | su_kaybi | 3 | 0,68 | 0 | 3 |
 | sulak_alan_belirsiz | 6 | 1,68 | 0 | 6 |
 
-16 poligonun hiçbiri etiketlemede değişim olarak doğrulanmadı: su katmanının kesinliği bu sette %0.
+**16 poligonun 16'sı yanlış alarm**: su katmanının kesinliği bu sette %0. Etiketlemede görülen iki neden:
+- **Göl içi renk değişimi (alg/bulanıklık):** suyun yeşillendiği yıllarda MNDWI değişiyor; kıyıya yakın pikseller su kazanımı/kaybı olarak işaretleniyor.
+- **Sazlık/kıyı bitkisi:** kıyı sazlığı yıldan yıla suyla dönüşümlü görünüyor ama kalıcı bir değişim yok.
+
+Bu yüzden **su değişim poligonları v1'de yayınlanmıyor** (aşağıda "v1 yayın kararları"). Su katmanı hesaplanmaya devam ediyor çünkü su pikselleri yapılaşma katmanından düşülüyor (dondurulmuş hat değişmedi). Yıllık göl/su alanı serisi (≥ 5 ha su kütleleri) grafik olarak yayınlanıyor; bu seri poligonlardan farklı olarak kıyı şeridindeki küçük salınımlara duyarsız.
 
 ### Deneyler (E1, E3–E5)
 
@@ -142,12 +152,26 @@ Tüm test noktalarındaki ayrışmalar: yanlış alarm 55 (tahmin bitki kaybı 2
 
 ![Etiket ↔ tahmin ayrışmaları](docs/img/hata_paneli.png)
 
+## v1 yayın kararları
+
+Faz 3 doğrulamasından sonra alındı; yöntem ve eşikler değişmedi, yalnızca neyin nasıl gösterileceği belirlendi.
+
+| katman | web haritasında | gerekçe (test noktaları) |
+|---|---|---|
+| `yapilasma_olasi` | **varsayılan açık** | kesinlik %71, nokta bazlı duyarlılık %72 |
+| `bitki_kaybi` | "deneysel", varsayılan kapalı | kullanıcı doğruluğu %0 (25 tahminin 20'si referansta değişim yok) |
+| `belirsiz` | "deneysel", varsayılan kapalı | kullanıcı doğruluğu %0 (25 tahminin 18'i referansta değişim yok) |
+| `su_kazanimi`, `su_kaybi`, `sulak_alan_belirsiz` | **yayınlanmıyor** | Gölbaşı su seti 16/16 yanlış alarm |
+| göl/su alanı serisi | grafik olarak | ≥ 5 ha su kütleleri; poligon değil |
+
 ## Bilinen sınırlamalar
+
+- **04.00 öncesi parlak yüzeyler → sahte 2022 kırılması (P073 tipi).** 02.12/03.00 baseline'lı sahnelerde (2017–2021) parlak yüzeyler bulut sayılıp maskeleniyor; piksel 2022'de (baseline 04.00) ilk kez gözlenince seri orada basamak yapıyor ve yöntem değişmemiş bir yüzeye 2022 yapılaşması diyor. Test noktası P073 bunun örneği (2017–2021 çiplerinde maskeli pikseller, kırılma tam 2022). Test sonuçlarına bakılarak düzeltme yapılmadı; v2 listesinde. `dusuk_gozlem` kanıt alanı bu poligonları işaretler.
 
 - **04.00 öncesi baseline'larda parlak yüzeyler bulut sayılabiliyor.** 2017–2021 sahneleri (processing baseline 02.12 ve 03.00) bulutsuz günlerde bile parlak yüzeyleri (şantiye, yol, parlak çatı) SCL 8/9 (orta/yüksek olasılıklı bulut) olarak sınıflandırabiliyor. İncek yaz kompozitlerinde 2017–2021 arasında AOI piksellerinin %0,05–0,35'inde 3'ten az geçerli gözlem kaldı (2022 ve sonrasında %0); bu pikseller kompozitte boş bırakılır. Maske değiştirilmedi; bunun yerine her değişim poligonunda `dusuk_gozlem` kanıt alanı (önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve <3 gözlemli piksel oranı) raporlanır.
 - **Son yıl sıçramaları kalıcı katmana sızabilir.** Kalıcı katman en az 2 yıllık "sonrası" ister; yalnızca son yılda (ör. 2026) sıçrayan bir piksel b = 2025'te yarım basamak gösterir ve tek tük pikseller kalıcı katmanda 2025 kırılması olarak geçebilir (MMU tekilleri büyük ölçüde atar). 2026 kırılmaları ayrı `izleme.geojson` katmanındadır.
 - **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir); etkisi deney E5'te ölçülecek.
 - **Tek değişkenli su kırılması gürültüye duyarlı.** MNDWI serisinde kırılma adayı tek başına AOI'nin büyük bir kısmını işaretler (Gölbaşı'nda ~2 000 ha); su katmanında özgüllüğü su kütlesi durumu değişimi ve kıyı şeridi koşulları sağlar (→ ~5 ha).
-- **Su değişimleri doğrulama örneklemesinde neredeyse yok.** Su türleri Gölbaşı'nda toplam ~5 ha; tabaka alt sınırı yalnızca ≥ 20 ha tabakalara uygulandığı için su tabakaları 0–1 nokta aldı. Su kuralının doğruluğu bu örneklemeyle ölçülemez; bunun için ayrı su doğrulama seti etiketlendi (yukarıda).
+- **Su değişimleri doğrulama örneklemesinde neredeyse yok.** Su türleri Gölbaşı'nda toplam ~5 ha; tabaka alt sınırı yalnızca ≥ 20 ha tabakalara uygulandığı için su tabakaları 0–1 nokta aldı. Su kuralının doğruluğu bu örneklemeyle ölçülemez; bunun için ayrı su doğrulama seti etiketlendi (yukarıda: 16/16 yanlış alarm, su poligonları v1'de yayınlanmıyor).
 - **Su kütlelerinin iç delikleri doldurulur.** Göl içinde MNDWI'yi düşüren renk/bulanıklık değişimi su kazanımı/kaybı üretmesin diye ≥ 5 ha su kütlelerinin içindeki boşluklar su sayılır. Yan etkisi: göl içindeki gerçek adalar da su olarak haritalanır (Mogan'da belirgin ada yok).
 - Sahne düzeyindeki bulut oranı (`eo:cloud_cover`) 100×100 km MGRS karesine aittir, AOI'ye değil. Asıl temizlik piksel düzeyinde SCL maskesiyle yapılır.

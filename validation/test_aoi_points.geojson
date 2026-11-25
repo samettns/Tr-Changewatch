@@ -1,0 +1,3245 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T001",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2021-0004",
+    "x": 465070.0,
+    "y": 4420570.0,
+    "row": 114,
+    "col": 49,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.5911813,
+     39.9345235
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T002",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2021-0004",
+    "x": 465010.0,
+    "y": 4420510.0,
+    "row": 117,
+    "col": 46,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.5904823,
+     39.9339804
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T003",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2022-0011",
+    "x": 464810.0,
+    "y": 4419270.0,
+    "row": 179,
+    "col": 36,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.5882086,
+     39.9228001
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T004",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2025-0039",
+    "x": 467370.0,
+    "y": 4418150.0,
+    "row": 235,
+    "col": 164,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6182209,
+     39.9128117
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T005",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2018-0018",
+    "x": 471490.0,
+    "y": 4418150.0,
+    "row": 235,
+    "col": 370,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6664251,
+     39.9129604
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T006",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2022-0021",
+    "x": 470190.0,
+    "y": 4417090.0,
+    "row": 288,
+    "col": 305,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6512634,
+     39.9033653
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T007",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2020-0011",
+    "x": 471350.0,
+    "y": 4417050.0,
+    "row": 290,
+    "col": 363,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6648354,
+     39.9030449
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T008",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2018-0023",
+    "x": 468610.0,
+    "y": 4416990.0,
+    "row": 293,
+    "col": 226,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6327848,
+     39.9024073
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T009",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2021-0029",
+    "x": 469350.0,
+    "y": 4415550.0,
+    "row": 365,
+    "col": 263,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6415091,
+     39.8894603
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T010",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2018-0033",
+    "x": 471250.0,
+    "y": 4415270.0,
+    "row": 379,
+    "col": 358,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6637439,
+     39.8870041
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T011",
+    "aoi": "baglica",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "baglica-bp-2022-0032",
+    "x": 468750.0,
+    "y": 4415210.0,
+    "row": 382,
+    "col": 233,
+    "tabaka_alan_ha": 94.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6345077,
+     39.886375
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T012",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "baglica-bp-2025-0002",
+    "x": 466450.0,
+    "y": 4421590.0,
+    "row": 63,
+    "col": 118,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6072799,
+     39.9437692
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T013",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0007",
+    "x": 466910.0,
+    "y": 4420650.0,
+    "row": 110,
+    "col": 141,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.612712,
+     39.9353182
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T014",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2023-0012",
+    "x": 470330.0,
+    "y": 4419610.0,
+    "row": 162,
+    "col": 312,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6527866,
+     39.9260748
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T015",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0014",
+    "x": 471450.0,
+    "y": 4418710.0,
+    "row": 207,
+    "col": 368,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6659326,
+     39.9180046
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T016",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2021-0014",
+    "x": 470870.0,
+    "y": 4418150.0,
+    "row": 235,
+    "col": 339,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6591711,
+     39.9129393
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T017",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0028",
+    "x": 469530.0,
+    "y": 4416930.0,
+    "row": 296,
+    "col": 272,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.64355,
+     39.9019003
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T018",
+    "aoi": "baglica",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2020-0019",
+    "x": 468310.0,
+    "y": 4415930.0,
+    "row": 346,
+    "col": 211,
+    "tabaka_alan_ha": 39.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6293267,
+     39.8928457
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T019",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2020-0002",
+    "x": 465210.0,
+    "y": 4420330.0,
+    "row": 126,
+    "col": 56,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.5928327,
+     39.9323669
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T020",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0008",
+    "x": 466450.0,
+    "y": 4420250.0,
+    "row": 130,
+    "col": 118,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6073489,
+     39.9316962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T021",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0008",
+    "x": 464230.0,
+    "y": 4420010.0,
+    "row": 142,
+    "col": 7,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.581381,
+     39.929443
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T022",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "baglica-bp-2025-0023",
+    "x": 468970.0,
+    "y": 4419790.0,
+    "row": 153,
+    "col": 244,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6368629,
+     39.9276478
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T023",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "baglica-bp-2025-0021",
+    "x": 470510.0,
+    "y": 4419790.0,
+    "row": 153,
+    "col": 321,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6548849,
+     39.9277029
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T024",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2020-0004",
+    "x": 471190.0,
+    "y": 4419750.0,
+    "row": 155,
+    "col": 355,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6628444,
+     39.9273659
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T025",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0010",
+    "x": 471630.0,
+    "y": 4419590.0,
+    "row": 163,
+    "col": 377,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6680005,
+     39.9259392
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T026",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2021-0010",
+    "x": 471750.0,
+    "y": 4419070.0,
+    "row": 189,
+    "col": 383,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6694273,
+     39.9212581
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T027",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2023-0020",
+    "x": 468990.0,
+    "y": 4418850.0,
+    "row": 200,
+    "col": 245,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6371417,
+     39.9191794
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T028",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0015",
+    "x": 465350.0,
+    "y": 4418690.0,
+    "row": 208,
+    "col": 63,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.5945583,
+     39.9175968
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T029",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "baglica-bp-2025-0040",
+    "x": 466470.0,
+    "y": 4418010.0,
+    "row": 242,
+    "col": 119,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6076981,
+     39.9115152
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T030",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2020-0006",
+    "x": 466990.0,
+    "y": 4417870.0,
+    "row": 249,
+    "col": 145,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6137891,
+     39.9102743
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T031",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2023-0034",
+    "x": 466450.0,
+    "y": 4417490.0,
+    "row": 268,
+    "col": 118,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6074909,
+     39.9068294
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T032",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "baglica-bp-2025-0046",
+    "x": 466890.0,
+    "y": 4416850.0,
+    "row": 300,
+    "col": 140,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6126709,
+     39.9010805
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T033",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0024",
+    "x": 467930.0,
+    "y": 4416690.0,
+    "row": 308,
+    "col": 192,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6248447,
+     39.8996789
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T034",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2021-0022",
+    "x": 471650.0,
+    "y": 4416230.0,
+    "row": 331,
+    "col": 378,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6683805,
+     39.895667
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T035",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0027",
+    "x": 470110.0,
+    "y": 4416170.0,
+    "row": 334,
+    "col": 301,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6503697,
+     39.8950735
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T036",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0026",
+    "x": 471030.0,
+    "y": 4416150.0,
+    "row": 335,
+    "col": 347,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6611319,
+     39.8949252
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T037",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2022-0026",
+    "x": 471290.0,
+    "y": 4416110.0,
+    "row": 337,
+    "col": 360,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6641748,
+     39.8945737
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T038",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0031",
+    "x": 467810.0,
+    "y": 4415570.0,
+    "row": 364,
+    "col": 186,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6234962,
+     39.8895834
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T039",
+    "aoi": "baglica",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "baglica-bp-2024-0032",
+    "x": 466310.0,
+    "y": 4415150.0,
+    "row": 385,
+    "col": 111,
+    "tabaka_alan_ha": 242.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6059738,
+     39.885741
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T040",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469350.0,
+    "y": 4422530.0,
+    "row": 16,
+    "col": 263,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.641181,
+     39.9523483
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T041",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 471430.0,
+    "y": 4422490.0,
+    "row": 18,
+    "col": 367,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6655328,
+     39.9520607
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T042",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 471670.0,
+    "y": 4422310.0,
+    "row": 27,
+    "col": 379,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6683503,
+     39.9504471
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T043",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467050.0,
+    "y": 4422210.0,
+    "row": 32,
+    "col": 148,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6142717,
+     39.9493788
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T044",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469110.0,
+    "y": 4421850.0,
+    "row": 50,
+    "col": 251,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6384036,
+     39.946213
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T045",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 465590.0,
+    "y": 4421710.0,
+    "row": 57,
+    "col": 75,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.597207,
+     39.9448158
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T046",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 470470.0,
+    "y": 4421050.0,
+    "row": 90,
+    "col": 319,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6543597,
+     39.9390538
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T047",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 466590.0,
+    "y": 4420610.0,
+    "row": 112,
+    "col": 125,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6089689,
+     39.9349452
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T048",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 470950.0,
+    "y": 4419750.0,
+    "row": 155,
+    "col": 343,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6600358,
+     39.9273577
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T049",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469950.0,
+    "y": 4419190.0,
+    "row": 183,
+    "col": 293,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6483591,
+     39.9222773
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T050",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467130.0,
+    "y": 4418570.0,
+    "row": 214,
+    "col": 152,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6153918,
+     39.9165865
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T051",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 470470.0,
+    "y": 4418530.0,
+    "row": 216,
+    "col": 319,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6544738,
+     39.9163492
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T052",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467910.0,
+    "y": 4418190.0,
+    "row": 233,
+    "col": 191,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.624537,
+     39.9131928
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T053",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469430.0,
+    "y": 4417910.0,
+    "row": 247,
+    "col": 267,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6423342,
+     39.9107262
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T054",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467450.0,
+    "y": 4417770.0,
+    "row": 254,
+    "col": 168,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6191759,
+     39.9093911
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T055",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467670.0,
+    "y": 4417750.0,
+    "row": 255,
+    "col": 179,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6217508,
+     39.9092193
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T056",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467650.0,
+    "y": 4417610.0,
+    "row": 262,
+    "col": 178,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6215237,
+     39.9079572
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T057",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469030.0,
+    "y": 4416830.0,
+    "row": 301,
+    "col": 247,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6377056,
+     39.9009812
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T058",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 466650.0,
+    "y": 4415510.0,
+    "row": 367,
+    "col": 128,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6099318,
+     39.888998
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T059",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 467370.0,
+    "y": 4415330.0,
+    "row": 376,
+    "col": 164,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6183619,
+     39.8874042
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T060",
+    "aoi": "baglica",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 469550.0,
+    "y": 4415090.0,
+    "row": 388,
+    "col": 273,
+    "tabaka_alan_ha": 5493.4,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.6438697,
+     39.885323
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T061",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2023-0005",
+    "x": 493970.0,
+    "y": 4433890.0,
+    "row": 82,
+    "col": 296,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9293008,
+     40.0552333
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T062",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2022-0004",
+    "x": 495010.0,
+    "y": 4433810.0,
+    "row": 86,
+    "col": 348,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9414949,
+     40.0545193
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T063",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2018-0013",
+    "x": 492190.0,
+    "y": 4429530.0,
+    "row": 300,
+    "col": 207,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9084836,
+     40.0159363
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T064",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2020-0011",
+    "x": 491790.0,
+    "y": 4428670.0,
+    "row": 343,
+    "col": 187,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9038073,
+     40.0081841
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T065",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2018-0022",
+    "x": 491690.0,
+    "y": 4428610.0,
+    "row": 346,
+    "col": 182,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9026364,
+     40.0076425
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T066",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2020-0013",
+    "x": 491590.0,
+    "y": 4428510.0,
+    "row": 351,
+    "col": 177,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9014661,
+     40.0067405
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T067",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2018-0026",
+    "x": 492190.0,
+    "y": 4427930.0,
+    "row": 380,
+    "col": 207,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9085028,
+     40.0015206
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T068",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2025-0047",
+    "x": 491210.0,
+    "y": 4427830.0,
+    "row": 385,
+    "col": 158,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8970231,
+     40.00061
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T069",
+    "aoi": "pursaklar",
+    "tabaka": "belirsiz",
+    "rol": "test",
+    "tahmin_tur": "belirsiz",
+    "tahmin_yil": 2018,
+    "tahmin_guven": "dusuk",
+    "kaynak_id": "pursaklar-bp-2018-0026",
+    "x": 492150.0,
+    "y": 4427810.0,
+    "row": 386,
+    "col": 205,
+    "tabaka_alan_ha": 78.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9080356,
+     40.0004391
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T070",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2023-0010",
+    "x": 495210.0,
+    "y": 4432430.0,
+    "row": 155,
+    "col": 358,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.94385,
+     40.0420871
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T071",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2023-0010",
+    "x": 495190.0,
+    "y": 4432350.0,
+    "row": 159,
+    "col": 357,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9436162,
+     40.0413662
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T072",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2024-0021",
+    "x": 488070.0,
+    "y": 4432290.0,
+    "row": 162,
+    "col": 1,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8601553,
+     40.0407549
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T073",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2024-0023",
+    "x": 492490.0,
+    "y": 4432250.0,
+    "row": 164,
+    "col": 222,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9119674,
+     40.0404455
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T074",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2024-0024",
+    "x": 492230.0,
+    "y": 4432130.0,
+    "row": 170,
+    "col": 209,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9089211,
+     40.039362
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T075",
+    "aoi": "pursaklar",
+    "tabaka": "bitki_kaybi",
+    "rol": "test",
+    "tahmin_tur": "bitki_kaybi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0037",
+    "x": 488470.0,
+    "y": 4430750.0,
+    "row": 239,
+    "col": 21,
+    "tabaka_alan_ha": 31.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8648716,
+     40.0268855
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T076",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2022-0001",
+    "x": 495070.0,
+    "y": 4429710.0,
+    "row": 291,
+    "col": 351,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9422296,
+     40.0175797
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T077",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2022-0001",
+    "x": 495310.0,
+    "y": 4429630.0,
+    "row": 295,
+    "col": 363,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9450425,
+     40.0168603
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T078",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2022-0001",
+    "x": 495210.0,
+    "y": 4429470.0,
+    "row": 303,
+    "col": 358,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9438719,
+     40.0154182
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T079",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2024-0002",
+    "x": 494370.0,
+    "y": 4428830.0,
+    "row": 335,
+    "col": 316,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9340345,
+     40.0096468
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T080",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2023-0003",
+    "x": 494330.0,
+    "y": 4428130.0,
+    "row": 370,
+    "col": 314,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.933572,
+     40.0033396
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T081",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2023-0003",
+    "x": 494450.0,
+    "y": 4428070.0,
+    "row": 373,
+    "col": 320,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9349784,
+     40.0027999
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T082",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2023-0003",
+    "x": 494130.0,
+    "y": 4427970.0,
+    "row": 378,
+    "col": 304,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9312303,
+     40.0018967
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T083",
+    "aoi": "pursaklar",
+    "tabaka": "su_kazanimi",
+    "rol": "test",
+    "tahmin_tur": "su_kazanimi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-su-2023-0004",
+    "x": 494330.0,
+    "y": 4427810.0,
+    "row": 386,
+    "col": 314,
+    "tabaka_alan_ha": 52.7,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9335748,
+     40.0004565
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T084",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0010",
+    "x": 492770.0,
+    "y": 4434010.0,
+    "row": 76,
+    "col": 236,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9152299,
+     40.056305
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T085",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0011",
+    "x": 495330.0,
+    "y": 4433910.0,
+    "row": 81,
+    "col": 364,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9452461,
+     40.0554221
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T086",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2024-0006",
+    "x": 490930.0,
+    "y": 4433510.0,
+    "row": 101,
+    "col": 144,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8936634,
+     40.0517824
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T087",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2022-0008",
+    "x": 491450.0,
+    "y": 4432690.0,
+    "row": 142,
+    "col": 170,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8997707,
+     40.0443999
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T088",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2022,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2022-0008",
+    "x": 491450.0,
+    "y": 4432610.0,
+    "row": 146,
+    "col": 170,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8997718,
+     40.0436791
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T089",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2023-0015",
+    "x": 492470.0,
+    "y": 4432170.0,
+    "row": 168,
+    "col": 221,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9117339,
+     40.0397245
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T090",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2024,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2024-0025",
+    "x": 492390.0,
+    "y": 4432030.0,
+    "row": 175,
+    "col": 217,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9107978,
+     40.0384625
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T091",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0027",
+    "x": 493090.0,
+    "y": 4431950.0,
+    "row": 179,
+    "col": 252,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9190038,
+     40.0377477
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T092",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2021,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2021-0013",
+    "x": 491070.0,
+    "y": 4431250.0,
+    "row": 214,
+    "col": 151,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8953359,
+     40.0314219
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T093",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2023-0017",
+    "x": 491870.0,
+    "y": 4431110.0,
+    "row": 221,
+    "col": 191,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9047141,
+     40.0301686
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T094",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2023,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2023-0020",
+    "x": 494150.0,
+    "y": 4430950.0,
+    "row": 229,
+    "col": 305,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9314377,
+     40.028746
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T095",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2020,
+    "tahmin_guven": "yuksek",
+    "kaynak_id": "pursaklar-bp-2020-0008",
+    "x": 493130.0,
+    "y": 4430370.0,
+    "row": 258,
+    "col": 254,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9194894,
+     40.0235126
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T096",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0039",
+    "x": 495330.0,
+    "y": 4430270.0,
+    "row": 263,
+    "col": 364,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9452723,
+     40.0226267
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T097",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0044",
+    "x": 493290.0,
+    "y": 4429390.0,
+    "row": 307,
+    "col": 262,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9213746,
+     40.0146843
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T098",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0045",
+    "x": 491450.0,
+    "y": 4429290.0,
+    "row": 312,
+    "col": 170,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8998155,
+     40.0137667
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T099",
+    "aoi": "pursaklar",
+    "tabaka": "yapilasma_olasi",
+    "rol": "test",
+    "tahmin_tur": "yapilasma_olasi",
+    "tahmin_yil": 2025,
+    "tahmin_guven": "orta",
+    "kaynak_id": "pursaklar-bp-2025-0044",
+    "x": 493170.0,
+    "y": 4429150.0,
+    "row": 319,
+    "col": 256,
+    "tabaka_alan_ha": 172.0,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.919971,
+     40.012521
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T100",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 489410.0,
+    "y": 4434750.0,
+    "row": 39,
+    "col": 68,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8758227,
+     40.0629367
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T101",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 493490.0,
+    "y": 4434530.0,
+    "row": 50,
+    "col": 272,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9236665,
+     40.060996
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T102",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 489770.0,
+    "y": 4434030.0,
+    "row": 75,
+    "col": 86,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8800554,
+     40.0564542
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T103",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 493470.0,
+    "y": 4433850.0,
+    "row": 84,
+    "col": 271,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9234389,
+     40.0548692
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T104",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 489950.0,
+    "y": 4433790.0,
+    "row": 87,
+    "col": 95,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8821696,
+     40.054294
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T105",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 492650.0,
+    "y": 4433630.0,
+    "row": 95,
+    "col": 230,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9138273,
+     40.0528803
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T106",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 495070.0,
+    "y": 4433470.0,
+    "row": 103,
+    "col": 351,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.942201,
+     40.0514564
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T107",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 492190.0,
+    "y": 4432930.0,
+    "row": 130,
+    "col": 207,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9084426,
+     40.0465694
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T108",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 489190.0,
+    "y": 4432730.0,
+    "row": 140,
+    "col": 57,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8732767,
+     40.0447343
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T109",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 490610.0,
+    "y": 4432250.0,
+    "row": 164,
+    "col": 128,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.88993,
+     40.0404267
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T110",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 492770.0,
+    "y": 4431950.0,
+    "row": 179,
+    "col": 236,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9152529,
+     40.037745
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T111",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 490090.0,
+    "y": 4431890.0,
+    "row": 182,
+    "col": 102,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8838401,
+     40.0371772
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T112",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 490250.0,
+    "y": 4431270.0,
+    "row": 213,
+    "col": 110,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8857248,
+     40.031593
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T113",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 493290.0,
+    "y": 4430910.0,
+    "row": 231,
+    "col": 262,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9213589,
+     40.0283792
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T114",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 493650.0,
+    "y": 4430890.0,
+    "row": 232,
+    "col": 280,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9255783,
+     40.0282018
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T115",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 492010.0,
+    "y": 4430490.0,
+    "row": 252,
+    "col": 198,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9063625,
+     40.0245839
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T116",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 495690.0,
+    "y": 4429610.0,
+    "row": 296,
+    "col": 382,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9494955,
+     40.0166822
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T117",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 493550.0,
+    "y": 4429290.0,
+    "row": 312,
+    "col": 275,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9244222,
+     40.0137854
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T118",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 489770.0,
+    "y": 4429110.0,
+    "row": 321,
+    "col": 86,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.880133,
+     40.0121263
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T119",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 490850.0,
+    "y": 4428910.0,
+    "row": 331,
+    "col": 140,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.8927904,
+     40.0103367
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "nokta_id": "T120",
+    "aoi": "pursaklar",
+    "tabaka": "degisim_yok",
+    "rol": "test",
+    "tahmin_tur": "degisim_yok",
+    "tahmin_yil": null,
+    "tahmin_guven": null,
+    "kaynak_id": null,
+    "x": 491650.0,
+    "y": 4427930.0,
+    "row": 380,
+    "col": 180,
+    "tabaka_alan_ha": 5570.6,
+    "yontem": "breakpoint",
+    "mevsim": "summer"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     32.9021765,
+     40.0015154
+    ]
+   }
+  }
+ ]
+}
