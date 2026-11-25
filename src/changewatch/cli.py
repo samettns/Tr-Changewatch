@@ -1557,6 +1557,110 @@ def cmd_label(args: argparse.Namespace) -> int:
     return 0
 
 
+def _unsure_counts(settings: dict[str, Any], points_key: str, labels_key: str) -> dict[str, int]:
+    """Test rolündeki 'emin değilim' etiketleri: AOI başına ve birlikte ("a+b")."""
+    from changewatch.validate import load_points, read_labels, unsure_labels
+
+    pts = {p["nokta_id"]: p for p in load_points(resolve_path(settings, settings["paths"][points_key]))}
+    c: Counter = Counter()
+    for r in unsure_labels(read_labels(resolve_path(settings, settings["paths"][labels_key]))):
+        p = pts.get(r["nokta_id"])
+        if p and p["rol"] == "test":
+            c[p["aoi"]] += 1
+    aois = sorted({p["aoi"] for p in pts.values()})
+    return {**{a: c[a] for a in aois}, "+".join(aois): sum(c.values())}
+
+
+def cmd_publish(args: argparse.Namespace) -> int:
+    """docs/data altına web haritası çıktıları: changes.geojson, stats.json, yıllık önizleme PNG'leri, index.json."""
+    import json
+    from datetime import date
+
+    import numpy as np
+
+    from changewatch import cache
+    from changewatch.evaluate import load_features
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.publish import (accuracy_summary, check_budget, png_bytes, public_layer, type_year_ha,
+                                     warp_rgba, write_json)
+    from changewatch.quicklook import rgb_array
+
+    settings = load_settings(args.config)
+    cache_root = require_cache_dir(settings)
+    setup_logging(settings)
+    p = settings["publish"]
+    season = settings["composite"]["season"]
+    crs = settings["grid"]["crs"]
+    years = parse_years(None, settings)
+    out_root = resolve_path(settings, p["out_dir"])
+    aois = args.aois or list(p["aois"])
+    index_aois = []
+    for aoi in aois:
+        geom = get_aoi(settings, aoi)
+        ddir = cache.change_dir(cache_root, aoi, season) / p["method"]
+        feats = load_features(ddir / "changes.geojson", crs) + load_features(ddir / "izleme.geojson", crs)
+        out = out_root / aoi
+        layer = public_layer(feats, crs, settings)
+        write_json(out / "changes.geojson", layer)
+        dropped = sum(pr.get("tur") not in p["types"] for _, pr in feats)
+        log.info("%s: %d poligon yayınlandı, %d yayınlanmadı (su ve diğer türler)", aoi, len(layer["features"]),
+                 dropped)
+
+        ql, bounds = {}, None
+        if not args.no_quicklooks:
+            for y in years:
+                comp = cache.read_dataset(cache.composite_dir(cache_root, aoi, season) / f"{y}.tif")
+                rgba = rgb_array(comp, settings)
+                rgba[..., 3] *= aoi_raster_mask(geom, comp, crs)
+                warped, bounds = warp_rgba(rgba, cache._transform(comp), crs, p["quicklook_crs"])
+                png = out / "quicklooks" / f"{y}.png"
+                png.parent.mkdir(parents=True, exist_ok=True)
+                png.write_bytes(png_bytes(warped, int(p["quicklook_colors"])))
+                ql[str(y)] = f"quicklooks/{y}.png"
+                log.info("  %s (%.0f KB)", png.relative_to(out_root), png.stat().st_size / 1024)
+        old = out / "stats.json"
+        prev = json.loads(old.read_text(encoding="utf-8")) if old.exists() else {}
+        water = None
+        if aoi in p["water_series_aois"]:
+            wj = cache.water_dir(cache_root, aoi, season) / "water_series.json"
+            w = json.loads(wj.read_text(encoding="utf-8"))
+            water = {"min_kutle_ha": w["min_kutle_ha"], "esik": w["esik"],
+                     "yillar": [{"yil": r["yil"], "su_ha": r["su_ha"]} for r in w["yillar"]]}
+        lon0, lat0, lon1, lat1 = geom.bounds
+        stats = {
+            "aoi": aoi, "ad": p["aoi_labels"].get(aoi, aoi), "test_aoi": aoi in p["test_aois"],
+            "sinir": [[lat0, lon0], [lat1, lon1]], "mevsim": season, "yillar": years,
+            "kalici_yillar": [years[1], years[-2]], "izleme_yili": years[-1],
+            "onizleme": ql or prev.get("onizleme", {}), "onizleme_sinir": bounds or prev.get("onizleme_sinir"),
+            "tur_yil_ha": type_year_ha(feats, p["types"]),
+            "poligon_sayisi": {t: sum(f["properties"]["tur"] == t for f in layer["features"]) for t in p["types"]},
+            "su_alani_serisi": water,
+        }
+        if "aylik_izleme" in prev:       # `changewatch monitor` yazar; publish korur
+            stats["aylik_izleme"] = prev["aylik_izleme"]
+        write_json(out / "stats.json", stats)
+        index_aois.append({"aoi": aoi, "ad": stats["ad"], "test_aoi": stats["test_aoi"], "sinir": stats["sinir"]})
+
+    def _load(key: str) -> dict | None:
+        f = resolve_path(settings, "validation") / key
+        return json.loads(f.read_text(encoding="utf-8")) if f.exists() else None
+
+    unsure = {**_unsure_counts(settings, "validation_points", "validation_labels"),
+              **_unsure_counts(settings, "test_aoi_points", "test_aoi_labels")}
+    index = {"olusturma": date.today().isoformat(), "yontem": p["method"], "aoiler": index_aois,
+             "turler": p["types"], "deneysel_turler": p["experimental_types"],
+             "varsayilan_acik": p["default_on_types"], "yillar": years,
+             "dogruluk": accuracy_summary(_load("metrics_test.json"), _load("metrics_test_aoi.json"), unsure)}
+    write_json(out_root / "index.json", index)
+    bud = check_budget(out_root, float(p["max_total_mb"]), float(p["max_png_kb"]))
+    print(f"docs/data: {bud['dosya']} dosya, {bud['toplam_mb']} MB (sınır {p['max_total_mb']} MB); "
+          f"{p['max_png_kb']} KB'yi aşan PNG: {len(bud['buyuk_png'])}")
+    if not bud["ok"]:
+        print("HATA: boyut bütçesi aşıldı: " + ", ".join(bud["buyuk_png"]))
+        return 1
+    return 0
+
+
 # ---------------------------------------------------------------- ayrıştırıcı
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1648,6 +1752,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="ana: örnekleme noktaları (labels.csv); su: golbasi su poligonları (water_labels.csv); "
                          "test_aoi: baglica + pursaklar (test_aoi_labels.csv)")
     lb.set_defaults(func=cmd_label)
+
+    pu = sub.add_parser("publish", help="Web haritası çıktıları (docs/data): GeoJSON, stats.json, önizleme PNG")
+    pu.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings publish.aois)")
+    pu.add_argument("--no-quicklooks", action="store_true", help="önizleme PNG'lerini yeniden üretme")
+    pu.set_defaults(func=cmd_publish)
 
     ex = sub.add_parser("experiments", help="E1–E5 deneylerini etiketlerden üret (etiket yoksa kuru çalıştırma)")
     ex.add_argument("--aois", nargs="+", help="AOI'ler (varsayılan: settings validation.aois)")

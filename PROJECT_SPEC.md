@@ -230,6 +230,7 @@ tr-changewatch/
 │   ├── validate.py            # örnekleme + metrikler
 │   ├── experiments.py         # E1–E5 varyant kaydı (hangi çıktı, nasıl üretilir)
 │   ├── monitor.py             # aylık izleme
+│   ├── publish.py             # docs/data: sadeleştirilmiş GeoJSON, stats.json, önizleme PNG, boyut bütçesi
 │   ├── aoi.py                 # AOI okuma + check-aois kontrolleri
 │   ├── config.py              # settings.yaml yükleme, cache_dir kontrolü
 │   ├── cache.py               # cache_dir'deki ham sahne GeoTIFF'lerini okuma/yazma

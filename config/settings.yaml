@@ -197,3 +197,25 @@ quicklook:
 
 # Faz 2+ eşikleri (indeks farkları, güven kuralları), Faz 5 izleme kapsama eşiği
 # ilgili fazlarda buraya eklenecek.
+
+# Faz 4: web haritası çıktıları (`changewatch publish`). Yöntem/eşik değil; yalnızca neyin nasıl yayınlandığı.
+publish:
+  out_dir: docs/data
+  aois: [incek, golbasi, baglica, pursaklar]
+  method: breakpoint
+  aoi_labels: {incek: "İncek–Kızılcaşar", golbasi: "Gölbaşı (Mogan)", baglica: "Bağlıca–Etimesgut", pursaklar: "Pursaklar"}
+  test_aois: [baglica, pursaklar]   # sayfada "görülmemiş bölge" olarak işaretlenir
+  # v1 yayın kararları (README): su poligonları yayınlanmaz; bitki kaybı ve belirsiz "deneysel", varsayılan kapalı
+  types: [yapilasma_olasi, bitki_kaybi, belirsiz]
+  experimental_types: [bitki_kaybi, belirsiz]
+  default_on_types: [yapilasma_olasi]
+  water_series_aois: [golbasi, pursaklar]   # su alanı serisi grafiği (poligon değil)
+  simplify_m: 10.0           # Douglas–Peucker toleransı (UTM, metre; yarım piksel)
+  coord_decimals: 6          # WGS84 koordinat hassasiyeti (~0,1 m)
+  # Popup'ta gösterilen kanıt alanları (geri kalanı yazılmaz)
+  evidence_props: [sinyal, skor, sonrasi_yil_sayisi, dNDVI, dNDBI, dBSI, dMNDWI, doku_artisi, doku_artisi_payi,
+                   gecerli_gozlem_sayisi, dusuk_gozlem]
+  quicklook_crs: EPSG:3857   # Leaflet görüntü bindirmesi için (Web Mercator'a yeniden örnekleme, en yakın komşu)
+  quicklook_colors: 256      # PNG palet rengi (boyut için nicemleme)
+  max_png_kb: 500
+  max_total_mb: 50
