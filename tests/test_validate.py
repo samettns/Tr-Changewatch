@@ -115,3 +115,73 @@ def test_ndbi_built_rule():
     assert classify_break_piece(ev, th, s, built_rule="ndbi")["tur"] == "belirsiz"  # NDBI düşüyor (İncek bulgusu)
     ev2 = {**ev, "dNDBI": 0.05, "dBSI": 0.04, "doku_artisi": 0.0}
     assert classify_break_piece(ev2, th, s, built_rule="ndbi")["tur"] == "yapilasma_olasi"
+
+
+# ---------------------------------------------------------------- Faz 3 raporlama
+
+from changewatch.validate import (binary_metrics, error_kind, error_summary, olofsson,  # noqa: E402
+                                  rank_disagreements, water_census)
+
+
+def _rec(i, ref, pred, stratum, area, aoi="a"):
+    return {"nokta_id": f"P{i:03d}", "ref": ref, "pred": pred, "stratum": stratum, "stratum_area_ha": area,
+            "aoi": aoi}
+
+
+def test_olofsson_single_point_stratum_does_not_crash_and_is_flagged():
+    recs = [_rec(1, NO_CHANGE, NO_CHANGE, NO_CHANGE, 900), _rec(2, "yapilasma_olasi", NO_CHANGE, NO_CHANGE, 900),
+            _rec(3, "yapilasma_olasi", "yapilasma_olasi", "yapilasma_olasi", 90),
+            _rec(4, NO_CHANGE, "yapilasma_olasi", "yapilasma_olasi", 90),
+            _rec(5, NO_CHANGE, "su_kazanimi", "su_kazanimi", 10)]
+    o = olofsson(recs, {NO_CHANGE: 900, "yapilasma_olasi": 90, "su_kazanimi": 10})
+    assert o["varyans_disi_tabakalar"] == {"su_kazanimi": 1}
+    assert o["genel_dogruluk_ga"] is not None
+    assert o["siniflar"]["su_kazanimi"]["kullanici_ga"] is None
+    # yapılaşma alanı: 900·½ + 90·½ = 495 ha
+    assert o["siniflar"]["yapilasma_olasi"]["kestirilen_alan_ha"] == pytest.approx(495, abs=0.1)
+
+
+def test_binary_metrics_counts_any_change_type_as_change():
+    recs = [{"ref": "yapilasma_olasi", "pred": "belirsiz"}, {"ref": "diger", "pred": NO_CHANGE},
+            {"ref": NO_CHANGE, "pred": "bitki_kaybi"}, {"ref": NO_CHANGE, "pred": NO_CHANGE}]
+    b = binary_metrics(recs)
+    assert b["karisiklik"] == [[1, 1], [1, 1]]
+    assert b["kesinlik"] == 0.5 and b["duyarlilik"] == 0.5 and b["dogruluk"] == 0.5
+    assert "ikili" in metrics([{**r, "ref_year": None, "pred_year": None} for r in recs])
+
+
+def test_water_census_counts_per_type_and_unsure():
+    pts = [{"nokta_id": "S1", "tahmin_tur": "su_kazanimi", "alan_ha": 0.5},
+           {"nokta_id": "S2", "tahmin_tur": "su_kazanimi", "alan_ha": 0.3},
+           {"nokta_id": "S3", "tahmin_tur": "su_kaybi", "alan_ha": 0.2}]
+    lab = [{"nokta_id": "S1", "gercek_degisim": "evet", "gercek_tur": "su_kazanimi"},
+           {"nokta_id": "S2", "gercek_degisim": "hayir", "gercek_tur": ""},
+           {"nokta_id": "S3", "gercek_degisim": "emin_degilim", "gercek_tur": ""}]
+    c = water_census(pts, lab)
+    assert c["turler"]["su_kazanimi"]["etiketli"] == 2 and c["turler"]["su_kazanimi"]["dogru"] == 1
+    assert c["turler"]["su_kazanimi"]["degisim_yok"] == 1
+    assert c["turler"]["su_kaybi"]["emin_degilim"] == 1 and c["turler"]["su_kaybi"].get("etiketli", 0) == 0
+    assert c["toplam"]["poligon"] == 3
+
+
+def test_error_kind_and_summary():
+    assert error_kind(NO_CHANGE, "belirsiz") == "yanlis_alarm"
+    assert error_kind("yapilasma_olasi", NO_CHANGE) == "kacirma"
+    assert error_kind("diger", "yapilasma_olasi") == "tur_hatasi"
+    recs = [_rec(1, NO_CHANGE, "belirsiz", "belirsiz", 10), _rec(2, NO_CHANGE, "belirsiz", "belirsiz", 10),
+            _rec(3, "x", "x", "x", 1)]
+    assert error_summary(recs) == [("yanlis_alarm", NO_CHANGE, "belirsiz", 2)]
+
+
+def test_rank_disagreements_one_per_binary_group_then_by_represented_area():
+    recs = ([_rec(i, "yapilasma_olasi", NO_CHANGE, NO_CHANGE, 1000, aoi="ab"[i % 2]) for i in range(5)]
+            + [_rec(10 + i, NO_CHANGE, NO_CHANGE, NO_CHANGE, 1000) for i in range(5)]          # kaçırma 100 ha/nokta
+            + [_rec(20 + i, NO_CHANGE, "bitki_kaybi", "bitki_kaybi", 20) for i in range(4)]  # yanlış alarm 5 ha
+            + [_rec(30, "diger", "yapilasma_olasi", "yapilasma_olasi", 50)])                 # tür hatası
+    top = rank_disagreements(recs, 4)
+    kinds = [r["hata"] for r in top]
+    assert kinds.count("yanlis_alarm") == 1                 # her ikili grup en az bir
+    assert kinds.count("kacirma") == 3                      # kalan yerler temsil edilen alana göre
+    assert "tur_hatasi" not in kinds                        # ikili hatalar tükenmeden gelmez
+    assert {r["aoi"] for r in top if r["hata"] == "kacirma"} == {"a", "b"}   # eşit ağırlıkta AOI'ler sırayla
+    assert len(rank_disagreements(recs, 50)) == 10          # tüm ayrışmalar

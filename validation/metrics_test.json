@@ -1,0 +1,1008 @@
+{
+  "kume": "test",
+  "harita": "stored",
+  "etiketli": 195,
+  "emin_degilim": 3,
+  "toplam_nokta": 280,
+  "gruplar": {
+    "golbasi": {
+      "n": 78,
+      "genel_dogruluk": 0.5128205128205128,
+      "yanlis_alarm_orani": 0.6458333333333334,
+      "siniflar": [
+        "belirsiz",
+        "bitki_kaybi",
+        "diger",
+        "su_kazanimi",
+        "yapilasma_olasi",
+        "degisim_yok"
+      ],
+      "karisiklik": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          15,
+          4
+        ],
+        [
+          11,
+          14,
+          0,
+          1,
+          5,
+          25
+        ]
+      ],
+      "sinif_metrikleri": {
+        "belirsiz": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": null,
+          "f1": null,
+          "referans_n": 0,
+          "tahmin_n": 12
+        },
+        "bitki_kaybi": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": 0.0,
+          "f1": 0.0,
+          "referans_n": 1,
+          "tahmin_n": 14
+        },
+        "diger": {
+          "kullanici_dogrulugu": null,
+          "uretici_dogrulugu": 0.0,
+          "f1": null,
+          "referans_n": 1,
+          "tahmin_n": 0
+        },
+        "su_kazanimi": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": null,
+          "f1": null,
+          "referans_n": 0,
+          "tahmin_n": 1
+        },
+        "yapilasma_olasi": {
+          "kullanici_dogrulugu": 0.7142857142857143,
+          "uretici_dogrulugu": 0.75,
+          "f1": 0.7317073170731706,
+          "referans_n": 20,
+          "tahmin_n": 21
+        },
+        "degisim_yok": {
+          "kullanici_dogrulugu": 0.8333333333333334,
+          "uretici_dogrulugu": 0.44642857142857145,
+          "f1": 0.5813953488372092,
+          "referans_n": 56,
+          "tahmin_n": 30
+        }
+      },
+      "ikili": {
+        "karisiklik": [
+          [
+            17,
+            5
+          ],
+          [
+            31,
+            25
+          ]
+        ],
+        "kesinlik": 0.3541666666666667,
+        "duyarlilik": 0.7727272727272727,
+        "f1": 0.4857142857142857,
+        "dogruluk": 0.5384615384615384,
+        "n": 78
+      },
+      "yil": {
+        "degisim_yakalanan_n": 16,
+        "tam_isabet": 0.5625,
+        "pm1_isabet": 0.875,
+        "tahmin_yilina_gore": {
+          "2018": {
+            "n": 8,
+            "dogruluk": 0.0,
+            "yanlis_alarm_orani": 1.0
+          },
+          "2019": {
+            "n": 5,
+            "dogruluk": 0.4,
+            "yanlis_alarm_orani": 0.6
+          },
+          "2020": {
+            "n": 2,
+            "dogruluk": 0.0,
+            "yanlis_alarm_orani": 1.0
+          },
+          "2021": {
+            "n": 5,
+            "dogruluk": 0.4,
+            "yanlis_alarm_orani": 0.6
+          },
+          "2022": {
+            "n": 7,
+            "dogruluk": 0.2857142857142857,
+            "yanlis_alarm_orani": 0.7142857142857143
+          },
+          "2023": {
+            "n": 7,
+            "dogruluk": 0.42857142857142855,
+            "yanlis_alarm_orani": 0.2857142857142857
+          },
+          "2024": {
+            "n": 7,
+            "dogruluk": 0.5714285714285714,
+            "yanlis_alarm_orani": 0.42857142857142855
+          },
+          "2025": {
+            "n": 7,
+            "dogruluk": 0.2857142857142857,
+            "yanlis_alarm_orani": 0.7142857142857143
+          }
+        }
+      },
+      "olofsson": {
+        "toplam_alan_ha": 5893.0,
+        "genel_dogruluk": 0.8172229074627869,
+        "genel_dogruluk_ga": 0.13021143071556446,
+        "varyans_disi_tabakalar": {
+          "su_kazanimi": 1
+        },
+        "siniflar": {
+          "belirsiz": {
+            "harita_alani_ha": 26.0,
+            "kestirilen_alan_ha": 0.0,
+            "alan_ga_ha": 0.0,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "bitki_kaybi": {
+            "harita_alani_ha": 64.0,
+            "kestirilen_alan_ha": 7.0,
+            "alan_ga_ha": 13.7,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": 0.0,
+            "uretici_ga": 0.0
+          },
+          "diger": {
+            "harita_alani_ha": 0.0,
+            "kestirilen_alan_ha": 188.4,
+            "alan_ga_ha": 369.3,
+            "kullanici_dogrulugu": null,
+            "kullanici_ga": null,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "su_kazanimi": {
+            "harita_alani_ha": 2.9,
+            "kestirilen_alan_ha": 0.0,
+            "alan_ga_ha": 0.0,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": null,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "yapilasma_olasi": {
+            "harita_alani_ha": 147.0,
+            "kestirilen_alan_ha": 860.9,
+            "alan_ga_ha": 700.0,
+            "kullanici_dogrulugu": 0.7142857142857143,
+            "kullanici_ga": 0.19798989873223333,
+            "uretici_dogrulugu": 0.12199405184968448,
+            "uretici_ga": 0.103459695867139
+          },
+          "degisim_yok": {
+            "harita_alani_ha": 5653.0,
+            "kestirilen_alan_ha": 4836.6,
+            "alan_ga_ha": 767.3,
+            "kullanici_dogrulugu": 0.8333333333333334,
+            "kullanici_ga": 0.1356409504277753,
+            "uretici_dogrulugu": 0.9739983232982289,
+            "uretici_ga": 0.00694827378388869
+          }
+        }
+      }
+    },
+    "incek": {
+      "n": 116,
+      "genel_dogruluk": 0.5862068965517241,
+      "yanlis_alarm_orani": 0.3037974683544304,
+      "siniflar": [
+        "belirsiz",
+        "bitki_kaybi",
+        "diger",
+        "yapilasma_olasi",
+        "degisim_yok"
+      ],
+      "karisiklik": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          4,
+          1
+        ],
+        [
+          6,
+          3,
+          0,
+          39,
+          7
+        ],
+        [
+          7,
+          6,
+          0,
+          11,
+          29
+        ]
+      ],
+      "sinif_metrikleri": {
+        "belirsiz": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": null,
+          "f1": null,
+          "referans_n": 0,
+          "tahmin_n": 13
+        },
+        "bitki_kaybi": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": 0.0,
+          "f1": 0.0,
+          "referans_n": 1,
+          "tahmin_n": 11
+        },
+        "diger": {
+          "kullanici_dogrulugu": null,
+          "uretici_dogrulugu": 0.0,
+          "f1": null,
+          "referans_n": 7,
+          "tahmin_n": 0
+        },
+        "yapilasma_olasi": {
+          "kullanici_dogrulugu": 0.7090909090909091,
+          "uretici_dogrulugu": 0.7090909090909091,
+          "f1": 0.7090909090909091,
+          "referans_n": 55,
+          "tahmin_n": 55
+        },
+        "degisim_yok": {
+          "kullanici_dogrulugu": 0.7837837837837838,
+          "uretici_dogrulugu": 0.5471698113207547,
+          "f1": 0.6444444444444444,
+          "referans_n": 53,
+          "tahmin_n": 37
+        }
+      },
+      "ikili": {
+        "karisiklik": [
+          [
+            55,
+            8
+          ],
+          [
+            24,
+            29
+          ]
+        ],
+        "kesinlik": 0.6962025316455697,
+        "duyarlilik": 0.873015873015873,
+        "f1": 0.7746478873239436,
+        "dogruluk": 0.7241379310344828,
+        "n": 116
+      },
+      "yil": {
+        "degisim_yakalanan_n": 54,
+        "tam_isabet": 0.6851851851851852,
+        "pm1_isabet": 0.8333333333333334,
+        "tahmin_yilina_gore": {
+          "2018": {
+            "n": 4,
+            "dogruluk": 0.25,
+            "yanlis_alarm_orani": 0.25
+          },
+          "2019": {
+            "n": 4,
+            "dogruluk": 0.25,
+            "yanlis_alarm_orani": 0.75
+          },
+          "2020": {
+            "n": 8,
+            "dogruluk": 0.25,
+            "yanlis_alarm_orani": 0.5
+          },
+          "2021": {
+            "n": 3,
+            "dogruluk": 0.0,
+            "yanlis_alarm_orani": 1.0
+          },
+          "2022": {
+            "n": 11,
+            "dogruluk": 0.36363636363636365,
+            "yanlis_alarm_orani": 0.36363636363636365
+          },
+          "2023": {
+            "n": 17,
+            "dogruluk": 0.5882352941176471,
+            "yanlis_alarm_orani": 0.23529411764705882
+          },
+          "2024": {
+            "n": 18,
+            "dogruluk": 0.6666666666666666,
+            "yanlis_alarm_orani": 0.1111111111111111
+          },
+          "2025": {
+            "n": 14,
+            "dogruluk": 0.6428571428571429,
+            "yanlis_alarm_orani": 0.21428571428571427
+          }
+        }
+      },
+      "olofsson": {
+        "toplam_alan_ha": 5827.5,
+        "genel_dogruluk": 0.7649669948651333,
+        "genel_dogruluk_ga": 0.1228394421957176,
+        "varyans_disi_tabakalar": {},
+        "siniflar": {
+          "belirsiz": {
+            "harita_alani_ha": 66.4,
+            "kestirilen_alan_ha": 0.0,
+            "alan_ga_ha": 0.0,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "bitki_kaybi": {
+            "harita_alani_ha": 33.7,
+            "kestirilen_alan_ha": 7.6,
+            "alan_ga_ha": 14.9,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": 0.0,
+            "uretici_ga": 0.0
+          },
+          "diger": {
+            "harita_alani_ha": 0.0,
+            "kestirilen_alan_ha": 180.0,
+            "alan_ga_ha": 282.9,
+            "kullanici_dogrulugu": null,
+            "kullanici_ga": null,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "yapilasma_olasi": {
+            "harita_alani_ha": 417.5,
+            "kestirilen_alan_ha": 1340.5,
+            "alan_ga_ha": 681.6,
+            "kullanici_dogrulugu": 0.7090909090909091,
+            "kullanici_ga": 0.12114034238353767,
+            "uretici_dogrulugu": 0.22084416058547138,
+            "uretici_ga": 0.11577431821624617
+          },
+          "degisim_yok": {
+            "harita_alani_ha": 5309.9,
+            "kestirilen_alan_ha": 4299.5,
+            "alan_ga_ha": 715.8,
+            "kullanici_dogrulugu": 0.7837837837837838,
+            "kullanici_ga": 0.1344767143017411,
+            "uretici_dogrulugu": 0.9679861664348197,
+            "uretici_ga": 0.012332774079641439
+          }
+        }
+      }
+    },
+    "golbasi + incek": {
+      "n": 194,
+      "genel_dogruluk": 0.5567010309278351,
+      "yanlis_alarm_orani": 0.4330708661417323,
+      "siniflar": [
+        "belirsiz",
+        "bitki_kaybi",
+        "diger",
+        "su_kazanimi",
+        "yapilasma_olasi",
+        "degisim_yok"
+      ],
+      "karisiklik": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          3,
+          0,
+          0,
+          54,
+          11
+        ],
+        [
+          18,
+          20,
+          0,
+          1,
+          16,
+          54
+        ]
+      ],
+      "sinif_metrikleri": {
+        "belirsiz": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": null,
+          "f1": null,
+          "referans_n": 0,
+          "tahmin_n": 25
+        },
+        "bitki_kaybi": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": 0.0,
+          "f1": 0.0,
+          "referans_n": 2,
+          "tahmin_n": 25
+        },
+        "diger": {
+          "kullanici_dogrulugu": null,
+          "uretici_dogrulugu": 0.0,
+          "f1": null,
+          "referans_n": 8,
+          "tahmin_n": 0
+        },
+        "su_kazanimi": {
+          "kullanici_dogrulugu": 0.0,
+          "uretici_dogrulugu": null,
+          "f1": null,
+          "referans_n": 0,
+          "tahmin_n": 1
+        },
+        "yapilasma_olasi": {
+          "kullanici_dogrulugu": 0.7105263157894737,
+          "uretici_dogrulugu": 0.72,
+          "f1": 0.7152317880794702,
+          "referans_n": 75,
+          "tahmin_n": 76
+        },
+        "degisim_yok": {
+          "kullanici_dogrulugu": 0.8059701492537313,
+          "uretici_dogrulugu": 0.4954128440366973,
+          "f1": 0.6136363636363636,
+          "referans_n": 109,
+          "tahmin_n": 67
+        }
+      },
+      "ikili": {
+        "karisiklik": [
+          [
+            72,
+            13
+          ],
+          [
+            55,
+            54
+          ]
+        ],
+        "kesinlik": 0.5669291338582677,
+        "duyarlilik": 0.8470588235294118,
+        "f1": 0.6792452830188679,
+        "dogruluk": 0.6494845360824743,
+        "n": 194
+      },
+      "yil": {
+        "degisim_yakalanan_n": 70,
+        "tam_isabet": 0.6571428571428571,
+        "pm1_isabet": 0.8428571428571429,
+        "tahmin_yilina_gore": {
+          "2018": {
+            "n": 12,
+            "dogruluk": 0.08333333333333333,
+            "yanlis_alarm_orani": 0.75
+          },
+          "2019": {
+            "n": 9,
+            "dogruluk": 0.3333333333333333,
+            "yanlis_alarm_orani": 0.6666666666666666
+          },
+          "2020": {
+            "n": 10,
+            "dogruluk": 0.2,
+            "yanlis_alarm_orani": 0.6
+          },
+          "2021": {
+            "n": 8,
+            "dogruluk": 0.25,
+            "yanlis_alarm_orani": 0.75
+          },
+          "2022": {
+            "n": 18,
+            "dogruluk": 0.3333333333333333,
+            "yanlis_alarm_orani": 0.5
+          },
+          "2023": {
+            "n": 24,
+            "dogruluk": 0.5416666666666666,
+            "yanlis_alarm_orani": 0.25
+          },
+          "2024": {
+            "n": 25,
+            "dogruluk": 0.64,
+            "yanlis_alarm_orani": 0.2
+          },
+          "2025": {
+            "n": 21,
+            "dogruluk": 0.5238095238095238,
+            "yanlis_alarm_orani": 0.38095238095238093
+          }
+        }
+      },
+      "olofsson": {
+        "toplam_alan_ha": 11720.4,
+        "genel_dogruluk": 0.7881012810584015,
+        "genel_dogruluk_ga": 0.08937709316591148,
+        "varyans_disi_tabakalar": {
+          "su_kazanimi": 1
+        },
+        "siniflar": {
+          "belirsiz": {
+            "harita_alani_ha": 92.4,
+            "kestirilen_alan_ha": 0.0,
+            "alan_ga_ha": 0.0,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "bitki_kaybi": {
+            "harita_alani_ha": 97.7,
+            "kestirilen_alan_ha": 14.9,
+            "alan_ga_ha": 20.5,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": 0.0,
+            "uretici_dogrulugu": 0.0,
+            "uretici_ga": 0.0
+          },
+          "diger": {
+            "harita_alani_ha": 0.0,
+            "kestirilen_alan_ha": 364.8,
+            "alan_ga_ha": 451.1,
+            "kullanici_dogrulugu": null,
+            "kullanici_ga": null,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "su_kazanimi": {
+            "harita_alani_ha": 2.9,
+            "kestirilen_alan_ha": 0.0,
+            "alan_ga_ha": 0.0,
+            "kullanici_dogrulugu": 0.0,
+            "kullanici_ga": null,
+            "uretici_dogrulugu": null,
+            "uretici_ga": null
+          },
+          "yapilasma_olasi": {
+            "harita_alani_ha": 564.5,
+            "kestirilen_alan_ha": 2238.6,
+            "alan_ga_ha": 981.7,
+            "kullanici_dogrulugu": 0.7105263157894737,
+            "kullanici_ga": 0.10264080930152501,
+            "uretici_dogrulugu": 0.17917358188660557,
+            "uretici_ga": 0.0812645210371155
+          },
+          "degisim_yok": {
+            "harita_alani_ha": 10962.9,
+            "kestirilen_alan_ha": 9102.2,
+            "alan_ga_ha": 1047.5,
+            "kullanici_dogrulugu": 0.8059701492537313,
+            "kullanici_ga": 0.09540647648498808,
+            "uretici_dogrulugu": 0.9707290437681874,
+            "uretici_ga": 0.006934140113262667
+          }
+        }
+      }
+    }
+  },
+  "ayrismalar": [
+    {
+      "hata": "yanlis_alarm",
+      "ref": "degisim_yok",
+      "tahmin": "bitki_kaybi",
+      "n": 20
+    },
+    {
+      "hata": "yanlis_alarm",
+      "ref": "degisim_yok",
+      "tahmin": "belirsiz",
+      "n": 18
+    },
+    {
+      "hata": "yanlis_alarm",
+      "ref": "degisim_yok",
+      "tahmin": "yapilasma_olasi",
+      "n": 16
+    },
+    {
+      "hata": "kacirma",
+      "ref": "yapilasma_olasi",
+      "tahmin": "degisim_yok",
+      "n": 11
+    },
+    {
+      "hata": "tur_hatasi",
+      "ref": "yapilasma_olasi",
+      "tahmin": "belirsiz",
+      "n": 7
+    },
+    {
+      "hata": "tur_hatasi",
+      "ref": "diger",
+      "tahmin": "yapilasma_olasi",
+      "n": 4
+    },
+    {
+      "hata": "tur_hatasi",
+      "ref": "yapilasma_olasi",
+      "tahmin": "bitki_kaybi",
+      "n": 3
+    },
+    {
+      "hata": "kacirma",
+      "ref": "diger",
+      "tahmin": "degisim_yok",
+      "n": 2
+    },
+    {
+      "hata": "tur_hatasi",
+      "ref": "bitki_kaybi",
+      "tahmin": "yapilasma_olasi",
+      "n": 2
+    },
+    {
+      "hata": "tur_hatasi",
+      "ref": "diger",
+      "tahmin": "bitki_kaybi",
+      "n": 2
+    },
+    {
+      "hata": "yanlis_alarm",
+      "ref": "degisim_yok",
+      "tahmin": "su_kazanimi",
+      "n": 1
+    }
+  ],
+  "su_seti": {
+    "turler": {
+      "su_kaybi": {
+        "poligon": 3,
+        "alan_ha": 0.68,
+        "etiketli": 3,
+        "dogru": 0,
+        "degisim_yok": 3
+      },
+      "su_kazanimi": {
+        "poligon": 7,
+        "alan_ha": 2.880000000000001,
+        "etiketli": 7,
+        "dogru": 0,
+        "degisim_yok": 7
+      },
+      "sulak_alan_belirsiz": {
+        "poligon": 6,
+        "alan_ha": 1.68,
+        "etiketli": 6,
+        "dogru": 0,
+        "degisim_yok": 6
+      }
+    },
+    "toplam": {
+      "poligon": 16,
+      "alan_ha": 5.24,
+      "etiketli": 16,
+      "dogru": 0,
+      "degisim_yok": 16
+    },
+    "noktalar": [
+      {
+        "nokta_id": "S01",
+        "tahmin": "su_kaybi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2018,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S02",
+        "tahmin": "su_kaybi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2018,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S03",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2019,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S04",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S05",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S06",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S07",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S08",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S09",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S10",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S11",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S12",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S13",
+        "tahmin": "sulak_alan_belirsiz",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S14",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2021,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S15",
+        "tahmin": "su_kazanimi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2024,
+        "katman": "kalici"
+      },
+      {
+        "nokta_id": "S16",
+        "tahmin": "su_kaybi",
+        "ref": "degisim_yok",
+        "tahmin_yil": 2026,
+        "katman": "izleme"
+      }
+    ]
+  },
+  "hata_paneli": [
+    {
+      "nokta_id": "P198",
+      "aoi": "golbasi",
+      "ref": "yapilasma_olasi",
+      "pred": "degisim_yok",
+      "ref_year": "2021",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P229",
+      "aoi": "incek",
+      "ref": "yapilasma_olasi",
+      "pred": "degisim_yok",
+      "ref_year": "2023",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P203",
+      "aoi": "golbasi",
+      "ref": "yapilasma_olasi",
+      "pred": "degisim_yok",
+      "ref_year": "2018",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P238",
+      "aoi": "incek",
+      "ref": "yapilasma_olasi",
+      "pred": "degisim_yok",
+      "ref_year": "2018",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P211",
+      "aoi": "golbasi",
+      "ref": "yapilasma_olasi",
+      "pred": "degisim_yok",
+      "ref_year": "2025",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P197",
+      "aoi": "golbasi",
+      "ref": "diger",
+      "pred": "degisim_yok",
+      "ref_year": "2018",
+      "pred_year": null,
+      "hata": "kacirma",
+      "agirlik_ha": 163.62537313432836,
+      "not": ""
+    },
+    {
+      "nokta_id": "P073",
+      "aoi": "golbasi",
+      "ref": "degisim_yok",
+      "pred": "yapilasma_olasi",
+      "ref_year": null,
+      "pred_year": 2022,
+      "hata": "yanlis_alarm",
+      "agirlik_ha": 7.427631578947368,
+      "not": ""
+    },
+    {
+      "nokta_id": "P036",
+      "aoi": "golbasi",
+      "ref": "degisim_yok",
+      "pred": "bitki_kaybi",
+      "ref_year": null,
+      "pred_year": 2019,
+      "hata": "yanlis_alarm",
+      "agirlik_ha": 3.908,
+      "not": ""
+    },
+    {
+      "nokta_id": "P002",
+      "aoi": "golbasi",
+      "ref": "degisim_yok",
+      "pred": "belirsiz",
+      "ref_year": null,
+      "pred_year": 2020,
+      "hata": "yanlis_alarm",
+      "agirlik_ha": 3.696,
+      "not": ""
+    },
+    {
+      "nokta_id": "P071",
+      "aoi": "golbasi",
+      "ref": "degisim_yok",
+      "pred": "su_kazanimi",
+      "ref_year": null,
+      "pred_year": 2021,
+      "hata": "yanlis_alarm",
+      "agirlik_ha": 2.9,
+      "not": ""
+    }
+  ]
+}

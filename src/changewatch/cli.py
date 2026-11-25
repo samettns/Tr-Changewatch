@@ -890,17 +890,52 @@ def _aoi_layers(settings: dict[str, Any], cache_root: Path, aoi: str, season: st
     return grid, kept, mon
 
 
+def _stratum_map(settings: dict[str, Any], cache_root: Path, aoi: str, season: str) -> tuple[Any, Any, list, Any]:
+    """Örnekleme tabaka haritası: (tabaka adı dizisi, poligon kimliği dizisi, kalıcı poligonlar, ızgara).
+
+    Kalıcı poligonlar türüyle; izleme katmanı ve AOI dışı '' (örnekleme dışı); geri kalan AOI pikselleri
+    degisim_yok.
+    """
+    import numpy as np
+    from rasterio.features import rasterize
+
+    from changewatch.mask import aoi_raster_mask
+    from changewatch.validate import NO_CHANGE
+    from changewatch.vectorize import grid_transform
+
+    grid, kept, mon = _aoi_layers(settings, cache_root, aoi, season)
+    shape = (grid["y"].size, grid["x"].size)
+    tr = grid_transform(grid["x"].values, grid["y"].values)
+    region = aoi_raster_mask(get_aoi(settings, aoi), grid, settings["grid"]["crs"])
+    idx = (rasterize([(g, i + 1) for i, (g, _) in enumerate(kept)], out_shape=shape, transform=tr,
+                     dtype="int32") if kept else np.zeros(shape, "int32"))
+    mon_m = (rasterize([(g, 1) for g, _ in mon], out_shape=shape, transform=tr).astype(bool)
+             if mon else np.zeros(shape, bool))
+    smap = np.full(shape, "", dtype=object)
+    for i, (_, p) in enumerate(kept):
+        smap[idx == i + 1] = p["tur"]
+    smap[region & (idx == 0) & ~mon_m] = NO_CHANGE
+    smap[~region] = ""
+    return smap, idx, kept, grid
+
+
+def _stratum_areas_ha(settings: dict[str, Any], cache_root: Path, aoi: str, season: str) -> dict[str, float]:
+    """Bir AOI'nin tabaka alanları (ha), örneklemeyle aynı tabaka haritasından."""
+    import numpy as np
+
+    smap = _stratum_map(settings, cache_root, aoi, season)[0]
+    px_ha = float(settings["grid"]["resolution_m"]) ** 2 / 10_000
+    return {str(k): float(n) * px_ha for k, n in zip(*np.unique(smap[smap != ""], return_counts=True))}
+
+
 def cmd_sample(args: argparse.Namespace) -> int:
     """Tabakalı rastgele örnekleme → validation/points.geojson + labels.csv şablonu + çipler + QGIS yükleyicisi."""
     import json
 
     import numpy as np
     from pyproj import Transformer
-    from rasterio.features import rasterize
 
-    from changewatch.mask import aoi_raster_mask
     from changewatch.validate import NO_CHANGE, allocate, sample_pixels, summary_counts, write_label_template
-    from changewatch.vectorize import grid_transform
 
     settings = load_settings(args.config)
     cache_root = require_cache_dir(settings)
@@ -913,19 +948,7 @@ def cmd_sample(args: argparse.Namespace) -> int:
     smaps, feats_ix, grids = {}, {}, {}
     px = Counter()
     for aoi in aois:
-        grid, kept, mon = _aoi_layers(settings, cache_root, aoi, season)
-        shape = (grid["y"].size, grid["x"].size)
-        tr = grid_transform(grid["x"].values, grid["y"].values)
-        region = aoi_raster_mask(get_aoi(settings, aoi), grid, crs)
-        idx = (rasterize([(g, i + 1) for i, (g, _) in enumerate(kept)], out_shape=shape, transform=tr,
-                         dtype="int32") if kept else np.zeros(shape, "int32"))
-        mon_m = (rasterize([(g, 1) for g, _ in mon], out_shape=shape, transform=tr).astype(bool)
-                 if mon else np.zeros(shape, bool))
-        smap = np.full(shape, "", dtype=object)
-        for i, (_, p) in enumerate(kept):
-            smap[idx == i + 1] = p["tur"]
-        smap[region & (idx == 0) & ~mon_m] = NO_CHANGE
-        smap[~region] = ""
+        smap, idx, kept, grid = _stratum_map(settings, cache_root, aoi, season)
         smaps[aoi], feats_ix[aoi], grids[aoi] = smap, (idx, kept), grid
         for s, n in zip(*np.unique(smap[smap != ""], return_counts=True)):
             px[str(s)] += int(n)
@@ -1066,24 +1089,27 @@ def _labeled_records(settings: dict[str, Any], role: str, use_current: bool, cac
         preds = [(p["tahmin_tur"], p["tahmin_yil"]) for p in sel]
     recs = [{"ref": reference_class(rows[p["nokta_id"]]), "pred": pr, "pred_year": py,
              "ref_year": rows[p["nokta_id"]].get("gercek_yil") or None, "aoi": p["aoi"],
-             "stratum": p["tabaka"], "stratum_area_ha": p["tabaka_alan_ha"]}
+             "stratum": p["tabaka"], "stratum_area_ha": p["tabaka_alan_ha"], "nokta_id": p["nokta_id"],
+             "x": p["x"], "y": p["y"], "not": rows[p["nokta_id"]].get("not", "")}
             for p, (pr, py) in zip(sel, preds)]
     return recs, len(pts), len(rows), n_unsure
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
-    """Etiketlerden karışıklık matrisi, tür bazlı metrikler ve yıl bazlı doğruluk."""
+    """Etiketlerden nokta bazlı ve alan ağırlıklı metrikler: AOI'ler ayrı ayrı ve birlikte; su seti; hata paneli."""
     import json
 
-    from changewatch.validate import format_olofsson, format_report, metrics, olofsson
+    from changewatch.validate import (error_summary, format_olofsson, format_report, metrics, olofsson,
+                                      rank_disagreements)
 
     settings = load_settings(args.config)
     setup_logging(settings)
     season = args.season or settings["composite"]["season"]
-    cache_root = require_cache_dir(settings) if args.map == "current" else None
+    cache_root = require_cache_dir(settings) if (args.map == "current" or not args.no_cache) else None
     recs, n_pts, n_lab, n_unsure = _labeled_records(settings, args.set, args.map == "current", cache_root, season)
-    if n_unsure:
-        print(f"Not: '{args.set}' kümesinde {n_unsure} nokta 'emin değilim' (metriklere katılmadı).\n")
+    if args.aoi:
+        recs = [r for r in recs if r["aoi"] in args.aoi]
+    print(f"Hariç tutulan: '{args.set}' kümesinde {n_unsure} nokta 'emin değilim' (metriklere katılmadı).\n")
     if not n_lab:
         print(f"UYARI: etiket girilmemiş (0/{n_pts} nokta). "
               f"{settings['paths']['validation_labels']} dosyasında gercek_degisim (evet/hayir), gercek_tur, "
@@ -1092,25 +1118,117 @@ def cmd_validate(args: argparse.Namespace) -> int:
     if not recs:
         print(f"UYARI: {n_lab} etiket var ama '{args.set}' kümesinde etiketli nokta yok.")
         return 0
-    rep = metrics(recs)
-    rep["olofsson"] = olofsson(recs, {r["stratum"]: float(r["stratum_area_ha"]) for r in recs})
-    rep.update(kume=args.set, harita=args.map, etiketli=n_lab, emin_degilim=n_unsure, toplam_nokta=n_pts)
-    print(f"## Doğrulama ({args.set} noktaları, harita: {args.map})\n")
-    print("### Nokta bazlı\n")
-    print(format_report(rep))
-    print("\n### Alan ağırlıklı (Olofsson vd. 2014; tabaka = örnekleme anındaki harita sınıfı)\n")
-    print(format_olofsson(rep["olofsson"]))
-    out = resolve_path(settings, "validation") / f"metrics_{args.set}.json"
-    out.write_text(json.dumps(rep, ensure_ascii=False, indent=2, default=float), encoding="utf-8")
+
+    aois = sorted({r["aoi"] for r in recs})
+    joint = {r["stratum"]: float(r["stratum_area_ha"]) for r in recs}
+    groups: list[tuple[str, list[dict], dict[str, float] | None]] = []
+    for aoi in aois:
+        # AOI'ye özgü tabaka alanları: tabakalar iki AOI'de birlikte örneklendiği için bir AOI'nin noktaları
+        # tabaka içinde eşit olasılıklı bir alt örneklemdir; alan kestiriminde AOI'nin kendi tabaka alanı kullanılır
+        areas = _stratum_areas_ha(settings, cache_root, aoi, season) if cache_root else None
+        groups.append((aoi, [r for r in recs if r["aoi"] == aoi], areas))
+    if len(aois) > 1:
+        groups.append((" + ".join(aois), recs, joint))
+
+    out_rep: dict[str, Any] = {"kume": args.set, "harita": args.map, "etiketli": n_lab, "emin_degilim": n_unsure,
+                               "toplam_nokta": n_pts, "gruplar": {}}
+    for name, grp, areas in groups:
+        rep = metrics(grp)
+        rep["olofsson"] = olofsson(grp, areas) if areas else {}
+        out_rep["gruplar"][name] = rep
+        print(f"## Doğrulama: {name} ({args.set} noktaları, harita: {args.map})\n")
+        print("### Nokta bazlı\n")
+        print(format_report(rep))
+        print("\n### Alan ağırlıklı (Olofsson vd. 2014; tabaka = örnekleme anındaki harita sınıfı)\n")
+        print(format_olofsson(rep["olofsson"]) if areas else "AOI tabaka alanları için cache_dir gerekli.")
+        print()
+
+    summ = error_summary(recs)
+    out_rep["ayrismalar"] = [{"hata": h, "ref": a, "tahmin": b, "n": k} for h, a, b, k in summ]
+    print("### Ayrışma türleri (tümü)\n")
+    print("| hata | referans | tahmin | n |\n|---|---|---|---|")
+    for h, a, b, k in summ:
+        print(f"| {h} | {a} | {b} | {k} |")
+
+    wrep = _water_validation(settings)
+    if wrep:
+        out_rep["su_seti"] = wrep
+
+    n_err = int(settings["validation"]["error_panel_n"])
+    if n_err and cache_root:
+        top = rank_disagreements(recs, n_err)
+        sfx = "" if not args.aoi else "_" + "_".join(sorted(args.aoi))
+        png = _error_panel(settings, cache_root, season, top, sfx)
+        out_rep["hata_paneli"] = [{k: r[k] for k in ("nokta_id", "aoi", "ref", "pred", "ref_year", "pred_year",
+                                                     "hata", "agirlik_ha", "not")} for r in top]
+        print(f"\n### En önemli {len(top)} ayrışma (panel: {png})\n")
+        print("| # | nokta | AOI | hata | referans (yıl) | tahmin (yıl) | temsil ettiği alan (ha) | not |")
+        print("|---|---|---|---|---|---|---|---|")
+        for k, r in enumerate(top, 1):
+            print(f"| {k} | {r['nokta_id']} | {r['aoi']} | {r['hata']} | {r['ref']} ({r['ref_year'] or '-'}) | "
+                  f"{r['pred']} ({r['pred_year'] or '-'}) | {r['agirlik_ha']:.0f} | {r['not'] or ''} |")
+
+    sfx = "" if not args.aoi else "_" + "_".join(sorted(args.aoi))
+    out = resolve_path(settings, "validation") / f"metrics_{args.set}{sfx}.json"
+    out.write_text(json.dumps(out_rep, ensure_ascii=False, indent=2, default=float), encoding="utf-8")
     log.info("çıktı: %s", out)
     return 0
+
+
+def _water_validation(settings: dict[str, Any]) -> dict[str, Any] | None:
+    """Su doğrulama seti (sayım) sonuçlarını yazdırır; etiket yoksa None."""
+    from changewatch.validate import load_points, read_labels, water_census
+
+    lab = read_labels(resolve_path(settings, settings["paths"]["water_validation_labels"]))
+    if not any(r.get("gercek_degisim") for r in lab):
+        return None
+    pts = load_points(resolve_path(settings, settings["paths"]["water_validation_points"]))
+    rep = water_census(pts, lab)
+    pct = lambda a, b: "-" if not b else f"%{100 * a / b:.0f}"  # noqa: E731
+    print("\n## Su doğrulama seti (tüm su poligonları; sayım, alan kestirimine katılmaz)\n")
+    print("| tahmin türü | poligon | alan (ha) | etiketli | doğru | referans 'değişim yok' | emin değilim | kesinlik |")
+    print("|---|---|---|---|---|---|---|---|")
+    for t, c in list(rep["turler"].items()) + [("toplam", rep["toplam"])]:
+        print(f"| {t} | {c.get('poligon', 0)} | {c.get('alan_ha', 0):.2f} | {c.get('etiketli', 0)} | "
+              f"{c.get('dogru', 0)} | {c.get('degisim_yok', 0)} | {c.get('emin_degilim', 0)} | "
+              f"{pct(c.get('dogru', 0), c.get('etiketli', 0))} |")
+    return rep
+
+
+def _error_panel(settings: dict[str, Any], cache_root: Path, season: str, items: list[dict],
+                 suffix: str = "") -> Path:
+    """Ayrışan noktaların zaman serisi çiplerini (artık tahminli) tek PNG panelde toplar."""
+    import numpy as np
+
+    from changewatch import cache
+    from changewatch.quicklook import save_error_panel_png
+
+    years = parse_years(None, settings)
+    comps: dict[tuple[str, int], Any] = {}
+    rows = []
+    for r in items:
+        seq = []
+        for y in years:
+            if (r["aoi"], y) not in comps:
+                comps[(r["aoi"], y)] = cache.read_dataset(cache.composite_dir(cache_root, r["aoi"], season)
+                                                          / f"{y}.tif")
+            seq.append((y, comps[(r["aoi"], y)]))
+        g = seq[0][1]
+        col = int(np.argmin(np.abs(g["x"].values - r["x"])))
+        row = int(np.argmin(np.abs(g["y"].values - r["y"])))
+        rows.append({**r, "seq": seq, "row": row, "col": col})
+    p = resolve_path(settings, settings["paths"]["error_panel"])
+    return save_error_panel_png(rows, p.with_name(p.stem + suffix + p.suffix), settings)
 
 
 def cmd_experiments(args: argparse.Namespace) -> int:
     """E1–E5: --build varyantları üretip nokta tahminlerini yazar; etiket varsa test noktalarında değerlendirir."""
     from changewatch.evaluate import load_features
-    from changewatch.experiments import (EXPERIMENTS, NOT_BUILT_BY_DEFAULT, read_predictions, status,
+    import json
+
+    from changewatch.experiments import (BASE, EXPERIMENTS, NOT_BUILT_BY_DEFAULT, read_predictions, status,
                                          unique_variants, write_predictions)
+    from changewatch.quicklook import save_experiment_chart_png
     from changewatch.validate import (filled_labels, load_points, lookup_predictions, metrics, read_labels,
                                       reference_class)
 
@@ -1171,21 +1289,43 @@ def cmd_experiments(args: argparse.Namespace) -> int:
     rows_l = {r["nokta_id"]: r for r in labels}
     test_ids = [i for i, p in pts.items() if p["rol"] == "test" and i in rows_l and p["aoi"] in aois]
     pct = lambda x: "-" if x is None else f"%{100 * x:.0f}"  # noqa: E731
-    print(f"\n## Test noktalarında sonuçlar (n = {len(test_ids)})\n")
-    print("| deney | varyant | genel doğruluk | yanlış alarm | yapılaşma F1 | yıl tam isabet |")
-    print("|---|---|---|---|---|---|")
+    print(f"\n## Test noktalarında sonuçlar (n = {len(test_ids)}; 'emin değilim' hariç)\n")
+    print("Nokta bazlı (alan ağırlıksız): tabakalar temel haritadan (kırılma) çekildi; diğer varyantlar için "
+          "Olofsson ağırlıkları geçerli değil.\n")
+    print("| deney | varyant | genel doğruluk | yanlış alarm oranı | değişim kesinlik / duyarlılık | "
+          "yapılaşma kesinlik / duyarlılık | yapılaşma F1 | yıl tam / ±1 |")
+    print("|---|---|---|---|---|---|---|---|")
+    results = []
     for code, (desc, variants) in EXPERIMENTS.items():
         for v in variants:
             pr = preds.get((code, v.name))
             if not pr:
-                print(f"| {code} | {v.name} | tahmin yok (`changewatch experiments --build`) | | | |")
+                print(f"| {code} | {v.name} | tahmin yok (`changewatch experiments --build`) | | | | | |")
                 continue
             recs = [{"ref": reference_class(rows_l[i]), "pred": pr[i][0], "pred_year": pr[i][1],
                      "ref_year": rows_l[i].get("gercek_yil") or None} for i in test_ids if i in pr]
             m = metrics(recs)
-            f1 = m["sinif_metrikleri"].get("yapilasma_olasi", {}).get("f1")
-            print(f"| {code} | {v.name} | {pct(m['genel_dogruluk'])} | {pct(m['yanlis_alarm_orani'])} | "
-                  f"{pct(f1)} | {pct(m['yil']['tam_isabet'])} |")
+            b = m["ikili"]
+            bm = m["sinif_metrikleri"].get("yapilasma_olasi", {})
+            results.append({"deney": code, "varyant": v.name, "temel": v.method_dir == BASE.method_dir
+                            and v.season == BASE.season, "n": m["n"], "genel_dogruluk": m["genel_dogruluk"],
+                            "yanlis_alarm_orani": m["yanlis_alarm_orani"], "degisim_kesinlik": b["kesinlik"],
+                            "degisim_duyarlilik": b["duyarlilik"], "yapilasma_kesinlik": bm.get("kullanici_dogrulugu"),
+                            "yapilasma_duyarlilik": bm.get("uretici_dogrulugu"), "yapilasma_f1": bm.get("f1"),
+                            "yil_tam": m["yil"]["tam_isabet"], "yil_pm1": m["yil"]["pm1_isabet"],
+                            "yil_n": m["yil"]["degisim_yakalanan_n"], "tahmin_degisim_n": b["karisiklik"][0][0]
+                            + b["karisiklik"][1][0]})
+            r = results[-1]
+            print(f"| {code} | {v.name}{' (temel)' if r['temel'] else ''} | {pct(r['genel_dogruluk'])} | "
+                  f"{pct(r['yanlis_alarm_orani'])} | {pct(r['degisim_kesinlik'])} / {pct(r['degisim_duyarlilik'])} | "
+                  f"{pct(r['yapilasma_kesinlik'])} / {pct(r['yapilasma_duyarlilik'])} | {pct(r['yapilasma_f1'])} | "
+                  f"{pct(r['yil_tam'])} / {pct(r['yil_pm1'])} |")
+    if results:
+        out = resolve_path(settings, "validation") / "experiments_test.json"
+        out.write_text(json.dumps({"n": len(test_ids), "sonuclar": results}, ensure_ascii=False, indent=2,
+                                  default=float), encoding="utf-8")
+        fig = save_experiment_chart_png(results, resolve_path(settings, settings["paths"]["experiment_figure"]))
+        print(f"\nGrafik: {fig}\nJSON: {out}")
     return 0
 
 
@@ -1378,6 +1518,9 @@ def build_parser() -> argparse.ArgumentParser:
     va.add_argument("--map", choices=["stored", "current"], default="stored",
                     help="stored: örnekleme anındaki tahmin; current: güncel changes.geojson'dan okunur")
     va.add_argument("--season", help="--map current için pencere adı")
+    va.add_argument("--aoi", nargs="+", help="yalnızca bu AOI(ler) (varsayılan: hepsi; AOI'ler ayrı ve birlikte)")
+    va.add_argument("--no-cache", action="store_true",
+                    help="cache_dir'e dokunma (AOI bazlı Olofsson ve hata paneli atlanır)")
     va.set_defaults(func=cmd_validate)
 
     lp = sub.add_parser("label-prep", help="Kör etiketleme: zaman serisi çipleri ve su doğrulama seti")

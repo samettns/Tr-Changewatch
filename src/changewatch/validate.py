@@ -205,6 +205,7 @@ def metrics(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "siniflar": classes,
         "karisiklik": m.tolist(),
         "sinif_metrikleri": class_metrics(classes, m),
+        "ikili": binary_metrics(records),
         "yil": {
             "degisim_yakalanan_n": len(both),
             "tam_isabet": sum(int(r["ref_year"]) == int(r["pred_year"]) for r in both) / len(both) if both else None,
@@ -233,21 +234,25 @@ def olofsson(records: Sequence[dict[str, Any]], stratum_area_ha: dict[str, float
     p = {(s, j): W[s] * n_ij[(s, j)] / n_i[s] for s in strata for j in classes}
     pj = {j: sum(p[(s, j)] for s in strata) for j in classes}
 
+    no_var = sorted(s for s in strata if n_i[s] < 2)
+
     def var_term(s, j):
+        # n < 2 olan tabakanın varyansı tahmin edilemez: 0 alınır ve 'varyans_disi_tabakalar'da raporlanır
         q = n_ij[(s, j)] / n_i[s]
-        return q * (1 - q) / (n_i[s] - 1) if n_i[s] > 1 else None
+        return q * (1 - q) / (n_i[s] - 1) if n_i[s] > 1 else 0.0
 
     oa = sum(p[(c, c)] for c in strata if c in classes)
     v_oa = [W[s] ** 2 * var_term(s, s) for s in strata]
     out: dict[str, Any] = {
         "toplam_alan_ha": round(A, 1),
         "genel_dogruluk": oa,
-        "genel_dogruluk_ga": None if None in v_oa else z * float(np.sqrt(sum(v_oa))),
+        "genel_dogruluk_ga": z * float(np.sqrt(sum(v_oa))),
+        "varyans_disi_tabakalar": {s: n_i[s] for s in no_var},
         "siniflar": {},
     }
     for j in classes:
         ua = n_ij[(j, j)] / n_i[j] if j in strata else None
-        ua_ci = z * float(np.sqrt(var_term(j, j))) if j in strata and var_term(j, j) is not None else None
+        ua_ci = z * float(np.sqrt(var_term(j, j))) if j in strata and n_i[j] > 1 else None
         terms = [W[s] ** 2 * var_term(s, j) for s in strata]
         area_se = None if None in terms else float(np.sqrt(sum(terms)))
         pa = p[(j, j)] / pj[j] if j in strata and pj[j] > 0 else None
@@ -268,6 +273,115 @@ def olofsson(records: Sequence[dict[str, Any]], stratum_area_ha: dict[str, float
     return out
 
 
+def binary_metrics(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """Değişim / değişim yok (2 × 2): tahminde degisim_yok dışındaki her tür 'değişim' sayılır.
+
+    karisiklik: [[ref değişim → tahmin değişim, → yok], [ref yok → değişim, → yok]].
+    """
+    tp = sum(r["ref"] != NO_CHANGE and r["pred"] != NO_CHANGE for r in records)
+    fn = sum(r["ref"] != NO_CHANGE and r["pred"] == NO_CHANGE for r in records)
+    fp = sum(r["ref"] == NO_CHANGE and r["pred"] != NO_CHANGE for r in records)
+    tn = sum(r["ref"] == NO_CHANGE and r["pred"] == NO_CHANGE for r in records)
+    prec = tp / (tp + fp) if tp + fp else None
+    rec = tp / (tp + fn) if tp + fn else None
+    f1 = 2 * prec * rec / (prec + rec) if prec and rec else (0.0 if prec is not None and rec is not None else None)
+    n = tp + fn + fp + tn
+    return {"karisiklik": [[tp, fn], [fp, tn]], "kesinlik": prec, "duyarlilik": rec, "f1": f1,
+            "dogruluk": (tp + tn) / n if n else None, "n": n}
+
+
+def water_census(points: Sequence[dict[str, Any]], labels: Sequence[dict[str, str]]) -> dict[str, Any]:
+    """Su doğrulama seti (sayım): her tahmin türü için etiketli/doğru/yanlış alarm sayısı.
+
+    Doğru = referans sınıf tahmin türüyle aynı. 'emin_degilim' ayrı sayılır. Alan ağırlıklı kestirime katılmaz.
+    """
+    lab = {r["nokta_id"]: r for r in labels}
+    by: dict[str, Counter] = defaultdict(Counter)
+    rows = []
+    for p in points:
+        r = lab.get(p["nokta_id"])
+        t = by[p["tahmin_tur"]]
+        t["poligon"] += 1
+        t["alan_ha"] += float(p.get("alan_ha") or 0)
+        if not r or not r.get("gercek_degisim"):
+            t["etiketsiz"] += 1
+            continue
+        if r["gercek_degisim"].lower() == UNSURE:
+            t["emin_degilim"] += 1
+            continue
+        ref = reference_class(r)
+        t["etiketli"] += 1
+        t["dogru"] += ref == p["tahmin_tur"]
+        t["degisim_yok"] += ref == NO_CHANGE
+        rows.append({"nokta_id": p["nokta_id"], "tahmin": p["tahmin_tur"], "ref": ref,
+                     "tahmin_yil": p.get("tahmin_yil"), "katman": p.get("katman")})
+    tot = Counter()
+    for c in by.values():
+        tot.update(c)
+    return {"turler": {k: dict(v) for k, v in sorted(by.items())}, "toplam": dict(tot), "noktalar": rows}
+
+
+def error_kind(ref: str, pred: str) -> str:
+    """Ayrışma türü: 'yanlis_alarm' (ref yok, tahmin değişim), 'kacirma' (ref değişim, tahmin yok), 'tur_hatasi'."""
+    if ref == NO_CHANGE and pred != NO_CHANGE:
+        return "yanlis_alarm"
+    if ref != NO_CHANGE and pred == NO_CHANGE:
+        return "kacirma"
+    return "tur_hatasi"
+
+
+def rank_disagreements(records: Sequence[dict[str, Any]], n: int) -> list[dict[str, Any]]:
+    """Etiketle tahminin ayrıştığı noktalardan en önemli n tanesi.
+
+    Nokta ağırlığı = temsil ettiği alan (tabaka alanı / tabakadaki etiketli nokta; Olofsson ağırlığı).
+    Ayrışmalar (ref, tahmin) gruplarına ayrılır; grup önemi = ağırlıklar toplamı (haritanın o hata yüzünden
+    yanlış gösterdiği kestirilen alan). Önce her değişim/değişim yok grubu (yanlış alarm, kaçırma) birer nokta
+    alır; kalan yerler D'Hondt ile grup önemine orantılı dağıtılır. Tür hataları (ikisi de değişim diyor) ancak
+    bu gruplar tükenince gelir. Grup içinde ağırlık büyükten küçüğe, eşitlikte AOI'ler sırayla.
+    """
+    n_s = Counter(r["stratum"] for r in records)
+    bad = [{**r, "agirlik_ha": float(r["stratum_area_ha"]) / n_s[r["stratum"]],
+            "hata": error_kind(r["ref"], r["pred"])} for r in records if r["ref"] != r["pred"]]
+    groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for r in bad:
+        groups[(r["ref"], r["pred"])].append(r)
+    for k, g in groups.items():
+        rank: Counter = Counter()
+        g.sort(key=lambda r: (-r["agirlik_ha"], r["aoi"], r["nokta_id"]))
+        for r in g:                                  # aynı ağırlıkta AOI'ler sırayla gelsin
+            r["_sira"] = rank[(r["agirlik_ha"], r["aoi"])]
+            rank[(r["agirlik_ha"], r["aoi"])] += 1
+        g.sort(key=lambda r: (-r["agirlik_ha"], r["_sira"], r["aoi"], r["nokta_id"]))
+    imp = {k: sum(r["agirlik_ha"] for r in g) for k, g in groups.items()}
+    taken: Counter = Counter()
+    out: list[dict] = []
+    for tier in (False, True):                       # önce ikili hatalar, sonra tür hataları
+        keys = sorted((k for k in groups if (groups[k][0]["hata"] == "tur_hatasi") == tier),
+                      key=lambda k: (-imp[k], k))
+        for k in keys:                               # her gruptan bir nokta
+            if len(out) < n:
+                out.append(groups[k][0])
+                taken[k] = 1
+        while len(out) < n:
+            avail = [k for k in keys if taken[k] < len(groups[k])]
+            if not avail:
+                break
+            k = max(avail, key=lambda k: (imp[k] / (taken[k] + 1), k))
+            out.append(groups[k][taken[k]])
+            taken[k] += 1
+    for r in out:
+        r.pop("_sira", None)
+    pos = {k: i for i, k in enumerate(sorted(groups, key=lambda k: (groups[k][0]["hata"] == "tur_hatasi",
+                                                                    -imp[k], k)))}
+    return sorted(out, key=lambda r: (pos[(r["ref"], r["pred"])], -r["agirlik_ha"]))
+
+
+def error_summary(records: Sequence[dict[str, Any]]) -> list[tuple[str, str, str, int]]:
+    """Tüm ayrışmaların (hata türü, ref, tahmin, sayı) listesi, çoktan aza."""
+    c = Counter((error_kind(r["ref"], r["pred"]), r["ref"], r["pred"]) for r in records if r["ref"] != r["pred"])
+    return [(h, a, b, k) for (h, a, b), k in sorted(c.items(), key=lambda kv: (-kv[1], kv[0]))]
+
+
 def format_olofsson(rep: dict[str, Any]) -> str:
     """Olofsson sonuçlarını markdown olarak biçimlendirir."""
     if not rep:
@@ -282,6 +396,9 @@ def format_olofsson(rep: dict[str, Any]) -> str:
         lines.append(f"| {c} | {v['harita_alani_ha']:.0f} | {v['kestirilen_alan_ha']:.0f}{ci} | "
                      f"{pct(v['kullanici_dogrulugu'], v['kullanici_ga'])} | "
                      f"{pct(v['uretici_dogrulugu'], v['uretici_ga'])} |")
+    if rep.get("varyans_disi_tabakalar"):
+        lines += ["", "Not: n < 2 olan tabakaların varyans terimi 0 alındı (GA'lar bu tabakalar için eksik): "
+                  + ", ".join(f"{s} (n = {k})" for s, k in rep["varyans_disi_tabakalar"].items())]
     return "\n".join(lines)
 
 
@@ -331,6 +448,19 @@ def format_report(rep: dict[str, Any]) -> str:
     for c, v in rep["sinif_metrikleri"].items():
         lines.append(f"| {c} | {pct(v['kullanici_dogrulugu'])} | {pct(v['uretici_dogrulugu'])} | {pct(v['f1'])} | "
                      f"{v['referans_n']} | {v['tahmin_n']} |")
+    b = rep.get("ikili")
+    if b:
+        (tp, fn), (fp, tn) = b["karisiklik"]
+        lines += ["", "Değişim / değişim yok (satır = referans, sütun = tahmin)", "",
+                  "| ref \\ tahmin | değişim | değişim yok |", "|---|---|---|",
+                  f"| değişim | {tp} | {fn} |", f"| değişim yok | {fp} | {tn} |", "",
+                  f"Değişim kesinliği {pct(b['kesinlik'])}, duyarlılığı {pct(b['duyarlilik'])}, F1 {pct(b['f1'])}, "
+                  f"ikili doğruluk {pct(b['dogruluk'])}"]
+    bm = rep["sinif_metrikleri"].get("yapilasma_olasi")
+    if bm:
+        lines += ["", f"**Yapılaşma:** kesinlik (kullanıcı d.) {pct(bm['kullanici_dogrulugu'])} "
+                      f"({bm['tahmin_n']} tahmin), duyarlılık (üretici d.) {pct(bm['uretici_dogrulugu'])} "
+                      f"({bm['referans_n']} referans), F1 {pct(bm['f1'])}"]
     y = rep["yil"]
     lines += ["", f"Kırılma yılı isabeti (doğru yakalanan {y['degisim_yakalanan_n']} değişim): tam {pct(y['tam_isabet'])}, "
                   f"±1 yıl {pct(y['pm1_isabet'])}", "", "| tahmin yılı | n | doğruluk | yanlış alarm |",

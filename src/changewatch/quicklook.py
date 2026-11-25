@@ -369,3 +369,130 @@ def save_label_chip_png(composites: list[tuple[int, xr.Dataset]], row: int, col:
     fig.savefig(path, dpi=100)
     plt.close(fig)
     return path
+
+
+ERR_PRED_COLOR = "#f47230"   # tahmin edilen kırılma yılı çerçevesi
+ERR_REF_COLOR = "#257de0"    # etiketteki değişim yılı çerçevesi
+
+
+def save_error_panel_png(items: list[dict[str, Any]], path: Path, settings: dict[str, Any],
+                         half: int = 12, k: int = 3) -> Path:
+    """Etiketle tahminin ayrıştığı noktalar: her satırda kimlik/etiket/tahmin ve tüm yılların kesiti.
+
+    items: {nokta_id, aoi, ref, pred, ref_year, pred_year, hata, agirlik_ha, not, seq=[(yıl, ds)], row, col}.
+    Tahmin yılı turuncu, etiket yılı mavi çerçeve; ikisi de altına yazılır (renk tek başına taşımaz).
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    side = (2 * half + 1) * k
+    n_y = max(len(it["seq"]) for it in items)
+    m, txt, gap, lab, foot, rgap = 10, 300, 4, 18, 16, 10
+    W = m + txt + n_y * side + (n_y - 1) * gap + m
+    rh = lab + side + foot
+    head = 26
+    H = m + head + len(items) * (rh + rgap) + m
+    fig = plt.figure(figsize=(W / 100, H / 100), dpi=100)
+    fig.patch.set_facecolor("white")
+    fig.text(m / W, 1 - (m + 4) / H,
+             f"Etiket ↔ tahmin ayrışmaları (test noktaları). Kesit {(2 * half + 1) * float(settings['grid']['resolution_m']):.0f} m; "
+             "çerçeve: turuncu = tahmin edilen kırılma yılı, mavi = etiketteki yıl.",
+             ha="left", va="top", fontsize=10, color="#191919")
+    up = lambda a: np.clip(np.repeat(np.repeat(a, k, axis=0), k, axis=1), 0, 1)  # noqa: E731
+    for i, it in enumerate(items):
+        y0 = m + head + i * (rh + rgap)
+        ry, py = it.get("ref_year"), it.get("pred_year")
+        lines = [f"{i + 1}. {it['nokta_id']} · {it['aoi']} · {it['hata'].replace('_', ' ')}",
+                 f"etiket: {it['ref']} ({ry or 'yıl yok'})",
+                 f"tahmin: {it['pred']} ({py or '-'})",
+                 f"temsil ettiği alan ≈ {it['agirlik_ha']:.0f} ha"]
+        if it.get("not"):
+            lines.append(f"not: {str(it['not'])[:40]}")
+        fig.text(m / W, 1 - (y0 + lab) / H, "\n".join(lines), ha="left", va="top", fontsize=9, color="#191919",
+                 linespacing=1.4)
+        for j, (yy, ds) in enumerate(it["seq"]):
+            x = m + txt + j * (side + gap)
+            fig.text((x + side / 2) / W, 1 - (y0 + lab - 3) / H, str(yy), ha="center", va="bottom", fontsize=9,
+                     color="#666666")
+            ax = fig.add_axes([x / W, 1 - (y0 + lab + side) / H, side / W, side / H])
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.imshow(up(_chip_crop(ds, it["row"], it["col"], half, settings)), interpolation="nearest")
+            _draw_cross(ax, half * k + k / 2 - 0.5, k, 1.4)
+            tags = []
+            col = None
+            if py is not None and int(py) == yy:
+                tags.append("tahmin")
+                col = ERR_PRED_COLOR
+            if ry is not None and str(ry).isdigit() and int(ry) == yy:
+                tags.append("etiket")
+                col = ERR_REF_COLOR if col is None else "#6a4ce2"
+            for sp in ax.spines.values():
+                sp.set_visible(col is not None)
+                if col:
+                    sp.set_edgecolor(col)
+                    sp.set_linewidth(3)
+            if tags:
+                fig.text((x + side / 2) / W, 1 - (y0 + lab + side + 2) / H, " + ".join(tags), ha="center",
+                         va="top", fontsize=8, color="#191919")
+            ax.set_xlim(-0.5, side - 0.5)
+            ax.set_ylim(side - 0.5, -0.5)
+    fig.savefig(path, dpi=100)
+    plt.close(fig)
+    return path
+
+
+EXP_BASE_COLOR = "#257de0"   # temel (dondurulmuş) yöntem
+EXP_ALT_COLOR = "#f47230"    # alternatif varyant
+
+
+def save_experiment_chart_png(results: list[dict[str, Any]], path: Path,
+                              metrics: tuple[tuple[str, str], ...] = (
+                                  ("yanlis_alarm_orani", "Yanlış alarm oranı (düşük iyi)"),
+                                  ("degisim_duyarlilik", "Değişim duyarlılığı (yüksek iyi)"),
+                                  ("yapilasma_f1", "Yapılaşma F1 (yüksek iyi)"))) -> Path:
+    """Deney varyantlarının test noktası metrikleri: metrik başına bir panel (küçük çoklu), yatay çubuk.
+
+    Temel yöntem mavi, alternatif turuncu (lejant + satır etiketinde '(temel)'). E2 (v2) gösterilmez.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows = [r for r in results if r["deney"] != "E2"]
+    labels = [f"{r['deney']} · {r['varyant']}" + (" (temel)" if r["temel"] else "") for r in rows]
+    ypos, y, prev = [], 0.0, None
+    for r in rows:                                   # deneyler arasında boşluk
+        if prev is not None and r["deney"] != prev:
+            y += 0.6
+        ypos.append(y)
+        y += 1
+        prev = r["deney"]
+    fig, axes = plt.subplots(1, len(metrics), figsize=(4.0 * len(metrics) + 2.2, 0.36 * y + 1.4), sharey=True,
+                             dpi=100)
+    for ax, (key, title) in zip(np.atleast_1d(axes), metrics):
+        vals = [r.get(key) for r in rows]
+        cols = [EXP_BASE_COLOR if r["temel"] else EXP_ALT_COLOR for r in rows]
+        ax.barh(ypos, [0 if v is None else v for v in vals], height=0.72, color=cols, edgecolor="white", lw=2)
+        for yy, v in zip(ypos, vals):
+            ax.text((v or 0) + 0.015, yy, "-" if v is None else f"%{100 * v:.0f}", va="center", fontsize=8,
+                    color="#191919")
+        ax.set_xlim(0, 1.12)
+        ax.set_title(title, fontsize=10, loc="left", color="#191919")
+        ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+        ax.set_xticklabels(["0", "25", "50", "75", "100"], fontsize=8, color="#666666")
+        ax.grid(axis="x", color="#e5e5e5", lw=0.8)
+        ax.set_axisbelow(True)
+        for sp in ("top", "right", "left"):
+            ax.spines[sp].set_visible(False)
+        ax.spines["bottom"].set_color("#bbbbbb")
+        ax.tick_params(axis="y", length=0)
+    ax0 = np.atleast_1d(axes)[0]
+    ax0.set_yticks(ypos)
+    ax0.set_yticklabels(labels, fontsize=9, color="#191919")
+    ax0.invert_yaxis()
+    handles = [matplotlib.patches.Patch(color=EXP_BASE_COLOR, label="temel yöntem (kırılma, doku, harmonize)"),
+               matplotlib.patches.Patch(color=EXP_ALT_COLOR, label="alternatif varyant")]
+    n = rows[0]["n"] if rows else 0
+    fig.legend(handles=handles, loc="upper left", ncol=2, frameon=False, fontsize=9, bbox_to_anchor=(0.01, 1.0))
+    fig.text(0.99, 0.995, f"test noktaları, n = {n}, nokta bazlı (%)", ha="right", va="top", fontsize=8,
+             color="#666666")
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.savefig(path, dpi=100, facecolor="white")
+    plt.close(fig)
+    return path
