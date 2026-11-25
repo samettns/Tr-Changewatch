@@ -197,6 +197,7 @@ Ardışık çift yönteminde iki yapısal sorun görüldü (İncek, 2017–2026)
 - `tests.yml`: her push'ta `pytest`. Testler ağa çıkmaz; küçük sentetik diziler ve `tests/fixtures/` kullanılır.
 - `monthly.yml`: ayda bir (cron) + elle tetikleme (`workflow_dispatch`).
   - **Aylık izleme tanımı:** Son 3 ay ile önceki yılın aynı 3 ayı karşılaştırılır (mevsimsel hizalı). Sonuçlar `durum: "on_uyari"` olarak işaretlenir ve doğrulanmış yıllık analizden ayrı katmanda gösterilir.
+  - **Ön uyarı kuralı (v1):** iki dönemin medyan kompozitinde CVA büyüklüğünün AOI içi sağlam z-skoru > `monitor.z_k` **ve** 10 m doku artışının sağlam z-skoru > `monitor.texture_z_k` **ve** ΔNDVI ≤ `monitor.max_ndvi_gain`; morfoloji + MMU ana katmanla aynı. Doku koşulu olmadan tarla sürümü/hasat farkları ön uyarıların neredeyse tamamını oluşturuyordu (Pursaklar Ağu–Eki 2026: 135 → 7 poligon). Kalibre edilmedi, doğrulanmadı. Planetary Computer 429/5xx hataları üstel beklemeyle yeniden denenir.
   - Kış aylarında bulut ve kar nedeniyle veri kapsaması düşük olabilir. Kapsama yüzdesi `stats.json` içine yazılır ve eşik altındaysa analiz atlanır.
   - Yalnızca GeoJSON, JSON ve küçük PNG commit'lenir. **GeoTIFF asla commit'lenmez.**
   - Public repoda standart runner (4 CPU, 16 GB RAM, GPU yok). Pencereli okuma ile küçük AOI'ler rahatça sığar.
@@ -276,4 +277,6 @@ Varsayım: günde 3–4 saat. MVP için 3–4 hafta.
 - Ankara dışındaki şehirler.
 - Hazır arazi örtüsü ürünleriyle (ESA WorldCover vb.) çapraz kontrol.
 - **04.00 öncesi parlak yüzey maskesi (P073 tipi hata):** 02.12/03.00 baseline'larında parlak yüzeyler (şantiye, beton, parlak çatı) SCL 8/9 (bulut) sayılıp 2017–2021'de maskeleniyor; 2022'de (04.00) ilk kez gözlenince sahte 2022 kırılması çıkıyor. Olası çözümler: s2cloudless/Cloud Score+ ile alternatif bulut maskesi, `dusuk_gozlem` yüksek parçalarda kırılma yılını 2022'ye sabitlememe. Yalnızca geliştirme AOI'lerinin kalibrasyon noktalarıyla tasarlanır.
+- **Alan kayması (Faz 3 görülmemiş bölge testi):** yapılaşma F1 %72 → %50; sık yerleşim içindeki küçük ekler 20 m'de görünmüyor. Çözüm yönleri: daha yüksek çözünürlüklü veri, yukarıdaki derin öğrenme hattı.
+- **Aylık ön uyarıların doğrulanması** ve kuralın kalibrasyon noktalarıyla ayarlanması.
 - **Su değişim katmanının yeniden tasarımı:** göl içi alg/renk değişimi ve kıyı sazlığının dönüşümlü görünümü su kazanımı/kaybı üretiyor (Gölbaşı su seti 16/16 yanlış alarm). Yeni kural, yeni ve ayrı bir su doğrulama setiyle ölçülür.

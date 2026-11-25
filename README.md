@@ -1,10 +1,57 @@
 # TR-ChangeWatch
 
-Ankara'daki seçili bölgelerde Sentinel-2 L2A ile yapılaşma ve arazi örtüsü değişimini kanıtıyla ve güven düzeyiyle haritalayan değişim izleme sistemi. Kapsam ve mimari: [PROJECT_SPEC.md](PROJECT_SPEC.md).
+**Ankara'da 2017–2026 yapılaşma ve arazi örtüsü değişimi — Sentinel-2 ile, kanıtıyla, güven düzeyiyle ve ölçülmüş doğrulukla.**
 
-> Geliştirme sürüyor (Faz 3 hazırlığı). Kırılma yöntemi ve yapılaşma/bitki kaybı kuralları v1 için donduruldu; su kuralı Gölbaşı'nda tasarlandı; doğrulama noktaları etiketlenmeyi bekliyor.
+**Canlı harita:** _(GitHub Pages bağlantısı buraya: `https://<kullanıcı>.github.io/<repo>/`)_
 
-## Kurulum
+[![Web haritası: Pursaklar, 2017 ↔ 2025 önce/sonra kaydırıcı ve yapılaşma poligonları](docs/img/harita.png)](docs/img/harita.png)
+
+TR-ChangeWatch, Ankara'daki dört küçük bölgede (İncek–Kızılcaşar, Gölbaşı, Bağlıca–Etimesgut, Pursaklar) Sentinel-2 L2A görüntülerini Planetary Computer'dan yalnızca bölge penceresiyle okur, her yıl için aynı yaz penceresinden bulut maskeli medyan kompozit üretir, her pikselin 2017–2026 serisinde tek bir kalıcı kırılma arar ve kırılmaları doku, NDVI ve diğer spektral kanıtlarla yapılaşma / bitki kaybı / belirsiz olarak sınıflandırır. Sonuçlar kendi kör etiketlediğimiz tabakalı rastgele noktalarla, alan ağırlıklı (Olofsson) yöntemle ölçüldü; yöntem iki geliştirme bölgesinde tasarlanıp donduruldu ve **hiç görmediği iki bölgede ayar değiştirilmeden test edildi**. Değişimin kendisi yeni bölgelere genelleşiyor (kesinlik %61, duyarlılık %81); yapılaşma türü ise zayıflıyor (F1 %72 → %50) ve 20 m çözünürlük gereği küçük yapılar kaçırılıyor. Harita bir tahmindir; her poligon kanıt alanlarıyla birlikte yayınlanır, son 3 ayın ön uyarıları her ay otomatik güncellenir.
+
+## Ana sonuçlar
+
+Kör etiketlenmiş test noktalarında, nokta bazlı. Geliştirme satırları İncek + Gölbaşı'nın 194 test noktası (kalibrasyon noktaları ayrı tutuldu); son satır yöntemin hiç çalıştırılmadığı Bağlıca + Pursaklar'ın 110 noktası. Ayrıntılar: [deneyler](#deneyler-e1-e3e5), [görülmemiş bölgelerde test](#görülmemiş-bölgelerde-test).
+
+| varyant | yanlış alarm oranı | değişim kesinliği / duyarlılığı | yapılaşma kesinliği / duyarlılığı | yapılaşma F1 | kırılma yılı tam / ±1 |
+|---|---|---|---|---|---|
+| E1 · tek sahne (ardışık yıl çifti) | %53 | %47 / %84 | %73 / %32 | %44 | %25 / %61 |
+| E1 · medyan kompozit + kalıcılık (ardışık yıl çifti) | %49 | %51 / %81 | %76 / %41 | %53 | %40 / %75 |
+| **E1 · kırılma noktası (v1 yöntemi)** | **%43** | **%57 / %85** | **%71 / %72** | **%72** | **%66 / %84** |
+| E3 · harmonizasyon kapalı | %59 | %41 / %87 | %75 / %12 | %21 | %21 / %51 |
+| E4 · eski NDBI/BSI yapılaşma kuralı | %43 | %57 / %85 | %34 / %13 | %19 | %66 / %84 |
+| E5 · yıllık normalize doku | %42 | %58 / %78 | %73 / %63 | %68 | %67 / %86 |
+| **Görülmemiş bölgeler (v1 yöntemi, ayar değişmeden)** | **%39** | **%61 / %81** | **%51 / %49** | **%50** | **%53 / %81** |
+
+Alan ağırlıklı (Olofsson) genel doğruluk geliştirme bölgelerinde %79 ± 9, görülmemiş bölgelerde %74 ± 12. Haritadaki yapılaşma gerçek yapılaşmanın yalnızca bir kısmı: kestirilen yapılaşma alanı geliştirme bölgelerinde 2 239 ± 982 ha (haritada 564 ha), görülmemiş bölgelerde 2 960 ± 1 447 ha (haritada 414 ha).
+
+## Yöntem
+
+```mermaid
+flowchart LR
+  A["AOI + settings.yaml"] --> B["STAC arama<br/>Planetary Computer"]
+  B --> C["Pencereli okuma<br/>yalnızca AOI kutusu"]
+  C --> D["Harmonizasyon<br/>baseline ≥ 04.00 → −1000 DN"]
+  D --> E["SCL maskesi<br/>bulut, gölge, kar"]
+  E --> F["Yaz medyan kompoziti<br/>20 m + 10 m doku"]
+  F --> G["Kırılma noktası<br/>2017–2026 serisinde tek basamak"]
+  G --> H["Morfoloji + MMU 0,5 ha"]
+  H --> I["Tür + güven<br/>doku, NDVI, kalıcılık"]
+  I --> J["GeoJSON + kanıt alanları"]
+  J --> K["Doğrulama<br/>kör etiket, Olofsson"]
+  J --> L["docs/data → Leaflet haritası"]
+  M["Aylık izleme<br/>son 3 ay ↔ geçen yıl"] --> L
+```
+
+- **Kompozit:** her yıl 1 Temmuz–15 Eylül; SCL ile maskelenmiş sahnelerin piksel bazlı medyanı; AOI'de geçerli pikseli %20'nin altındaki sahneler atılır.
+- **Kırılma:** her piksel için bantlar ve doku kendi gürültülerine bölünür (z-ölçek); 2017–2026 serisinde parça içi sapmayı en aza indiren tek kırılma yılı seçilir; basamak gürültünün 3 katını aşmalı. Kırılmadan sonra en az 2 yıl → kalıcı katman; yalnızca son yılda (2026) → izleme katmanı.
+- **Tür:** anlamlı doku artışı → `yapilasma_olasi`; anlamlı NDVI düşüşü (doku artışı yok) → `bitki_kaybi`; ikisi de değil → `belirsiz`. Her poligonda `dNDVI`, `dNDBI`, `dBSI`, `dMNDWI`, `doku_artisi`, sinyal türü, skor, gözlem sayısı ve `dusuk_gozlem` kanıtları tutulur.
+- **Doğrulama:** tabakalı rastgele örnekleme (tabaka = harita sınıfı), kör etiketleme arayüzü (çiplerde tahmin/tabaka gizli), %30 kalibrasyon / %70 test; alan ağırlıklı doğruluk ve alan kestirimi (Olofsson vd. 2014).
+
+Tüm eşikler `config/settings.yaml` içinde; kapsam ve teknik kararlar [PROJECT_SPEC.md](PROJECT_SPEC.md)'de.
+
+## Kurulum ve kullanım
+
+Python ≥ 3.11 (3.12 ile geliştirildi). Windows örneği; Linux/macOS'ta `.venv/bin/python`.
 
 ```bash
 py -3.12 -m venv .venv
@@ -14,7 +61,7 @@ changewatch --help
 
 Ham veri önbelleği ve ara çıktılar `config/settings.yaml` içindeki `paths.cache_dir` klasörüne yazılır (harici disk). Repoya yalnızca kod, GeoJSON, JSON, CSV ve küçük PNG girer.
 
-## Komutlar
+### Komutlar
 
 ```bash
 changewatch check-aois                                  # AOI alan/sınır kontrolü
@@ -36,7 +83,7 @@ changewatch validate --set test_aoi [--aoi baglica]     # görülmemiş bölge t
 changewatch publish                                     # web haritası verisi: docs/data (< 50 MB, PNG ≤ 500 KB)
 ```
 
-## Web haritası
+### Web haritası
 
 Statik Leaflet sayfası `docs/` altında (GitHub Pages). Yerelde denemek için (sayfa `fetch` kullandığı için dosyayı doğrudan açmak yerine yerel sunucu gerekir):
 
@@ -45,9 +92,9 @@ changewatch publish                          # docs/data'yı önbellekten yenide
 python -m http.server 8000 --directory docs  # sonra tarayıcıda: http://localhost:8000/#incek
 ```
 
-![Web haritası: Pursaklar, 2017 ↔ 2025 önce/sonra kaydırıcı ve yapılaşma poligonları](docs/img/harita.png)
+Sayfada: bölge ve değişim yılı aralığı seçici; yapılaşma katmanı varsayılan açık, bitki kaybı ve belirsiz "deneysel" etiketiyle kapalı; 2026 değişimleri ayrı "izlemede" katmanı; seçilen yılların kompozitleriyle önce/sonra kaydırıcı; poligona tıklayınca tür, yıl, alan, güven ve kanıtlar; yıllara göre yapılaşma ve su alanı serisi grafikleri; "Yöntem ve doğruluk" paneli. Altlık: uydu (Esri World Imagery) veya OpenStreetMap. Su değişim poligonları yayınlanmaz (aşağıda "v1 yayın kararları").
 
-## Aylık izleme
+### Aylık izleme
 
 `changewatch monitor` (ve `.github/workflows/monthly.yml`, her ayın 5'inde + elle tetikleme) son 3 tam ayı önceki yılın aynı 3 ayıyla karşılaştırır (mevsimsel hizalı). İki dönemin medyan kompozitleri arasında **spektral değişim** (CVA büyüklüğü, AOI içi sağlam z > 3) **ve 10 m doku artışı** (sağlam z > 3) olan, yeşillenme olmayan ve 0,5 ha'dan büyük alanlar "ön uyarı" olarak `docs/data/<aoi>/monitor.geojson`'a yazılır; haritada yıllık katmandan ayrı, "doğrulanmadı" etiketiyle gösterilir. Doku koşulu olmadan tarla sürümü/hasat farkları ön uyarıların neredeyse tamamını oluşturuyordu (Pursaklar, Ağu–Eki 2026: 135 poligon / 568 ha → doku koşuluyla 7 poligon / 6,4 ha). Ön uyarı kuralı etiketli noktalarla kalibre edilmedi ve doğruluğu ölçülmedi.
 
@@ -75,7 +122,7 @@ Literatürde yapılaşma için sık kullanılan "NDBI artışı" İncek'te geçe
 | Doku düşükten yükseğe çıkan pikseller (AOI'nin %5,4'ü) | −0,071 | −0,040 (%64'ü düşüş) | −0,038 (%69'u düşüş) | +0,111 |
 | Dokusu iki yılda da düşük kalan pikseller | +0,013 | −0,005 | −0,002 | −0,005 |
 
-Bu ölçüm keşif amaçlıdır; doğrulama noktası kullanılmadı ve eşik ayarlanmadı. Sonuç olarak yapılaşma kuralının birincil kanıtı **doku artışı + kalıcılık** oldu; NDVI, NDBI ve BSI farkları işaretli değerleriyle kanıt alanı olarak tutuluyor. İki kuralın doğrulama noktalarındaki karşılaştırması deney **E4**'te yapılacak.
+Bu ölçüm keşif amaçlıdır; doğrulama noktası kullanılmadı ve eşik ayarlanmadı. Sonuç olarak yapılaşma kuralının birincil kanıtı **doku artışı + kalıcılık** oldu; NDVI, NDBI ve BSI farkları işaretli değerleriyle kanıt alanı olarak tutuluyor. İki kuralın doğrulama noktalarındaki karşılaştırması deney **E4**'te (NDBI/BSI kuralı yapılaşmanın %13'ünü, doku kuralı %72'sini yakaladı).
 
 ## Yöntem geçişi: ardışık yıl çiftlerinden kırılma noktasına
 
@@ -92,7 +139,7 @@ Bu yüzden LandTrendr/BFAST'ın basitleştirilmiş bir hâline geçildi: her pik
 | Tüm türler, ayak izi (ha) | 2 826 | 518 |
 | Doğrudan 2017→2024 doku artışlı adayla örtüşme (yöntemin içeride kalan payı) | %36 | %59 |
 
-Ardışık çift yöntemi silinmedi (`--method pairs`); doğrulama noktalarında E1'de karşılaştırılacak.
+Ardışık çift yöntemi silinmedi (`--method pairs`); doğrulama noktalarındaki karşılaştırması deney E1'de.
 
 ## Bulgu: Gölbaşı su alanındaki artışın çoğu çatı ve seralardan
 
@@ -215,12 +262,41 @@ Faz 3 doğrulamasından sonra alındı; yöntem ve eşikler değişmedi, yalnız
 
 ## Bilinen sınırlamalar
 
+- **Tek tek bina tespiti değil; küçük yapılar kaçırılır.** Çalışma ızgarası 20 m (piksel 400 m²), MMU 0,5 ha. Mevcut yerleşim içindeki tek bina, ek yapı ve dar yollar kırılma üretmiyor; alan ağırlıklı kestirime göre gerçek yapılaşmanın geliştirme bölgelerinde ~%18'i, görülmemiş bölgelerde ~%7'si haritada.
+- **Alan kayması: yapılaşma türü yeni bölgelerde zayıflıyor** (F1 %72 → %50). Yöntem açık araziye kurulan yeni sitelerin olduğu bölgelerde tasarlandı; sık yerleşim içindeki dolgu yapılaşmasında doku sinyali zayıf kalıyor ve parçalar "belirsiz"e düşüyor.
+- **Bitki kaybı ve belirsiz katmanları deneysel:** test noktalarında kullanıcı doğrulukları %0; haritada varsayılan kapalı.
+- **Aylık ön uyarılar doğrulanmadı:** kural etiketli noktalarla kalibre edilmedi; yalnızca yıllık analizde doğrulanana kadar ipucu olarak gösterilir. Kış dönemlerinde kapsama eşiği (%60) şimdiye kadarki çalıştırmalarda tetiklenmedi (İncek, Kas 2025–Oca 2026: %100); atlama yolu yalnızca birim testleriyle doğrulandı.
+- **Güven düzeyi** (yüksek/orta/düşük) kural tabanlı bir tahmindir (kırılmadan sonraki yıl sayısı), gerçek dünyadaki kesinlik değildir.
+
 - **04.00 öncesi parlak yüzeyler → sahte 2022 kırılması (P073 tipi).** 02.12/03.00 baseline'lı sahnelerde (2017–2021) parlak yüzeyler bulut sayılıp maskeleniyor; piksel 2022'de (baseline 04.00) ilk kez gözlenince seri orada basamak yapıyor ve yöntem değişmemiş bir yüzeye 2022 yapılaşması diyor. Test noktası P073 bunun örneği (2017–2021 çiplerinde maskeli pikseller, kırılma tam 2022). Test sonuçlarına bakılarak düzeltme yapılmadı; v2 listesinde. `dusuk_gozlem` kanıt alanı bu poligonları işaretler.
 
 - **04.00 öncesi baseline'larda parlak yüzeyler bulut sayılabiliyor.** 2017–2021 sahneleri (processing baseline 02.12 ve 03.00) bulutsuz günlerde bile parlak yüzeyleri (şantiye, yol, parlak çatı) SCL 8/9 (orta/yüksek olasılıklı bulut) olarak sınıflandırabiliyor. İncek yaz kompozitlerinde 2017–2021 arasında AOI piksellerinin %0,05–0,35'inde 3'ten az geçerli gözlem kaldı (2022 ve sonrasında %0); bu pikseller kompozitte boş bırakılır. Maske değiştirilmedi; bunun yerine her değişim poligonunda `dusuk_gozlem` kanıt alanı (önceki yıl kompozitindeki ortalama geçerli gözlem sayısı ve <3 gözlemli piksel oranı) raporlanır.
 - **Son yıl sıçramaları kalıcı katmana sızabilir.** Kalıcı katman en az 2 yıllık "sonrası" ister; yalnızca son yılda (ör. 2026) sıçrayan bir piksel b = 2025'te yarım basamak gösterir ve tek tük pikseller kalıcı katmanda 2025 kırılması olarak geçebilir (MMU tekilleri büyük ölçüde atar). 2026 kırılmaları ayrı `izleme.geojson` katmanındadır.
-- **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir); etkisi deney E5'te ölçülecek.
+- **Doku zamanla yukarı kayıyor.** İncek'te AOI doku medyanı 2017→2026 0,021 → 0,030; skoru düşük (değişmeyen) piksellerde de ~%15 artış var. 2025–2026'da sahne sayısı (20–21) 14'e indirildiğinde medyan değişmiyor (0,0289 / 0,0301), yani kayma sahne sayısından kaynaklanmıyor. Nedeni açık (bitki/ağaç büyümesi, yaygın kentleşme veya algılayıcı farkı olabilir); deney E5'te yıllık normalizasyon denendi ve metrikleri iyileştirmedi (ham doku korundu).
 - **Tek değişkenli su kırılması gürültüye duyarlı.** MNDWI serisinde kırılma adayı tek başına AOI'nin büyük bir kısmını işaretler (Gölbaşı'nda ~2 000 ha); su katmanında özgüllüğü su kütlesi durumu değişimi ve kıyı şeridi koşulları sağlar (→ ~5 ha).
 - **Su değişimleri doğrulama örneklemesinde neredeyse yok.** Su türleri Gölbaşı'nda toplam ~5 ha; tabaka alt sınırı yalnızca ≥ 20 ha tabakalara uygulandığı için su tabakaları 0–1 nokta aldı. Su kuralının doğruluğu bu örneklemeyle ölçülemez; bunun için ayrı su doğrulama seti etiketlendi (yukarıda: 16/16 yanlış alarm, su poligonları v1'de yayınlanmıyor).
 - **Su kütlelerinin iç delikleri doldurulur.** Göl içinde MNDWI'yi düşüren renk/bulanıklık değişimi su kazanımı/kaybı üretmesin diye ≥ 5 ha su kütlelerinin içindeki boşluklar su sayılır. Yan etkisi: göl içindeki gerçek adalar da su olarak haritalanır (Mogan'da belirgin ada yok).
 - Sahne düzeyindeki bulut oranı (`eo:cloud_cover`) 100×100 km MGRS karesine aittir, AOI'ye değil. Asıl temizlik piksel düzeyinde SCL maskesiyle yapılır.
+
+## v2 (v1 kapsamı dışında)
+
+- **Daha yüksek çözünürlük ve derin öğrenme:** alan kayması ve kaçırılan küçük yapılar için; TorchGeo ile SSL4EO-S12 ön eğitimli Sentinel-2 kodlayıcısı + Siamese başlık (OSCD üzerinde ince ayar), aynı Ankara test noktalarında klasik hatla karşılaştırma; yüksek çözünürlüklü veriyle dolgu yapılaşmasının ölçülmesi.
+- **04.00 öncesi parlak yüzey maskesi (P073 tipi hata):** s2cloudless / Cloud Score+ ile alternatif bulut maskesi; yalnızca geliştirme bölgelerinin kalibrasyon noktalarıyla tasarlanır.
+- **Su değişim katmanının yeniden tasarımı:** göl içi alg/renk değişimi ve kıyı sazlığı yanlış alarmları (Gölbaşı 16/16), Pursaklar'daki yeni su kütlesi gibi gerçek kazanımları koruyarak; yeni ve ayrı bir su doğrulama setiyle ölçülür.
+- **E2 deneyi:** ilkbahar (Mayıs–Haziran) ↔ yaz (Temmuz–Eylül) penceresi.
+- **Aylık ön uyarıların doğrulanması** ve kuralın kalibrasyon noktalarıyla ayarlanması.
+- Yeni vakalar (Manavgat yangını, Mogan ve Tuz Gölü su alanı), Ankara dışındaki şehirler, ESA WorldCover gibi hazır ürünlerle çapraz kontrol.
+
+## Veri ve atıflar
+
+- **Copernicus Sentinel-2** L2A verisi (ESA). Haritadaki önizlemeler ve tüm türetilmiş ürünler "değiştirilmiş Copernicus Sentinel verisi (2017–2026)" içerir.
+- **Microsoft Planetary Computer** — Sentinel-2 L2A STAC kataloğu ve bulut-optimize GeoTIFF erişimi.
+- **OpenStreetMap** — harita altlığı © OpenStreetMap katkıcıları (ODbL).
+- **Esri World Imagery** — uydu altlığı © Esri ve sağlayıcıları (Maxar, Earthstar Geographics ve GIS kullanıcı topluluğu).
+- **Leaflet** (BSD-2) web haritası kütüphanesi.
+- Alan ağırlıklı doğruluk: Olofsson, P. vd. (2014). *Good practices for estimating area and assessing accuracy of land change.* Remote Sensing of Environment 148, 42–57.
+- Doğrulama etiketleri (`validation/*.csv`) kör etiketleme ile Sentinel-2 kompozitleri ve geçmiş uydu görüntülerine bakılarak üretildi; üçüncü taraf görüntüler repoya konmadı.
+
+## Geliştirme notu
+
+Geliştirmede yapay zekâ araçları kullanıldı (kod yazımı, analiz ve dokümantasyon). Yöntem kararları, etiketleme ve sonuçların gözle kontrolü proje sahibine aittir.
